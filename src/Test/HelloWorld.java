@@ -1,10 +1,10 @@
 package Test;
 
-import Paser.BasicPaser;
+import TaskList.BasicTaskList;
 
 public class HelloWorld {
 	public static void main(String args[]){
-		BasicPaser bp = new BasicPaser();
-		bp.excuteCommand("display");
+		BasicTaskList BTL = new BasicTaskList("Test.txt");
+		BTL.startWaitingForCommand();
 	}
 }

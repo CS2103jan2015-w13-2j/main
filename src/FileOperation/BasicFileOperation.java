@@ -17,10 +17,10 @@ public class BasicFileOperation {
 	private static final int ERROR_CANNOT_WRITE_FILE = 3;
 	private static final int ERROR_DIRRCTORY_NAME = 4;
 	
-	private static final ArrayList<String> EMPTY_FILE = null;
+	private static final ArrayList<String> EMPTY_FILE = new ArrayList<String>();
 	private static String fileName;
 
-	private BasicFileOperation(String fileName) {
+	public BasicFileOperation(String fileName) {
 		this.fileName = fileName;
 	}
 	
