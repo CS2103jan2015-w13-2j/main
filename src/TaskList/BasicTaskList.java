@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import FileOperation.BasicFileOperation;
-import Paser.BasicPaser;
+import Parser.BasicParser;
 
 public class BasicTaskList {
 	private static final String FILE_NAME_DEFAULT = "default_output.txt";
@@ -32,13 +32,13 @@ public class BasicTaskList {
 	private static String fileName;
 	private static BasicFileOperation fo;
 	private static ArrayList<String> fileContent;
-	private static BasicPaser bp;
+	private static BasicParser bp;
 	
 	public BasicTaskList(String inputFileName){
 		fileName = inputFileName;
 		fo = new BasicFileOperation(fileName);
 		fileContent = fo.readFile();
-		bp = new BasicPaser();
+		bp = new BasicParser();
 	}
 	
 	/*
