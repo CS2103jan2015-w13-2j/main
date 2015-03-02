@@ -51,22 +51,22 @@ public class BasicTaskList {
 	/*
 	 * show the file content in format
 	 */
-	private void showFileContent(int index, String content) {
+	private static void showFileContent(int index, String content) {
 		System.out.print(String.format(MESSAGE_DISPLAY_OPERATION, index,
 				content));
 	}
 	
-	public void startWaitingForCommand(){
+	public static void startWaitingForCommand(){
 		sc = new Scanner(System.in);
 		String inputCommand;
 		while (true) {
 			System.out.print("Command: ");
 			inputCommand = sc.nextLine();
-			excuteCommand(inputCommand);
+			executeCommand(inputCommand);
 		}
 	}
 	
-	private void excuteCommand(String command) {
+	public static void executeCommand(String command) {
 		switch (bp.getOperation(command)) {
 		case OPERATION_ADD:
 			add(command);
@@ -91,14 +91,14 @@ public class BasicTaskList {
 	/*
 	 * show the input operation is invalid
 	 */
-	private void unknownOperation() {
+	private static void unknownOperation() {
 		System.err.print(MESSAGE_INVALID_COMMOND);
 	}
 	
 	/*
 	 * add new content to arraylist, but do not actully store to file
 	 */
-	private void add(String command) {
+	private static void add(String command) {
 		String content = "";
 		if (command.indexOf(' ') != -1) {
 			content = command.substring(command.indexOf(' ') + 1);
@@ -110,7 +110,7 @@ public class BasicTaskList {
 	/*
 	 * delete content in arraylist, but do not actully store to file
 	 */
-	private void delete(String command) {
+	private static void delete(String command) {
 		String content = "";
 		if (command.indexOf(' ') != -1) {
 			content = command.substring(command.indexOf(' ') + 1);
@@ -126,7 +126,7 @@ public class BasicTaskList {
 	/*
 	 * display the content in arraylist, which is the real-time file content
 	 */
-	private void display() {
+	private static void display() {
 		if (fileContent.size() == 0) {
 			showMessage(MESSAGE_EMPTY_FILE, null);
 			return;
@@ -141,7 +141,7 @@ public class BasicTaskList {
 	/*
 	 * clear all data in arraylist, but do not actully store to file
 	 */
-	private void clear() {
+	private static void clear() {
 		showMessage(MESSAGE_CLEAR_OPERATION, null);
 		fileContent.clear();
 	}
@@ -150,9 +150,14 @@ public class BasicTaskList {
 	 * exit the program
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
-	private void exit() {
+	private static void exit() {
+		UI.BasicUI.exit(NORMAL_EXIT);
 		fo.saveToFile(fileContent);
 		sc.close();
 		System.exit(NORMAL_EXIT);
+	}
+	
+	public static ArrayList<String> getFileContent(){
+		return fileContent;
 	}
 }
