@@ -39,6 +39,7 @@ public class BasicTaskList {
 		fo = new BasicFileOperation(fileName);
 		fileContent = fo.readFile();
 		bp = new BasicParser();
+		//Add in a initParser() command.
 		bp.initParser();
 	}
 	
