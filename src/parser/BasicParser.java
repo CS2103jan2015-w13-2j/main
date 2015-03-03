@@ -1,7 +1,27 @@
 package parser;
 
 import java.util.Hashtable;
-
+/**
+ * APIs:
+ * 	void initParser(): execute first after creating any instance of parser
+ * 	int getOperation(String):
+ * 	String getTile(String): have not implemented yet
+ * 	String getVenue(String):
+ *  String getDate(String):
+ *  String getDeadline(String):
+ *  
+ * Make sure your operation index is up-to-date every time before calling parser.
+ * The latest operation indexes are:
+ * 	private static final int OPERATION_UNKNOWN = 0;
+ *	private static final int OPERATION_ADD = 1;
+ *	private static final int OPERATION_DELETE = 2;
+ *	private static final int OPERATION_CLEAR = 3;
+ *	private static final int OPERATION_DISPLAY = 4;
+ *	private static final int OPERATION_EXIT = 5;
+ *	private static final int OPERATION_MODIFY = 6;
+ * @author Colonel
+ *
+ */
 public class BasicParser {
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
