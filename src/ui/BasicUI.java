@@ -1,8 +1,8 @@
-package UI;
+package ui;
 
 import java.util.ArrayList;
 
-import TaskList.BasicTaskList;
+import taskList.BasicTaskList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +41,7 @@ public class BasicUI extends Application {
 			public void handle(KeyEvent key) {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = textField.getText();
-					TaskList.BasicTaskList.executeCommand(input);
+					taskList.BasicTaskList.executeCommand(input);
 					displayList();
 					textField.clear();
 				}
@@ -53,7 +53,7 @@ public class BasicUI extends Application {
 	
 	private void displayList() {
 		listView.getItems().clear();		
-		inputText = TaskList.BasicTaskList.getFileContent();
+		inputText = taskList.BasicTaskList.getFileContent();
 		if (inputText.size() != 0) {
 			System.out.println("printing from inputText");
 			for (int i=0; i<inputText.size(); i++) {

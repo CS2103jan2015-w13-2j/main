@@ -1,4 +1,4 @@
-package TaskList;
+package taskList;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import FileOperation.BasicFileOperation;
-import Paser.BasicPaser;
+import parser.BasicParser;
 
 public class BasicTaskList {
 	private static final String FILE_NAME_DEFAULT = "default_output.txt";
@@ -32,13 +32,14 @@ public class BasicTaskList {
 	private static String fileName;
 	private static BasicFileOperation fo;
 	private static ArrayList<String> fileContent;
-	private static BasicPaser bp;
+	private static BasicParser bp;
 	
 	public BasicTaskList(String inputFileName){
 		fileName = inputFileName;
 		fo = new BasicFileOperation(fileName);
 		fileContent = fo.readFile();
-		bp = new BasicPaser();
+		bp = new BasicParser();
+		bp.initParser();
 	}
 	
 	/*
@@ -151,7 +152,7 @@ public class BasicTaskList {
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
 	private static void exit() {
-		UI.BasicUI.exit(NORMAL_EXIT);
+		ui.BasicUI.exit(NORMAL_EXIT);
 		fo.saveToFile(fileContent);
 		sc.close();
 		System.exit(NORMAL_EXIT);

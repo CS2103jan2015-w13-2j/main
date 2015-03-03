@@ -1,7 +1,7 @@
-package Test;
+package test;
 
-import TaskList.BasicTaskList;
-import UI.BasicUI;
+import taskList.BasicTaskList;
+import ui.BasicUI;
 
 public class HelloWorld {
 	public static void main(String args[]){
