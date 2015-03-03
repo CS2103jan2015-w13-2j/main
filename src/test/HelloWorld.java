@@ -1,6 +1,6 @@
 package test;
 
-import taskList.BasicTaskList;
+import taskList.TaskList;
 import ui.BasicUI;
 
 public class HelloWorld {

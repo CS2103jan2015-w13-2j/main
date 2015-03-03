@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: 2103TeamProject
+Bundle-SymbolicName: 2103TeamProject
+Bundle-Version: 1.0.0.qualifier
