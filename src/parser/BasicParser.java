@@ -49,8 +49,12 @@ public class BasicParser {
 		}
 	}
 	
-	private int getOperationIndex(String operation) {
+	private Integer getOperationIndex(String operation) {
 		return featureList.get(operation);
+	}
+	
+	public String getTitle(String operation) {
+		return null;
 	}
 
 	public String getVenue(String operation) {
