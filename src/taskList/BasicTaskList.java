@@ -1,4 +1,4 @@
-package taskList;
+package TaskList;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import FileOperation.BasicFileOperation;
-import parser.BasicParser;
+import Parser.BasicParser;
 
 public class BasicTaskList {
 	private static final String FILE_NAME_DEFAULT = "default_output.txt";
