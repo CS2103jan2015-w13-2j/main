@@ -21,7 +21,7 @@ public class FileOperation {
 	private static String fileName;
 
 	public FileOperation(String fileName) {
-		this.fileName = fileName;
+		FileOperation.fileName = fileName;
 	}
 	
 	public ArrayList<Task> readFile() {

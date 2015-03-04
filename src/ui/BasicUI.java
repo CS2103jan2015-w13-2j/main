@@ -28,7 +28,7 @@ public class BasicUI extends Application {
 	public static void main(String[] args) {
 		TaskList BTL = new TaskList("Test.txt");
 		launch(args);
-		BTL.startWaitingForCommand();
+		TaskList.startWaitingForCommand();
 	}
 
 	@Override
@@ -38,6 +38,7 @@ public class BasicUI extends Application {
 		displayList();
 
 		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
 			public void handle(KeyEvent key) {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = textField.getText();

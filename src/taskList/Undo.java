@@ -135,7 +135,8 @@ public class Undo<T> {
         this.restoreFromSnapshot();  
     }  
       
-    public String toString() {  
+    @Override
+	public String toString() {  
         return this.primaryList.toString();  
     }  
       
