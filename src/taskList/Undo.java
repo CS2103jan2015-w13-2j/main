@@ -9,16 +9,16 @@ public class Undo<T> {
       
     private LinkedList<T> primaryList = new LinkedList<T>();  
       
-    //¿ìÕÕÁÐ±í  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½  
     private LinkedList<List> snapshotList = new LinkedList<List>();  
       
-    //ÉÏÒ»´Î²Ù×÷µ÷ÓÃµÄ·½·¨  
+    //ï¿½ï¿½Ò»ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ·ï¿½ï¿½ï¿½  
     private Method lastOperation;  
       
-    //ÉÏÒ»´Î²Ù×÷µ÷ÓÃµÄ·½·¨²ÎÊý  
+    //ï¿½ï¿½Ò»ï¿½Î²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     private Object[] lastOperationArgs;  
       
-    //ÅÄ¿ìÕÕ£¬Ã¿²Ù×÷Ò»´ÎÅÄÏÂ¿ìÕÕ  
+    //ï¿½Ä¿ï¿½ï¿½Õ£ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½  
     private void takeSnapshot() {  
         List<T> snapshot = new LinkedList<T>();  
         for (T element : primaryList) {  
@@ -27,9 +27,9 @@ public class Undo<T> {
         snapshotList.add(snapshot);  
     }  
       
-    //´Ó×îÐÂµÄ¿ìÕÕ»Ö¸´  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ÂµÄ¿ï¿½ï¿½Õ»Ö¸ï¿½  
     private void restoreFromSnapshot() {  
-        //pollLast()»ñÈ¡²¢ÒÆ³ý´ËÁÐ±íµÄ×îºóÒ»¸öÔªËØ£»Èç¹û´ËÁÐ±íÎª¿Õ£¬Ôò·µ»Ø null¡£  
+        //pollLast()ï¿½ï¿½È¡ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Îªï¿½Õ£ï¿½ï¿½ò·µ»ï¿½ nullï¿½ï¿½  
         List<T> snapshot = snapshotList.pollLast();    
         primaryList.clear();  
         for (T element : snapshot) {  
@@ -37,7 +37,7 @@ public class Undo<T> {
         }  
     }  
       
-    //ÉèÖÃÉÏ´Î²Ù×÷  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Î²ï¿½ï¿½ï¿½  
     private void setLastInvokedOperation(String methodName, Object... params) {  
         try {  
             this.lastOperation = this.getClass().  
@@ -50,7 +50,7 @@ public class Undo<T> {
         this.lastOperationArgs = params;  
     }  
        
-    //ÉèÖÃÉÏÒ»¸ö·½·¨µÄ²ÎÊý  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½  
     private boolean setLastMethodParamsGeneric(String methodName, Object... params) {  
         Method[] methods = this.getClass().getMethods();  
         for (int i=0; i<methods.length; i++) {  
@@ -62,7 +62,7 @@ public class Undo<T> {
         return false;  
     }  
       
-    //ÅÐ¶Ï·½·¨ÊÇ·ñÆ¥Åä  
+    //ï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ï¿½  
     private boolean isMethodMatch(Method method, String methodName, Object... params){  
         if (!method.getName().equalsIgnoreCase(methodName)) {  
             return false;  
@@ -79,7 +79,7 @@ public class Undo<T> {
         return true;  
     }  
       
-    //»ñÈ¡²ÎÊýµÄÀàÐÍ  
+    //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     private Class<?>[] getParamTypes(Object... params) {  
         Class<?>[] paramTypes = new Class<?>[params.length];  
         for (int i=0; i<params.length; i++) {  
@@ -88,7 +88,7 @@ public class Undo<T> {
         return paramTypes;  
     }  
       
-    //Ö´ÐÐÉÏÒ»¸ö·½·¨  
+    //Ö´ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     private void invokeLastMethod() {  
         try {  
             this.lastOperation.invoke(this, this.lastOperationArgs);  
@@ -97,9 +97,9 @@ public class Undo<T> {
         }   
     }  
       
-    //É¾³ý²Ù×÷  
+    //É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     public void delete(Integer beginIndex, Integer endIndex) {  
-        //É¾³ý²Ù×÷Ö®Ç°ÅÄÏÂ¿ìÕÕ  
+        //É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½  
         this.takeSnapshot();  
         for (int i=beginIndex; i<=endIndex; i++) {  
             primaryList.remove(beginIndex);  
@@ -107,31 +107,31 @@ public class Undo<T> {
         this.setLastInvokedOperation("delete", beginIndex, endIndex);  
     }  
       
-    //²åÈë²Ù×÷  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
     public void insert(T element, Integer index) {  
-        //²åÈë²Ù×÷Ö®Ç°ÅÄÏÂ¿ìÕÕ  
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½  
         this.takeSnapshot();  
         primaryList.add(index, element);  
         this.setLastInvokedOperation("insert", element, index);  
     }  
       
-    //ÐÞ¸Ä²Ù×÷  
+    //ï¿½Þ¸Ä²ï¿½ï¿½ï¿½  
     public void modify(T element, Integer index) {  
-        //ÐÞ¸Ä²Ù×÷Ö®Ç°ÅÄÏÂ¿ìÕÕ  
+        //ï¿½Þ¸Ä²ï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½  
         this.takeSnapshot();  
         primaryList.set(index, element);  
         this.setLastInvokedOperation("modify", element, index);  
     }  
       
-    //ÖØ×ö£¬È¡Ïû¸´Ô­  
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ô­  
     public void redo() {  
-        //Ö´ÐÐÉÏ´Î²Ù×÷µÄ·½·¨  
+        //Ö´ï¿½ï¿½ï¿½Ï´Î²ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½  
         this.invokeLastMethod();  
     }  
       
-    //³·Ïú  
+    //ï¿½ï¿½ï¿½ï¿½  
     public void undo() {  
-        //ÖØ×îÐÂµÄ¿ìÕÕÖÐ»Ö¸´  
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ÂµÄ¿ï¿½ï¿½ï¿½ï¿½Ð»Ö¸ï¿½  
         this.restoreFromSnapshot();  
     }  
       
