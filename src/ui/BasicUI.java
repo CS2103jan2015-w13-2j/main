@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import taskList.TaskList;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -21,9 +24,11 @@ public class BasicUI extends Application {
 	public static final ObservableList<String> data = FXCollections.observableArrayList();
 	
 	final ListView<String> listView = new ListView<String>(data);
-	final Label label = new Label("TaskBuddy");
+	final Label brandLabel = new Label("TaskBuddy");
+	final Label feedbackLabel = new Label();
 	final TextField textField = new TextField();
 	ArrayList<String> inputText = new ArrayList<String>();
+	private StringProperty feedbackMessage = new SimpleStringProperty();
 
 	public static void main(String[] args) {
 		TaskList BTL = new TaskList("Test.txt");
@@ -34,6 +39,7 @@ public class BasicUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
+		feedbackLabel.textProperty().bind(feedbackMessage);
 		setLayout(primaryStage);
 		displayList();
 
@@ -43,11 +49,13 @@ public class BasicUI extends Application {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = textField.getText();
 					taskList.TaskList.executeCommand(input);
+					feedbackMessage.set("Command executed");
 					displayList();
 					textField.clear();
 				}
 			}
 		});
+		
 
 		
 	}
@@ -76,8 +84,9 @@ public class BasicUI extends Application {
 		root.setVgap(10);
 
 		root.add(listView,5,4,1,2);
-		root.add(label,5,2,1,1);
+		root.add(brandLabel,5,2,1,1);
 		root.add(textField,5,8,1,2);
+		root.add(feedbackLabel,5,10,1,2);
 		
 		primaryStage.setScene(new Scene(root, 700, 600));
 		primaryStage.show();
