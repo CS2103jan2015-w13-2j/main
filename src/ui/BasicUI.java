@@ -22,8 +22,11 @@ import javafx.scene.input.KeyEvent;
 public class BasicUI extends Application {
 
 	public static final ObservableList<String> data = FXCollections.observableArrayList();
+	public static final ObservableList<String> list = FXCollections.observableArrayList();
 	
-	final ListView<String> listView = new ListView<String>(data);
+	final ListView<String> listViewData = new ListView<String>(data);
+	final ListView<String> listViewList = new ListView<String>(list);
+	
 	final Label brandLabel = new Label("TaskBuddy");
 	final Label feedbackLabel = new Label();
 	final TextField textField = new TextField();
@@ -61,7 +64,7 @@ public class BasicUI extends Application {
 	}
 	
 	private void displayList() {
-		listView.getItems().clear();		
+		listViewData.getItems().clear();		
 		inputText = taskList.TaskList.getFileContent();
 		if (inputText.size() != 0) {
 			System.out.println("printing from inputText");
@@ -73,22 +76,25 @@ public class BasicUI extends Application {
 	
 	private void setLayout(Stage primaryStage) {
 		primaryStage.setTitle("Task Buddy - your best personal assistant");        
-		listView.setPrefSize(600, 450);
-		listView.setEditable(false);
-		listView.setItems(data);             
+		listViewData.setPrefSize(500, 450);
+		listViewData.setEditable(false);
+		listViewData.setItems(data);            
+		listViewList.setPrefSize(200,450);
+		listViewList.setItems(list);
 		textField.setPromptText("enter command");
 
 
 		GridPane root = new GridPane();
-		root.setHgap(10);
+		root.setHgap(20);
 		root.setVgap(10);
 
-		root.add(listView,5,4,1,2);
-		root.add(brandLabel,5,2,1,1);
-		root.add(textField,5,8,1,2);
-		root.add(feedbackLabel,5,10,1,2);
+		root.add(listViewData,2,10,1,2);
+		root.add(listViewList,1,10,1,2);
+		root.add(brandLabel,1,2,1,1);
+		root.add(textField,1,14,2,2);
+		root.add(feedbackLabel,1,16,1,4);
 		
-		primaryStage.setScene(new Scene(root, 700, 600));
+		primaryStage.setScene(new Scene(root, 760, 600));
 		primaryStage.show();
 	}
 
