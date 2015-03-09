@@ -31,7 +31,7 @@ public class TaskList {
 	private static FileOperation fo;
 	private static ArrayList<Task> taskList;
 	private static Parser bp;
-	private static ArrayList<String> feedBack;
+	private static ArrayList<String> feedBack = new ArrayList<String>();
 	
 	public TaskList(String inputFileName){
 		fileName = inputFileName;
