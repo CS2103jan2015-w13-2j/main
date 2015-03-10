@@ -32,7 +32,8 @@ public class BasicUI extends Application {
 	final TextField textField = new TextField();
 	ArrayList<String> inputText = new ArrayList<String>();
 	private StringProperty feedbackMessage = new SimpleStringProperty();
-
+	private String feedback = "";
+	
 	public static void main(String[] args) {
 		TaskList BTL = new TaskList("Test.txt");
 		launch(args);
@@ -41,6 +42,8 @@ public class BasicUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		
+		
 		
 		feedbackLabel.textProperty().bind(feedbackMessage);
 		setLayout(primaryStage);
@@ -52,7 +55,8 @@ public class BasicUI extends Application {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = textField.getText();
 					taskList.TaskList.executeCommand(input);
-					feedbackMessage.set("Command executed");
+					feedback = TaskList.getLastFeedBack();
+					feedbackMessage.set(feedback);
 					displayList();
 					textField.clear();
 				}
