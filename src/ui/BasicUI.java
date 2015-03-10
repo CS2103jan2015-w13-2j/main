@@ -103,6 +103,7 @@ public class BasicUI extends Application {
 
 
 		GridPane root = new GridPane();
+		root.setStyle("-fx-background-color: #abd4ee;");
 		root.setHgap(20);
 		root.setVgap(10);
 		
