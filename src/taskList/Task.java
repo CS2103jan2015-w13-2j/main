@@ -1,8 +1,8 @@
 package taskList;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class Task {
@@ -22,7 +22,7 @@ public class Task {
 	}
 	public Date getDate(){
 		try{  
-		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");  
+		    SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd ");  
 		    Date date = (Date) sdf.parse(dateString);  
 			return date;  
 		}  

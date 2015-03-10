@@ -31,11 +31,13 @@ public class TaskList {
 	private static FileOperation fo;
 	private static ArrayList<Task> taskList;
 	private static Parser bp;
+	private static ArrayList<String> feedBack = new ArrayList<String>();
 	
 	public TaskList(String inputFileName){
 		fileName = inputFileName;
 		fo = new FileOperation(fileName);
 		taskList = fo.readFile();
+		feedBack.clear();
 		bp = new Parser();
 		//Add in a initParser() command.
 		bp.initParser();
@@ -45,6 +47,7 @@ public class TaskList {
 	 * print messages
 	 */
 	private static void showMessage(String message, String content) {
+		feedBack.add(String.format(message, fileName, content));
 		System.out.print(String.format(message, fileName, content));
 	}
 
@@ -163,5 +166,13 @@ public class TaskList {
 			content.add(task.getContent());
 		}
 		return content;
+	}
+	
+	public static ArrayList<String> getFeedBacks(){
+		return (ArrayList<String>) feedBack.clone();
+	}
+	
+	public static String getLastFeedBack(){
+		return feedBack.get(feedBack.size()-1);
 	}
 }
