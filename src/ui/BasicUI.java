@@ -6,7 +6,6 @@ import taskList.TaskList;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -20,17 +19,22 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class BasicUI extends Application {
-
-	public static final ObservableList<String> data = FXCollections.observableArrayList();
-	public static final ObservableList<String> list = FXCollections.observableArrayList();
 	
-	final ListView<String> listViewData = new ListView<String>(data);
-	final ListView<String> listViewList = new ListView<String>(list);
+	//Data
+	private static final ObservableList<String> data = FXCollections.observableArrayList();
+	private static final ObservableList<String> list = FXCollections.observableArrayList();
+	private final ListView<String> listViewData = new ListView<String>(data);
+	private final ListView<String> listViewList = new ListView<String>(list);
 	
-	final Label brandLabel = new Label("TaskBuddy");
-	final Label feedbackLabel = new Label();
-	final TextField textField = new TextField();
-	ArrayList<String> inputText = new ArrayList<String>();
+	//Labels
+	private Label brandLabel = new Label("TaskBuddy");
+	private Label feedbackLabel = new Label();
+	private Label listLabel = new Label("CATEGORIES");
+	private Label taskLabel = new Label("TASKS"); 
+	
+	//User I/O
+	private final TextField textField = new TextField();
+	private ArrayList<String> inputText = new ArrayList<String>();
 	private StringProperty feedbackMessage = new SimpleStringProperty();
 	private String feedback = "";
 	
@@ -91,7 +95,9 @@ public class BasicUI extends Application {
 		GridPane root = new GridPane();
 		root.setHgap(20);
 		root.setVgap(10);
-
+		
+		root.add(taskLabel,2,8,1,2);
+		root.add(listLabel,1,8,1,2);
 		root.add(listViewData,2,10,1,2);
 		root.add(listViewList,1,10,1,2);
 		root.add(brandLabel,1,2,1,1);
