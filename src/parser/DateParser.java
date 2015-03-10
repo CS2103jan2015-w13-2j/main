@@ -5,10 +5,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class DatePaser {
+public class DateParser {
 	ArrayList<SimpleDateFormat> format = new ArrayList<SimpleDateFormat>();
 	
-	public DatePaser(){
+	public DateParser(){
 		format.add(new SimpleDateFormat());
 		//24 Hour
 		format.add(new SimpleDateFormat("YYYY-MM HH:mm"));
@@ -37,8 +37,7 @@ public class DatePaser {
 		format.add(new SimpleDateFormat("MM/YYYY hh:mm aaa"));
 		format.add(new SimpleDateFormat("dd/MM/YYYY hh:mm aaa"));
 		format.add(new SimpleDateFormat("dd.MM.YYYY 'at' hh:mm aaa"));
-		format.add(new SimpleDateFormat("EEE, dd/MM/YYYY hh:mm aaa"));
-		
+		format.add(new SimpleDateFormat("EEE, dd/MM/YYYY hh:mm aaa"));	
 	}
 	
 	public Date getDate(String dateString){

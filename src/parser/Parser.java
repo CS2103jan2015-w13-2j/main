@@ -1,6 +1,8 @@
 package parser;
 
+import java.util.Date;
 import java.util.Hashtable;
+
 /**
  * APIs:
  * 	void initParser(): execute first after creating any instance of parser
@@ -8,6 +10,7 @@ import java.util.Hashtable;
  * 	String getTitle(String) throws StringIndexOutOfBoundsException: implemented
  * 	String getVenue(String): implemented
  *  String getDate(String): implemented
+ *  	notice! time also included in getDate() method
  *  String getDeadline(String): implemented
  *  
  * Make sure your operation index is up-to-date every time before calling parser.
@@ -39,6 +42,22 @@ public class Parser {
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
 	
 	private static Hashtable<String, Integer> featureList = null; 
+	private DateParser dateParser = null;
+	
+	public Parser() {
+		initFeatureList();
+		dateParser = new DateParser();
+	}
+	
+	private void initFeatureList() {
+		featureList = new Hashtable<String, Integer>();
+		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
+		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
+		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
+		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
+		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
+		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
+	}
 	
 	public void initParser() {
 		featureList = new Hashtable<String, Integer>();
@@ -94,12 +113,10 @@ public class Parser {
 		return getContent("-v", operation);
 	}
 	
-	public String getDate(String operation) {
-		return getContent("-d", operation);
-	}
-	
-	public String getTime(String operation) {
-		return getContent("-t", operation);
+	public Date getDate(String operation) {
+		String dateString = getContent("-d", operation);
+		return dateParser.getDate(dateString);
+		
 	}
 	
 	public String getDeadline(String operation) {
