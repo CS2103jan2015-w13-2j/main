@@ -25,6 +25,7 @@ public class BasicUI extends Application {
 	private static final ObservableList<String> list = FXCollections.observableArrayList();
 	private final ListView<String> listViewData = new ListView<String>(data);
 	private final ListView<String> listViewList = new ListView<String>(list);
+	private final String dummyCategory[] = {"All", "School", "Family", "Others", "Completed" };
 	
 	//Labels
 	private Label brandLabel = new Label("TaskBuddy");
@@ -32,7 +33,7 @@ public class BasicUI extends Application {
 	private Label listLabel = new Label("CATEGORIES");
 	private Label taskLabel = new Label("TASKS"); 
 	
-	//User I/O
+	//User IO
 	private final TextField textField = new TextField();
 	private ArrayList<String> inputText = new ArrayList<String>();
 	private StringProperty feedbackMessage = new SimpleStringProperty();
@@ -51,7 +52,8 @@ public class BasicUI extends Application {
 		
 		feedbackLabel.textProperty().bind(feedbackMessage);
 		setLayout(primaryStage);
-		displayList();
+		displayData();
+		displayCategory();
 
 		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -61,7 +63,8 @@ public class BasicUI extends Application {
 					taskList.TaskList.executeCommand(input);
 					feedback = TaskList.getLastFeedBack();
 					feedbackMessage.set(feedback);
-					displayList();
+					displayData();
+					displayCategory();
 					textField.clear();
 				}
 			}
@@ -71,7 +74,14 @@ public class BasicUI extends Application {
 		
 	}
 	
-	private void displayList() {
+	private void displayCategory(){
+		listViewList.getItems().clear();
+		for (int i=0; i<dummyCategory.length; i++) {
+			list.add(dummyCategory[i]);
+		}
+	}
+	
+	private void displayData() {
 		listViewData.getItems().clear();		
 		inputText = taskList.TaskList.getFileContent();
 		if (inputText.size() != 0) {
