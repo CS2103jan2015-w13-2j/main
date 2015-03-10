@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import taskList.TaskList;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -15,6 +16,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -47,6 +50,7 @@ public class BasicUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+		
 		
 		
 		
@@ -93,17 +97,18 @@ public class BasicUI extends Application {
 	}
 	
 	private void setLayout(Stage primaryStage) {
-		primaryStage.setTitle("Task Buddy - your best personal assistant");        
+		primaryStage.setTitle("Task Buddy - your best personal assistant"); 
+		GridPane root = new GridPane();
+
+		
+		 
 		listViewData.setPrefSize(500, 450);
 		listViewData.setEditable(false);
 		listViewData.setItems(data);            
 		listViewList.setPrefSize(200,450);
 		listViewList.setItems(list);
 		textField.setPromptText("enter command");
-
-
-		GridPane root = new GridPane();
-		root.setStyle("-fx-background-color: #abd4ee;");
+				
 		root.setHgap(20);
 		root.setVgap(10);
 		
