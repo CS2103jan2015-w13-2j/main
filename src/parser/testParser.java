@@ -22,7 +22,6 @@ public class testParser {
 		
 	}
 	
-	
 	@Test
 	public void testTitle() {
 		Parser p = new Parser();
@@ -31,5 +30,20 @@ public class testParser {
 		output = p.getTitle("add good night -v home");
 		assertEquals("good night", output);
 	}
-
+	
+	@Test
+	public void testVenue() {
+		
+	}
+	
+	@Test
+	public void testDate() {
+		
+	}
+	
+	@Test
+	public void testDeadline() {
+		
+	}
+	
 }
