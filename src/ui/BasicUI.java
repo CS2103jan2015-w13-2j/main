@@ -2,6 +2,7 @@ package ui;
 
 import java.util.ArrayList;
 
+import taskList.Task;
 import taskList.TaskList;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -13,7 +14,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -24,11 +28,17 @@ import javafx.scene.input.KeyEvent;
 public class BasicUI extends Application {
 	
 	//Data
-	private static final ObservableList<String> data = FXCollections.observableArrayList();
+//	private static final ObservableList<String> data = FXCollections.observableArrayList();
 	private static final ObservableList<String> list = FXCollections.observableArrayList();
-	private final ListView<String> listViewData = new ListView<String>(data);
+//	private final ListView<String> listViewData = new ListView<String>(data);
 	private final ListView<String> listViewList = new ListView<String>(list);
 	private final String dummyCategory[] = {"All", "School", "Family", "Others", "Completed" };
+	private final TableView table = new TableView();
+	
+	final ObservableList<Task> data = FXCollections.observableArrayList(
+		    new Task("Task 1", "march 11", "", "place one"),
+		    new Task("Tsk 2", "april 30", "", "place 2")
+		);
 	
 	//Labels
 	private Label brandLabel = new Label("TaskBuddy");
@@ -56,7 +66,7 @@ public class BasicUI extends Application {
 		
 		feedbackLabel.textProperty().bind(feedbackMessage);
 		setLayout(primaryStage);
-		displayData();
+//		displayData();
 //		displayCategory();
 
 		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -67,7 +77,7 @@ public class BasicUI extends Application {
 					taskList.TaskList.executeCommand(input);
 					feedback = TaskList.getLastFeedBack();
 					feedbackMessage.set(feedback);
-					displayData();
+//					displayData();
 //					displayCategory();
 					textField.clear();
 				}
@@ -85,28 +95,48 @@ public class BasicUI extends Application {
 //		}
 //	}
 	
-	private void displayData() {
-		listViewData.getItems().clear();		
-		inputText = taskList.TaskList.getFileContent();
-		if (inputText.size() != 0) {
-			System.out.println("printing from inputText");
-			for (int i=0; i<inputText.size(); i++) {
-				data.add(i+1 + ". " + inputText.get(i));
-			}
-		}
-	}
+//	private void displayData() {
+//		listViewData.getItems().clear();		
+//		inputText = taskList.TaskList.getFileContent();
+//		if (inputText.size() != 0) {
+//			System.out.println("printing from inputText");
+//			for (int i=0; i<inputText.size(); i++) {
+//				data.add(i+1 + ". " + inputText.get(i));
+//			}
+//		}
+//	}
+	
+	
+	
 	
 	private void setLayout(Stage primaryStage) {
 		primaryStage.setTitle("Task Buddy - your best personal assistant"); 
 		GridPane root = new GridPane();
+		
+		TableColumn taskColumn = new TableColumn("task");
+		taskColumn.setPrefWidth(320);
+        TableColumn dateColumn = new TableColumn("date");
+		dateColumn.setPrefWidth(100);
 
+        TableColumn venueColumn = new TableColumn("venue");
+		venueColumn.setPrefWidth(100);
+        
+        taskColumn.setCellValueFactory(
+        	    new PropertyValueFactory<Task,String>("content")
+        	);
+        	venueColumn.setCellValueFactory(
+        	    new PropertyValueFactory<Task,String>("venue")
+        	);
+        
+        	table.setItems(data);
+            table.getColumns().addAll(taskColumn, dateColumn, venueColumn);
 		
 		root.setStyle("-fx-background-color: #c6e2ff;"); 
 		brandLabel.setStyle("-fx-font-family: Courier New;" + "-fx-font-size: 30;" + "-fx-font-weight: bold;");
 		
-		listViewData.setPrefSize(500, 450);
-		listViewData.setEditable(false);
-		listViewData.setItems(data);            
+//		listViewData.setPrefSize(500, 450);
+//		listViewData.setEditable(false);
+//		listViewData.setItems(data);            
 		listViewList.setPrefSize(200,450);
 		listViewList.setItems(list);
 		textField.setPromptText("enter command");
@@ -118,7 +148,7 @@ public class BasicUI extends Application {
 //		root.add(listLabel,1,8,1,2);
 		
 		//V0.0 (without showing category)
-		root.add(listViewData,1,5,1,2);
+		root.add(table,1,5,1,2);
 		
 //		root.add(listViewData,2,10,1,2);
 //		root.add(listViewList,1,10,1,2);
