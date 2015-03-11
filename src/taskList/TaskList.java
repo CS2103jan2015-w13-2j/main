@@ -2,7 +2,9 @@ package taskList;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+
 import taskList.Task;
 import FileOperation.FileOperation;
 import parser.Parser;
@@ -40,7 +42,6 @@ public class TaskList {
 		feedBack.clear();
 		bp = new Parser();
 		//Add in a initParser() command.
-		bp.initParser();
 	}
 	
 	/*
@@ -102,12 +103,12 @@ public class TaskList {
 	 * add new content to arraylist, but do not actully store to file
 	 */
 	private static void add(String command) {
-		String content = "";
-		if (command.indexOf(' ') != -1) {
-			content = command.substring(command.indexOf(' ') + 1);
-		}
+		String content = bp.getTitle(command);
+		Date date = bp.getDate(command);
+		Date deadLine = bp.getDeadline(command);
+		String venue = bp.getVenue(command);
 		showMessage(MESSAGE_ADD_OPERATION, content);
-		taskList.add(new Task(content));
+		taskList.add(new Task(content,date,deadLine,venue));
 	}
 	
 	/*
@@ -166,6 +167,10 @@ public class TaskList {
 			content.add(task.getContent());
 		}
 		return content;
+	}
+	
+	public static ArrayList<Task> getTasks(){
+		return (ArrayList<Task>) taskList.clone();
 	}
 	
 	public static ArrayList<String> getFeedBacks(){

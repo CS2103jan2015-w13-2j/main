@@ -115,12 +115,15 @@ public class Parser {
 	
 	public Date getDate(String operation) {
 		String dateString = getContent("-d", operation);
+		if (dateString == null) return null;
 		return dateParser.getDate(dateString);
 		
 	}
 	
-	public String getDeadline(String operation) {
-		return getContent("-dd", operation);
+	public Date getDeadline(String operation) {
+		String deadLineString = getContent("-dd", operation);
+		if (deadLineString == null) return null;
+		return dateParser.getDate(deadLineString);
 	}
 
 	private String getContent(String operationType, String operation) {
