@@ -5,13 +5,12 @@ import java.util.Hashtable;
 
 /**
  * APIs:
- * 	void initParser(): execute first after creating any instance of parser
  * 	int getOperation(String): implemented
  * 	String getTitle(String) throws StringIndexOutOfBoundsException: implemented
  * 	String getVenue(String): implemented
- *  String getDate(String): implemented
+ *  Date getDate(String): implemented
  *  	notice! time also included in getDate() method
- *  String getDeadline(String): implemented
+ *  Date getDeadline(String): implemented
  *  
  * Make sure your operation index is up-to-date every time before calling parser.
  * The latest operation indexes are:
@@ -50,16 +49,6 @@ public class Parser {
 	}
 	
 	private void initFeatureList() {
-		featureList = new Hashtable<String, Integer>();
-		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
-		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
-		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
-		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
-		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
-		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
-	}
-	
-	public void initParser() {
 		featureList = new Hashtable<String, Integer>();
 		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
 		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
