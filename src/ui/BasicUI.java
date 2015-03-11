@@ -36,7 +36,7 @@ public class BasicUI extends Application {
 	private final TableView table = new TableView();
 	
 	final ObservableList<Task> data = FXCollections.observableArrayList(
-		    new Task("Task 1", "march 11", "", "place one"),
+		    new Task("Task 1", "march 11", "", "this is a very very very very very very loooong venue"),
 		    new Task("Tsk 2", "april 30", "", "place 2")
 		);
 	
