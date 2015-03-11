@@ -101,7 +101,9 @@ public class BasicUI extends Application {
 		GridPane root = new GridPane();
 
 		
-		 
+		root.setStyle("-fx-background-color: #c6e2ff;"); 
+		brandLabel.setStyle("-fx-font-family: Courier New;" + "-fx-font-size: 30;" + "-fx-font-weight: bold;");
+		
 		listViewData.setPrefSize(500, 450);
 		listViewData.setEditable(false);
 		listViewData.setItems(data);            
