@@ -1,14 +1,17 @@
 package parser;
 
+import java.util.Date;
 import java.util.Hashtable;
+
 /**
  * APIs:
  * 	void initParser(): execute first after creating any instance of parser
- * 	int getOperation(String):
- * 	String getTile(String): have not implemented yet
- * 	String getVenue(String):
- *  String getDate(String):
- *  String getDeadline(String):
+ * 	int getOperation(String): implemented
+ * 	String getTitle(String) throws StringIndexOutOfBoundsException: implemented
+ * 	String getVenue(String): implemented
+ *  String getDate(String): implemented
+ *  	notice! time also included in getDate() method
+ *  String getDeadline(String): implemented
  *  
  * Make sure your operation index is up-to-date every time before calling parser.
  * The latest operation indexes are:
@@ -39,6 +42,22 @@ public class Parser {
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
 	
 	private static Hashtable<String, Integer> featureList = null; 
+	private DateParser dateParser = null;
+	
+	public Parser() {
+		initFeatureList();
+		dateParser = new DateParser();
+	}
+	
+	private void initFeatureList() {
+		featureList = new Hashtable<String, Integer>();
+		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
+		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
+		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
+		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
+		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
+		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
+	}
 	
 	public void initParser() {
 		featureList = new Hashtable<String, Integer>();
@@ -73,24 +92,38 @@ public class Parser {
 		return featureList.get(operation);
 	}
 	
-	public String getTitle(String operation) {
-		return null;
+	public String getTitle(String operation) throws 
+	StringIndexOutOfBoundsException {
+		int start = operation.indexOf(' ');
+		assert(start >= 0);
+		start = start + 1;
+		if (start >= operation.length()) {
+			throw new StringIndexOutOfBoundsException("no title inputed");
+		}
+		int end = operation.indexOf('-');
+		if (end != -1) {
+			end = end - 1;
+		} else {
+			end = operation.length();
+		}
+		return operation.substring(start, end);
 	}
 
 	public String getVenue(String operation) {
 		return getContent("-v", operation);
 	}
 	
-	public String getDate(String operation) {
-		return getContent("-d", operation);
+	public Date getDate(String operation) {
+		String dateString = getContent("-d", operation);
+		if (dateString == null) return null;
+		return dateParser.getDate(dateString);
+		
 	}
 	
-	public String getTime(String operation) {
-		return getContent("-t", operation);
-	}
-	
-	public String getDeadline(String operation) {
-		return getContent("-dd", operation);
+	public Date getDeadline(String operation) {
+		String deadLineString = getContent("-dd", operation);
+		if (deadLineString == null) return null;
+		return dateParser.getDate(deadLineString);
 	}
 
 	private String getContent(String operationType, String operation) {
