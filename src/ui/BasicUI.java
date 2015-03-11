@@ -57,7 +57,7 @@ public class BasicUI extends Application {
 		feedbackLabel.textProperty().bind(feedbackMessage);
 		setLayout(primaryStage);
 		displayData();
-		displayCategory();
+//		displayCategory();
 
 		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -68,7 +68,7 @@ public class BasicUI extends Application {
 					feedback = TaskList.getLastFeedBack();
 					feedbackMessage.set(feedback);
 					displayData();
-					displayCategory();
+//					displayCategory();
 					textField.clear();
 				}
 			}
@@ -78,12 +78,12 @@ public class BasicUI extends Application {
 		
 	}
 	
-	private void displayCategory(){
-		listViewList.getItems().clear();
-		for (int i=0; i<dummyCategory.length; i++) {
-			list.add(dummyCategory[i]);
-		}
-	}
+//	private void displayCategory(){
+//		listViewList.getItems().clear();
+//		for (int i=0; i<dummyCategory.length; i++) {
+//			list.add(dummyCategory[i]);
+//		}
+//	}
 	
 	private void displayData() {
 		listViewData.getItems().clear();		
@@ -109,18 +109,23 @@ public class BasicUI extends Application {
 		listViewList.setItems(list);
 		textField.setPromptText("enter command");
 				
-		root.setHgap(20);
+		root.setHgap(10);
 		root.setVgap(10);
 		
-		root.add(taskLabel,2,8,1,2);
-		root.add(listLabel,1,8,1,2);
-		root.add(listViewData,2,10,1,2);
-		root.add(listViewList,1,10,1,2);
-		root.add(brandLabel,1,2,1,1);
-		root.add(textField,1,14,2,2);
-		root.add(feedbackLabel,1,16,1,4);
+//		root.add(taskLabel,2,8,1,2);
+//		root.add(listLabel,1,8,1,2);
 		
-		primaryStage.setScene(new Scene(root, 760, 600));
+		//V0.0 (without showing category)
+		root.add(listViewData,1,5,1,2);
+		
+//		root.add(listViewData,2,10,1,2);
+//		root.add(listViewList,1,10,1,2);
+		root.add(brandLabel,1,2,1,1);
+		root.add(textField,1,7,1,2);
+		root.add(feedbackLabel,1,9,1,2);
+		
+		primaryStage.setScene(new Scene(root, 550, 450));
+//		primaryStage.setScene(new Scene(root, 760, 600));
 		primaryStage.show();
 	}
 
