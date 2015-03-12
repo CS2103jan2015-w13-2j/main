@@ -1,47 +1,26 @@
 package ui;
 
-import java.util.ArrayList;
-
-import taskList.Task;
 import taskList.TaskList;
 import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+
 
 public class BasicUI extends Application {
 	
 	//Data
 //	private static final ObservableList<String> data = FXCollections.observableArrayList();
-	private static final ObservableList<String> list = FXCollections.observableArrayList();
-	private final ListView<String> listViewList = new ListView<String>(list);
-	private final String dummyCategory[] = {"All", "School", "Family", "Others", "Completed" };
-	
+//	private static final ObservableList<String> list = FXCollections.observableArrayList();	
 		
 	//Labels
 	private Label brandLabel = new Label("TaskBuddy");
-	private Label feedbackLabel = new Label();
+	public static Label feedbackLabel = new Label();
 
 	//User IO
-	private final TextField textField = new TextField();
-	private ArrayList<String> inputText = new ArrayList<String>();
+	public final static TextField textField = new TextField();
 	private static final String TEXTFIELD_PROMPT_TEXT = "enter command";
 	private static final String PROGRAM_TITLE = "TaskBuddy, your best personal assistant";
 
@@ -53,24 +32,9 @@ public class BasicUI extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
-		
+	public void start(Stage primaryStage) {		
 		setLayout(primaryStage);
-
-		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent key) {
-				if(key.getCode() == KeyCode.ENTER) {
-					String input = textField.getText();
-					taskList.TaskList.executeCommand(input);
-					feedbackLabel = FeedbackGuide.setFeedbackGuide(feedbackLabel, TaskList.getLastFeedBack());
-					textField.clear();
-				}
-			}
-		});
-		
-
-		
+		UserIO.enterListener();
 	}
 	
 	
