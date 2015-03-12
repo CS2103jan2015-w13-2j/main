@@ -7,7 +7,7 @@ import taskList.TaskList;
 
 public class UserIO {
 	
-	public static void enterListener() {
+	public static void userInputListener() {
 		BasicUI.textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent key) {

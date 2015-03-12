@@ -8,14 +8,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TableLayout {
-	private final static TableView<Task> table = new TableView<Task>();
 	
 	private static final ObservableList<Task> data = FXCollections.observableArrayList(
 		    new Task("Task 1", "march 11", "", "this is a very very very very very very loooong venue"),
 		    new Task("Tsk 2", "april 30", "", "place 2")
 		);
 
-	public static TableView<Task> getTable() {
+	public static TableView<Task> setTable(TableView<Task> table) {
 		
 		TableColumn<Task, String> taskColumn = new TableColumn<Task, String>("task");
 		taskColumn.setPrefWidth(320);
