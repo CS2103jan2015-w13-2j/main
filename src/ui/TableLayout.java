@@ -20,8 +20,7 @@ public class TableLayout {
 
 
 	public static TableView<Task> setTable(TableView<Task> table) {
-		
-				
+	
 		TableColumn<Task, String> taskColumn = new TableColumn<Task, String>("task");
 		taskColumn.setPrefWidth(320);
         
