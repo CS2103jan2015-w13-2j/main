@@ -10,10 +10,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TableLayout {
 	
-//	public static final ObservableList<Task> data = FXCollections.observableArrayList(
+//	private static final ObservableList<Task> data = FXCollections.observableArrayList(
 //		    new Task("Task 1", "march 11", "", "this is a very very very very very very loooong venue"),
 //		    new Task("Tsk 2", "april 30", "", "")
 //		);
+//	
+	static ObservableList<Task> data = FXCollections.observableArrayList(TaskList.getTasks());
 	
 
 
@@ -39,7 +41,7 @@ public class TableLayout {
             	    new PropertyValueFactory<Task,String>("dateString")
             	);
         
-//       	table.setItems(BasicUI.data);
+        	table.setItems(data);
             table.getColumns().addAll(taskColumn, dateColumn, venueColumn);
             
             return table;

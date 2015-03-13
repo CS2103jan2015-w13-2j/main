@@ -19,6 +19,7 @@ public class UserIO {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = BasicUI.textField.getText();
 					taskList.TaskList.executeCommand(input);
+					TableLayout.data.setAll(TaskList.getTasks());
 					FeedbackGuide.setFeedbackGuide(TaskList.getLastFeedBack());
 					BasicUI.textField.clear();
 				}
