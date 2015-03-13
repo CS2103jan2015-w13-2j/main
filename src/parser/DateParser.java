@@ -10,6 +10,12 @@ public class DateParser {
 	
 	public DateParser(){
 		format.add(new SimpleDateFormat());
+		
+		//time not specified
+		format.add(new SimpleDateFormat("YYYY-MM"));
+		format.add(new SimpleDateFormat("YYYY-MM-dd"));
+		format.add(new SimpleDateFormat("MM-dd"));
+
 		//24 Hour
 		format.add(new SimpleDateFormat("YYYY-MM HH:mm"));
 		format.add(new SimpleDateFormat("YYYY-MM-dd HH:mm"));

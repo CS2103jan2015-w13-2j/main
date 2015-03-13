@@ -25,6 +25,7 @@ import java.util.Hashtable;
  *
  */
 public class Parser {
+	private static final int LARGE_CONSTANT = 500;
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
@@ -39,6 +40,8 @@ public class Parser {
 	private static final String[] KEYWORD_DISPLAY = {"display", "ls", "show"};
 	private static final String[] KEYWORD_EXIT = {"exit", "quit"};
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
+	
+	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
 	private static Hashtable<String, Integer> featureList = null; 
 	private DateParser dateParser = null;
@@ -89,13 +92,29 @@ public class Parser {
 		if (start >= operation.length()) {
 			throw new StringIndexOutOfBoundsException("no title inputed");
 		}
-		int end = operation.indexOf('-');
+		int end = getFirstOptionIndex(operation);
 		if (end != -1) {
 			end = end - 1;
 		} else {
 			end = operation.length();
 		}
 		return operation.substring(start, end);
+	}
+	
+	private int getFirstOptionIndex(String operation) {
+		int tempIndex = LARGE_CONSTANT;
+		int temp = 0;
+		for (int i = 0; i < OPTIONS.length; i++) {
+			temp = operation.indexOf(OPTIONS[i]);
+			if (temp > 0) {
+				tempIndex = Math.min(temp, tempIndex);
+			}
+		}
+		if (tempIndex == LARGE_CONSTANT) {
+			tempIndex = -1;
+		}
+		return tempIndex;
+		
 	}
 
 	public String getVenue(String operation) {

@@ -23,15 +23,6 @@ public class testParser {
 	}
 	
 	@Test
-	public void testTitle() {
-		Parser p = new Parser();
-		String output = p.getTitle("add hello");
-		assertEquals("hello", output);
-		output = p.getTitle("add good night -v home");
-		assertEquals("good night", output);
-	}
-	
-	@Test
 	public void testVenue() {
 		
 	}
