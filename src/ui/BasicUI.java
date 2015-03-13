@@ -1,8 +1,12 @@
 package ui;
 
+import java.util.ArrayList;
+
 import taskList.Task;
 import taskList.TaskList;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -26,6 +30,7 @@ public class BasicUI extends Application {
 	private static final String TEXTFIELD_PROMPT_TEXT = "enter command";
 	private static final String PROGRAM_TITLE = "TaskBuddy, your best personal assistant";
 	public static TableView<Task> table = new TableView<Task>();
+
 
 	
 	public static void main(String[] args) {
