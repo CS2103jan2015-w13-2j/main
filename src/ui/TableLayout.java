@@ -1,6 +1,7 @@
 package ui;
 
 import taskList.Task;
+import taskList.TaskList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -9,13 +10,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TableLayout {
 	
-	private static final ObservableList<Task> data = FXCollections.observableArrayList(
-		    new Task("Task 1", "march 11", "", "this is a very very very very very very loooong venue"),
-		    new Task("Tsk 2", "april 30", "", "")
-		);
+//	private static final ObservableList<Task> data = FXCollections.observableArrayList(
+//		    new Task("Task 1", "march 11", "", "this is a very very very very very very loooong venue"),
+//		    new Task("Tsk 2", "april 30", "", "")
+//		);
+	
+	private static final ObservableList<Task> data = FXCollections.observableArrayList(TaskList.getTasks());
 
 	public static TableView<Task> setTable(TableView<Task> table) {
-		
+				
 		TableColumn<Task, String> taskColumn = new TableColumn<Task, String>("task");
 		taskColumn.setPrefWidth(320);
         
