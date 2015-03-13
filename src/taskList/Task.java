@@ -75,6 +75,6 @@ public class Task {
 		return this.deadLineString;
 	}
 	public String getDateString(){
-		return this.getDateString();
+		return this.dateString;
 	}
 }

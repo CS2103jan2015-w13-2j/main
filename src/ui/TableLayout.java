@@ -18,6 +18,8 @@ public class TableLayout {
 	private static final ObservableList<Task> data = FXCollections.observableArrayList(TaskList.getTasks());
 
 	public static TableView<Task> setTable(TableView<Task> table) {
+		
+		data.add(new Task("Task one", "01/03/2015"));
 				
 		TableColumn<Task, String> taskColumn = new TableColumn<Task, String>("task");
 		taskColumn.setPrefWidth(320);
@@ -34,6 +36,9 @@ public class TableLayout {
         	venueColumn.setCellValueFactory(
         	    new PropertyValueFactory<Task,String>("venue")
         	);
+        	dateColumn.setCellValueFactory(
+            	    new PropertyValueFactory<Task,String>("dateString")
+            	);
         
         	table.setItems(data);
             table.getColumns().addAll(taskColumn, dateColumn, venueColumn);
