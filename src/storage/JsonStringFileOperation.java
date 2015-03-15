@@ -7,30 +7,33 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import parser.DateParser;
 import taskList.Task;
 
 public class JsonStringFileOperation {
-	private static final int NORMAL_EXIT = 0;
 	private static final int ERROR_CANNOT_OPEN_FILE = 1;
 	private static final int ERROR_CANNOT_READ_FILE = 2;
 	private static final int ERROR_CANNOT_WRITE_FILE = 3;
 	private static final int ERROR_DIRRCTORY_NAME = 4;
 	
-	private static ObjectStringConverter converter;
+	private static final String EMPTY_STRING = "";
 	
-	
+	private ObjectConverter converter;
 	
 	private static final ArrayList<Task> EMPTY_FILE = new ArrayList<Task>();
 	private String fileName;
 	
 	public JsonStringFileOperation(String fileName) {
 		this.fileName = fileName;
-		this.converter = new ObjectStringConverter();
+		this.converter = new ObjectConverter();
+		
 	}
 	
 
@@ -47,11 +50,11 @@ public class JsonStringFileOperation {
 			FileInputStream fileInput = new FileInputStream(fileName);
 			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
 			String readContent = br.readLine();
-			if(readContent != null){
-				
+			if(readContent == null){
+				readContent = EMPTY_STRING;
 			}
 			br.close();
-			return converter.JsonStringToTaskList(readContent);
+			return converter.getTaskListFromJsonString(readContent);
 		} catch (FileNotFoundException e) {
 			System.err.println("Cannot open the file.");
 			System.exit(ERROR_CANNOT_OPEN_FILE);
@@ -65,7 +68,7 @@ public class JsonStringFileOperation {
 	public void saveToFile(ArrayList<Task> taskList){
 		try {
 			FileOutputStream fileOutput = new FileOutputStream(fileName, false);
-			fileOutput.write(converter.taskListToJsonString(taskList).getBytes());
+			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
 		} catch (FileNotFoundException e) {
