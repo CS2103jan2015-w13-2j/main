@@ -15,7 +15,7 @@ public class TableLayout {
 //		    new Task("Tsk 2", "april 30", "", "")
 //		);
 //	
-	static ObservableList<Task> data = FXCollections.observableArrayList(TaskList.getTasks());
+	public static ObservableList<Task> data = FXCollections.observableArrayList(TaskList.getTasks());
 	
 
 
