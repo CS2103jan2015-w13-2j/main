@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class DateParser {
-	ArrayList<SimpleDateFormat> format = new ArrayList<SimpleDateFormat>();
+	private ArrayList<SimpleDateFormat> format = new ArrayList<SimpleDateFormat>();
 	
 	public DateParser(){
 		//if anyone match, this parser will return
@@ -15,39 +15,31 @@ public class DateParser {
 		//default one
 		format.add(new SimpleDateFormat());
 		
-		//24 Hour
-		format.add(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
-		format.add(new SimpleDateFormat("yyyy-MM HH:mm"));
-		format.add(new SimpleDateFormat("yyyy/MM/dd HH:mm"));
-		format.add(new SimpleDateFormat("yyyy/MM HH:mm"));
-		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm"));
-		format.add(new SimpleDateFormat("EEE, MMM d, ''yy"));
-
-		format.add(new SimpleDateFormat("MM-yyyy HH:mm"));
-		format.add(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
-		format.add(new SimpleDateFormat("MM/yyyy HH:mm"));
-		format.add(new SimpleDateFormat("dd/MM/yyyy HH:mm"));
-		format.add(new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm"));
-		format.add(new SimpleDateFormat("EEE, dd/MM/yyyy HH:mm"));
-		
 		//12 Hour
-		format.add(new SimpleDateFormat("yyyy-MM hh:mm aaa"));
 		format.add(new SimpleDateFormat("yyyy-MM-dd hh:mm aaa"));
-		format.add(new SimpleDateFormat("yyyy/MM hh:mm aaa"));
 		format.add(new SimpleDateFormat("yyyy/MM/dd hh:mm aaa"));
 		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' hh:mm aaa"));
 		
-		format.add(new SimpleDateFormat("MM-yyyy hh:mm aaa"));
 		format.add(new SimpleDateFormat("dd-MM-yyyy hh:mm aaa"));
-		format.add(new SimpleDateFormat("MM/yyyy hh:mm aaa"));
 		format.add(new SimpleDateFormat("dd/MM/yyyy hh:mm aaa"));
 		format.add(new SimpleDateFormat("dd.MM.yyyy 'at' hh:mm aaa"));
 		format.add(new SimpleDateFormat("EEE, dd/MM/yyyy hh:mm aaa"));	
 		
+		//24 Hour
+		format.add(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+		format.add(new SimpleDateFormat("yyyy/MM/dd HH:mm"));
+		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm"));
+		format.add(new SimpleDateFormat("EEE, MMM d, ''yy"));
+
+		format.add(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
+		format.add(new SimpleDateFormat("dd/MM/yyyy HH:mm"));
+		format.add(new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm"));
+		format.add(new SimpleDateFormat("EEE, dd/MM/yyyy HH:mm"));
+		
 		//time not specified
 		//put these shortest at last
-		format.add(new SimpleDateFormat("YYYY-MM"));
 		format.add(new SimpleDateFormat("YYYY-MM-dd"));
+		format.add(new SimpleDateFormat("YYYY-MM"));
 		format.add(new SimpleDateFormat("MM-dd"));
 	}
 	
