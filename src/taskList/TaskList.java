@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-import storage.FileOperation;
+import storage.JsonStringFileOperation;
 import taskList.Task;
 import parser.Parser;
 
@@ -30,14 +30,14 @@ public class TaskList {
 
 	private static Scanner sc;
 	private static String fileName;
-	private static FileOperation fo;
+	private static JsonStringFileOperation fo;
 	private static ArrayList<Task> taskList;
 	private static Parser bp;
 	private static ArrayList<String> feedBack = new ArrayList<String>();
 	
 	public TaskList(String inputFileName){
 		fileName = inputFileName;
-		fo = new FileOperation(fileName);
+		fo = new JsonStringFileOperation(fileName);
 		taskList = fo.readFile();
 		feedBack.clear();
 		bp = new Parser();
