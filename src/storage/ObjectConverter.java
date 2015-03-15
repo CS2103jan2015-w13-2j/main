@@ -59,7 +59,7 @@ public class ObjectConverter {
 		}
 		tempJsonTask.put(KEY_FOR_DATE, dateString);
 		
-		Date deadline = tempTask.getDate();
+		Date deadline = tempTask.getDeadline();
 		String deadlineString;
 		if(deadline == null){
 			deadlineString = null;

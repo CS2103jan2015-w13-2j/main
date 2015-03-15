@@ -1,5 +1,6 @@
 package taskList;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import parser.DateParser;
@@ -52,17 +53,19 @@ public class Task {
 		return this.venue;
 	}
 	
-	public Date getDeadLine(){
+	public Date getDeadline(){
 		return this.deadline;
 	}
 	
-	public String getDeadLineString(){
+	public String getDeadlineString(){
 		if(deadline == null)
 			return null;
 		else
 			return this.deadline.toString();
 	}
 	public String getDateString(){
+		//to specify the format 
+		//return new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
 		if(date == null)
 			return null;
 		else

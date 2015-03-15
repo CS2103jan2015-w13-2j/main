@@ -33,7 +33,6 @@ public class JsonStringFileOperation {
 	public JsonStringFileOperation(String fileName) {
 		this.fileName = fileName;
 		this.converter = new ObjectConverter();
-		
 	}
 	
 
