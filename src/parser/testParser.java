@@ -20,9 +20,8 @@ public class testParser {
 	public void test() {
 		Parser p = new Parser();
 		Date output = null;
-		output = p.getDeadline("add school -dd 2015-03-25 3:00 pm");	
+		output = p.getDate("add school -d tomorrow 2 pm");	
 		System.out.println(output);
-		
 		
 	}
 	

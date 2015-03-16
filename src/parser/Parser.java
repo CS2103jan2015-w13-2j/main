@@ -2,6 +2,9 @@ package parser;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
+
+import com.joestelmach.natty.*;
 
 /**
  * APIs:
@@ -26,6 +29,7 @@ import java.util.Hashtable;
  */
 public class Parser {
 	private static final int LARGE_CONSTANT = 500;
+	private static final int FAIL = -1;
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
@@ -44,7 +48,7 @@ public class Parser {
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
 	private static Hashtable<String, Integer> featureList = null; 
-	private DateParser dateParser = null;
+	private static DateParser dateParser = null;
 	
 	public Parser() {
 		initFeatureList();
@@ -123,28 +127,31 @@ public class Parser {
 	
 	public Date getDate(String operation) {
 		String dateString = getContent("-d", operation);
-		if (dateString == null) return null;
-		return dateParser.getDate(dateString);
-		
+		if (dateString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(dateString);
+		}
 	}
 	
 	public Date getDeadline(String operation) {
 		String deadLineString = getContent("-dd", operation);
-		if (deadLineString == null) return null;
-		return dateParser.getDate(deadLineString);
+		if (deadLineString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(deadLineString);
+		}
 	}
 
 	private String getContent(String operationType, String operation) {
-		if (operation.contains(operationType)) {
-			int begin = findType(operationType, operation) + operationType.length() + 1;
-			int end = operation.indexOf(" -", begin);
-			if (end == -1) {
-				end = operation.length();
-			}
-			return operation.substring(begin, end);
-		} else {
-			return null;
+		int operationIndex = findType(operationType, operation);
+		if (operationIndex == FAIL) return null;
+		int begin = operationIndex + operationType.length() + 1;
+		int end = operation.indexOf(" -", begin);
+		if (end == FAIL) {
+			end = operation.length();
 		}
+		return operation.substring(begin, end);
 	}
 	
 	//return the index of an certain exact operation type
@@ -158,6 +165,10 @@ public class Parser {
 				temp = operation.indexOf(operationType, temp + 1);
 			}
 		}
-		return temp;
+		if (isFound) {
+			return temp;
+		} else {
+			return FAIL;
+		}
 	}
 }
