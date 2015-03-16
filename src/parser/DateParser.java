@@ -16,17 +16,19 @@ public class DateParser {
 		format.add(new SimpleDateFormat());
 		
 		//12 Hour
-		format.add(new SimpleDateFormat("yyyy-MM-dd hh:mm aaa"));
-		format.add(new SimpleDateFormat("yyyy/MM/dd hh:mm aaa"));
-		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' hh:mm aaa"));
+		format.add(new SimpleDateFormat("yyyy-MM-dd hh:mm aa"));
+		/*
+		format.add(new SimpleDateFormat("yyyy/MM/dd hh:mm aa"));
+		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' hh:mm aa"));
 		
-		format.add(new SimpleDateFormat("dd-MM-yyyy hh:mm aaa"));
-		format.add(new SimpleDateFormat("dd/MM/yyyy hh:mm aaa"));
-		format.add(new SimpleDateFormat("dd.MM.yyyy 'at' hh:mm aaa"));
-		format.add(new SimpleDateFormat("EEE, dd/MM/yyyy hh:mm aaa"));	
+		format.add(new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
+		format.add(new SimpleDateFormat("dd/MM/yyyy hh:mm aa"));
+		format.add(new SimpleDateFormat("dd.MM.yyyy 'at' hh:mm aa"));
+		format.add(new SimpleDateFormat("EEE, dd/MM/yyyy hh:mm aa"));	*/
 		
 		//24 Hour
 		format.add(new SimpleDateFormat("yyyy-MM-dd HH:mm"));
+		/*
 		format.add(new SimpleDateFormat("yyyy/MM/dd HH:mm"));
 		format.add(new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm"));
 		format.add(new SimpleDateFormat("EEE, MMM d, ''yy"));
@@ -38,9 +40,9 @@ public class DateParser {
 		
 		//time not specified
 		//put these shortest at last
-		format.add(new SimpleDateFormat("YYYY-MM-dd"));
-		format.add(new SimpleDateFormat("YYYY-MM"));
-		format.add(new SimpleDateFormat("MM-dd"));
+		format.add(new SimpleDateFormat("yyyy-MM-dd"));
+		format.add(new SimpleDateFormat("yyyy-MM"));
+		format.add(new SimpleDateFormat("MM-dd"));*/
 	}
 	
 	public Date getDate(String dateString){
