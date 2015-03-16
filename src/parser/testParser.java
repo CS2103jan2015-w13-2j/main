@@ -2,6 +2,8 @@ package parser;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 public class testParser {
@@ -15,26 +17,14 @@ public class testParser {
 	private static final int OPERATION_MODIFY = 6;
 	
 	@Test
-	public void testOperation() {
+	public void test() {
 		Parser p = new Parser();
-		int output = p.getOperation("add hahhahah");
-		assertEquals(OPERATION_ADD, output);
+		Date output = null;
+		output = p.getDeadline("add school -dd 2015-03-25 3:00 pm");	
+		System.out.println(output);
+		
 		
 	}
 	
-	@Test
-	public void testVenue() {
-		
-	}
-	
-	@Test
-	public void testDate() {
-		
-	}
-	
-	@Test
-	public void testDeadline() {
-		
-	}
 	
 }
