@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import parser.DateParser;
 import taskList.Task;
 
 public class ObjectConverter {
@@ -22,11 +21,10 @@ public class ObjectConverter {
 	private static final String KEY_FOR_DEADLINE = "deadline";
 	private static final String KEY_FOR_VENUE = "venue";
 	
-	private DateParser dateParser;
 	private DateFormat dateFormat;
 	
 	public ObjectConverter(){
-		this.dateParser = new DateParser();
+		//new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
 		dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
 	}
 	
@@ -51,6 +49,7 @@ public class ObjectConverter {
 		tempJsonTask.put(KEY_FOR_CONTENT, tempTask.getContent());
 		
 		Date date = tempTask.getDate();
+		
 		String dateString;
 		if(date == null){
 			dateString = null;
@@ -93,8 +92,8 @@ public class ObjectConverter {
 			JSONObject jsonTask = (JSONObject) jsonTaskArray.get(i);
 			
 			String content = getContent(jsonTask);
-			Date date = getDate(jsonTask);
-			Date deadline = getDeadline(jsonTask);
+			String date = getDateString(jsonTask);
+			String deadline = getDeadlineString(jsonTask);
 			String venue = getVenue(jsonTask);
 			tempTask = new Task(content, date, deadline, venue);
 			
@@ -112,19 +111,17 @@ public class ObjectConverter {
 		}
 	}
 
-	private Date getDate(JSONObject jsonTask) {
+	private String getDateString(JSONObject jsonTask) {
 		try{
-			String dateString = jsonTask.getString(KEY_FOR_DATE);
-			return dateParser.getDate(dateString);
+			return jsonTask.getString(KEY_FOR_DATE);
 		}catch(JSONException notFound){
 			return null;
 		}
 	}
 
-	private Date getDeadline(JSONObject jsonTask) {
+	private String getDeadlineString(JSONObject jsonTask) {
 		try{
-			String deadlineString = jsonTask.getString(KEY_FOR_DEADLINE);
-			return dateParser.getDate(deadlineString);
+			return jsonTask.getString(KEY_FOR_DEADLINE);
 		}catch(JSONException notFound){
 			return null;
 		}

@@ -27,6 +27,7 @@ public class Task {
 		
 		if(date != null)
 			dateString = date.toString();
+		//new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
 	}
 	
 	public Task(String content, String date, String deadline, String venue){
@@ -76,17 +77,9 @@ public class Task {
 	}
 	
 	public String getDeadlineString(){
-		if(deadline == null)
-			return null;
-		else
-			return this.deadline.toString();
+		return deadlineString;
 	}
 	public String getDateString(){
-		//to specify the format 
-		//return new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
-		if(date == null)
-			return null;
-		else
-			return this.date.toString();
+		return dateString;
 	}
 }
