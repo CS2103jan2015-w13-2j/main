@@ -155,8 +155,8 @@ public class TaskList {
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
 	private static void exit() {
-		ui.BasicUI.exit(NORMAL_EXIT);
 		fo.saveToFile(taskList);
+		ui.BasicUI.exit(NORMAL_EXIT);
 		sc.close();
 		System.exit(NORMAL_EXIT);
 	}

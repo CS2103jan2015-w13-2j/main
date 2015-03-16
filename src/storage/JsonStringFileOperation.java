@@ -45,7 +45,6 @@ public class JsonStringFileOperation {
 			return EMPTY_FILE;
 		}
 		try {
-			
 			FileInputStream fileInput = new FileInputStream(fileName);
 			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
 			String readContent = br.readLine();
@@ -60,6 +59,8 @@ public class JsonStringFileOperation {
 		} catch (IOException e) {
 			System.err.println("Cannot read the file.");
 			System.exit(ERROR_CANNOT_READ_FILE);
+		} catch(Exception e){
+			return EMPTY_FILE;
 		}
 		return EMPTY_FILE;
 	}
