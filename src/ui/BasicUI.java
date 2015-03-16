@@ -53,6 +53,7 @@ public class BasicUI extends Application {
 		brandLabel.setStyle("-fx-font-family: Courier New;" + "-fx-font-size: 30;" + "-fx-font-weight: bold;");		
 		textField.setPromptText(TEXTFIELD_PROMPT_TEXT);
 		gridPaneSettings(root);
+		
 		primaryStage.setScene(new Scene(root, 550, 450));
 		primaryStage.show();
 	}
