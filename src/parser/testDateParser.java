@@ -12,7 +12,7 @@ public class testDateParser {
 	public void test() {
 		DateParser dp = new DateParser();
 		Date output = null;
-		output = dp.getDate("25-04-2014 11:00 am");
+		output = dp.getDate("tomorrow");
 		System.out.println(output);
 	}
 

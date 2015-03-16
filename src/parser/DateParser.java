@@ -14,7 +14,10 @@ public class DateParser {
 	
 	public Date getDate(String dateString){
 		List<DateGroup> groups =  dateParser.parse(dateString);
-		Date date = groups.get(0).getDates().get(0);
-		return date;
+		if (groups.isEmpty()) {
+			return null;
+		} else {
+			return groups.get(0).getDates().get(0);
+		}
 	}
 }
