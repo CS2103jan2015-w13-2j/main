@@ -122,14 +122,16 @@ public class Parser {
 	}
 	
 	public Date getDate(String operation) {
-		String dateString = getContent("-d", operation);
+		System.out.println("operation "+ operation);
+		String dateString = getDateInformation(operation);
+		System.out.println("dateString" + dateString);
 		if (dateString == null) return null;
 		return dateParser.getDate(dateString);
 		
 	}
 	
 	public Date getDeadline(String operation) {
-		String deadLineString = getContent("-dd", operation);
+		String deadLineString = getDeadlineInformation(operation);
 		if (deadLineString == null) return null;
 		return dateParser.getDate(deadLineString);
 	}
@@ -148,7 +150,37 @@ public class Parser {
 			return null;
 		}
 	}
-		
+	
+	private String getDateInformation(String operation){
+		if (operation.contains("-d")) {
+			int begin = findType("-d", operation) + 2 + 1;
+			int end = operation.indexOf(" -", begin);
+			if (end == -1) {
+				end = operation.length();
+			} else {
+				end--;
+			}
+			return operation.substring(begin, end);
+		} else {
+			return null;
+		}
+	}
+	
+	private String getDeadlineInformation(String operation){
+		if (operation.contains("-dd")) {
+			int begin = findType("-dd", operation) + 2 + 1;
+			int end = operation.indexOf(" -", begin);
+			if (end == -1) {
+				end = operation.length();
+			} else {
+				end--;
+			}
+			return operation.substring(begin, end);
+		} else {
+			return null;
+		}
+	}
+	
 	//return the index of an certain exact operation type
 	private int findType(String operationType, String operation) {
 		int temp = operation.indexOf(operationType);

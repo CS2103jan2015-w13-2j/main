@@ -105,6 +105,7 @@ public class TaskList {
 	private static void add(String command) {
 		String content = bp.getTitle(command);
 		Date date = bp.getDate(command);
+		System.out.println(date);
 		Date deadLine = bp.getDeadline(command);
 		String venue = bp.getVenue(command);
 		showMessage(MESSAGE_ADD_OPERATION, content);

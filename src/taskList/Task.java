@@ -12,6 +12,8 @@ public class Task {
 	private String venue;
 	private Date date;
 	private Date deadline;
+	private String dateString;
+	private String deadlineString;
 	
 	public Task(String content){
 		this.content = content;
@@ -22,6 +24,9 @@ public class Task {
 		
 		DateParser dateParser = new DateParser();
 		this.date = dateParser.getDate(date);
+		
+		if(date != null)
+			dateString = date.toString();
 	}
 	
 	public Task(String content, String date, String deadline, String venue){
@@ -31,6 +36,12 @@ public class Task {
 		this.date = dateParser.getDate(date);
 		this.deadline = dateParser.getDate(deadline);
 		
+		if(date != null)
+			dateString = date.toString();
+		
+		if(deadline != null)
+			deadlineString = deadline.toString();
+		
 		this.venue = venue;
 	}
 	
@@ -38,6 +49,13 @@ public class Task {
 		this.content = content;
 		this.date = date;
 		this.deadline = deadline;
+		
+		if(date != null)
+			dateString = date.toString();
+		
+		if(deadline != null)
+			deadlineString = deadline.toString();
+		
 		this.venue = venue;
 	}
 	
