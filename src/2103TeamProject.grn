@@ -11,16 +11,9 @@
       <name="=./src<parser{Parser.java[Parser"/>
       <height="-1"/>
       <width="-1"/>
-      <x="137"/>
-      <y="27"/>
+      <x="71"/>
+      <y="-50"/>
    </type>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<parser{Parser.java[Parser"/>
-      <targetType="=./src<parser{DateParser.java[DateParser"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
    <type>
       <name="=./src<storage{ObjectConverter.java[ObjectConverter"/>
       <height="-1"/>
@@ -28,13 +21,6 @@
       <x="1072"/>
       <y="84"/>
    </type>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <targetType="=./src<parser{DateParser.java[DateParser"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
    <type>
       <name="=./src<storage{JsonStringFileOperation.java[JsonStringFileOperation"/>
       <height="-1"/>
@@ -42,13 +28,6 @@
       <x="1098"/>
       <y="607"/>
    </type>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<storage{JsonStringFileOperation.java[JsonStringFileOperation"/>
-      <targetType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
    <type>
       <name="=./src<taskList{Task.java[Task"/>
       <height="-1"/>
@@ -56,27 +35,6 @@
       <x="682"/>
       <y="233"/>
    </type>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
-      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <targetType="=./src<taskList{Task.java[Task"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
-      <sourceType="=./src<taskList{Task.java[Task"/>
-      <targetType="=./src<parser{DateParser.java[DateParser"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyPPart"/>
-      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <targetType="=./src<taskList{Task.java[Task"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
    <type>
       <name="=./src<taskList{TaskList.java[TaskList"/>
       <height="-1"/>
@@ -84,13 +42,6 @@
       <x="425"/>
       <y="325"/>
    </type>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
-      <targetType="=./src<parser{Parser.java[Parser"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
    <type>
       <name="=./src<taskList{Undo.java[Undo"/>
       <height="-1"/>
@@ -98,6 +49,62 @@
       <x="52"/>
       <y="666"/>
    </type>
+   <type>
+      <name="=./src<ui{BasicUI.java[BasicUI"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="727"/>
+      <y="759"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyPPart"/>
+      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <targetType="=./src<taskList{Task.java[Task"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<storage{JsonStringFileOperation.java[JsonStringFileOperation"/>
+      <targetType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
+      <targetType="=./src<parser{Parser.java[Parser"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
+      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <targetType="=./src<taskList{Task.java[Task"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
+      <targetType="=./src<storage{JsonStringFileOperation.java[JsonStringFileOperation"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <targetType="=./src<parser{DateParser.java[DateParser"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<parser{Parser.java[Parser"/>
+      <targetType="=./src<parser{DateParser.java[DateParser"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
    <relationship>
       <class="edu.buffalo.cse.green.relationship.dependency.DependencyPPart"/>
       <sourceType="=./src<taskList{Undo.java[Undo"/>
@@ -117,17 +124,10 @@
          </bendpoint>
       </bendpoints>
    </relationship>
-   <type>
-      <name="=./src<ui{BasicUI.java[BasicUI"/>
-      <height="-1"/>
-      <width="-1"/>
-      <x="727"/>
-      <y="759"/>
-   </type>
    <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
-      <targetType="=./src<storage{JsonStringFileOperation.java[JsonStringFileOperation"/>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
+      <sourceType="=./src<taskList{Task.java[Task"/>
+      <targetType="=./src<parser{DateParser.java[DateParser"/>
       <bendpoints>
       </bendpoints>
    </relationship>
