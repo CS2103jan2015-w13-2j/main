@@ -27,6 +27,7 @@ import java.util.Hashtable;
 public class Parser {
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
+	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
 	private static final int OPERATION_CLEAR = 3;
@@ -68,6 +69,9 @@ public class Parser {
 	}
 	
 	public int getOperation(String operation) {
+		if (operation.isEmpty()) {
+			return OPERATION_UNKNOWN;
+		}
 		if (operation.indexOf(' ') != -1) {
 			operation = operation.substring(0, operation.indexOf(' '));
 		}
