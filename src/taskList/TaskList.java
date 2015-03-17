@@ -4,6 +4,7 @@ package taskList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import storage.JsonStringFileOperation;
 import taskList.Task;
@@ -34,12 +35,19 @@ public class TaskList {
 	private static ArrayList<Task> taskList;
 	private static Parser bp;
 	private static ArrayList<String> feedBack = new ArrayList<String>();
-	
+	private static String name = TaskList.class.getName(); 
+	private static Logger log = Logger.getLogger(name);// <= (2)  
 	public TaskList(String inputFileName){
 		fileName = inputFileName;
 		fo = new JsonStringFileOperation(fileName);
-		taskList = fo.readFile();
 		feedBack.clear();
+		try{
+			taskList = fo.readFile();
+		}catch(Exception e){
+			log.info("There is a command invalid error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
 		bp = new Parser();
 		//Add in a initParser() command.
 	}
@@ -88,7 +96,8 @@ public class TaskList {
 			exit();
 			break;
 		default:
-			unknownOperation();
+			assert(false);
+			feedBack.add("No such command");
 		}
 	}
 	
@@ -103,6 +112,7 @@ public class TaskList {
 	 * add new content to arraylist, but do not actully store to file
 	 */
 	private static void add(String command) {
+		assert(bp.isValid(command));
 		String content = bp.getTitle(command);
 		Date date = bp.getDate(command);
 		System.out.println(date);
@@ -110,6 +120,7 @@ public class TaskList {
 		String venue = bp.getVenue(command);
 		showMessage(MESSAGE_ADD_OPERATION, content);
 		taskList.add(new Task(content,date,deadLine,venue));
+		saveFile();
 	}
 	
 	/*
@@ -126,6 +137,7 @@ public class TaskList {
 		}
 		showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 		taskList.remove(removeIndex - 1);
+		saveFile();
 	}
 
 	/*
@@ -149,6 +161,7 @@ public class TaskList {
 	private static void clear() {
 		showMessage(MESSAGE_CLEAR_OPERATION, null);
 		taskList.clear();
+		saveFile();
 	}
 	
 	/*
@@ -156,10 +169,18 @@ public class TaskList {
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
 	private static void exit() {
-		fo.saveToFile(taskList);
+		saveFile();
 		ui.BasicUI.exit(NORMAL_EXIT);
 		sc.close();
 		System.exit(NORMAL_EXIT);
+	}
+	
+	private static void saveFile(){
+		try{
+			fo.saveToFile(taskList);
+		}catch(Exception e){
+			feedBack.add("cannot save to file successfully");
+		}
 	}
 	
 	public static ArrayList<String> getFileContent(){

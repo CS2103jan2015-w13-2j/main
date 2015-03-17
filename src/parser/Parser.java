@@ -80,9 +80,17 @@ public class Parser {
 		operation = operation.trim();
 		Integer operationIndex = getOperationIndex(operation);
 		if (operationIndex == null) {
-			return OPERATION_ADD;
+			return OPERATION_UNKNOWN;
 		} else {
 			return operationIndex;
+		}
+	}
+	
+	public boolean isValid(String operation){
+		if (operation.indexOf(' ') != -1) {
+			return true;
+		}else{
+			return false;
 		}
 	}
 	
