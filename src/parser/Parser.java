@@ -41,6 +41,8 @@ public class Parser {
 	private static final String[] KEYWORD_DISPLAY = {"display", "ls", "show"};
 	private static final String[] KEYWORD_EXIT = {"exit", "quit"};
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
+	private static final String[] KEYWORD_DATE = {"at", "by", "on", "during", "before", "after", "from"};
+	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
