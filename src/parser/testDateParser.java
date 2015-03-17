@@ -11,8 +11,7 @@ public class testDateParser {
 	@Test
 	public void test() {
 		DateParser dp = new DateParser();
-		Date output = null;
-		output = dp.getDate("tomorrow");
+		Date output = dp.getDate(null);
 		System.out.println(output);
 	}
 

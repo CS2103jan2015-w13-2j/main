@@ -65,14 +65,16 @@ public class Parser {
 	}
 	
 	private void addSelectedFeature(String[] keyword, Integer operation) {
+		assert(keyword != null);
+		assert(operation != null);
 		for (int i = 0; i < keyword.length; i++) {
 			featureList.put(keyword[i], operation);
 		}
 	}
 	
 	public int getOperation(String operation) {
-		if (operation.isEmpty()) {
-			return OPERATION_UNKNOWN;
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
 		}
 		if (operation.indexOf(' ') != -1) {
 			operation = operation.substring(0, operation.indexOf(' '));
@@ -87,65 +89,39 @@ public class Parser {
 	}
 	
 	public boolean isValid(String operation){
-		if (operation.indexOf(' ') != -1) {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		} else if (operation.indexOf(' ') != -1) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
 	
 	private Integer getOperationIndex(String operation) {
+		assert(operation != null);
 		return featureList.get(operation);
 	}
 	
-	public String getTitle(String operation) throws 
-	StringIndexOutOfBoundsException {
-		int start;
+	public String getTitle(String operation) {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
 		int end = getFirstOptionIndex(operation);
 		if (end != -1) {
 			end = end - 1;
 		} else {
 			end = operation.length();
 		}
-		if (containsOperation(operation)) {
-			start = operation.indexOf(' ');
-			start = start + 1;
-			if (start >= operation.length()) {
-				throw new StringIndexOutOfBoundsException("no title inputed");
-			}
-		} else {
-			start = 0;
+		int start = operation.indexOf(' ') + 1;
+		if (start >= operation.length()) {
+			throw new StringIndexOutOfBoundsException("no title inputed");
 		}
 		return operation.substring(start, end);
 	}
 	
-	//true is the command contains an operation mark
-	private boolean containsOperation(String operation) {
-		String operationString;
-		int end = operation.indexOf(' ');
-		if (end == -1) {
-			operationString = operation;
-		} else {
-			operationString = operation.substring(0, end);
-		}
-		return isInList(operationString);
-	}
-	
-	private boolean isInList(String operationString) {
-		for (String temp:KEYWORD_ADD) {
-			if (temp.equals(operationString)) {
-				return true;
-			}
-		}
-		for (String temp:KEYWORD_DELETE) {
-			if (temp.equals(operationString)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	private int getFirstOptionIndex(String operation) {
+		assert(operation != null);
 		int tempIndex = LARGE_CONSTANT;
 		int temp = 0;
 		for (int i = 0; i < OPTIONS.length; i++) {
@@ -162,10 +138,16 @@ public class Parser {
 	}
 
 	public String getVenue(String operation) {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
 		return getContent("-v", operation);
 	}
 	
 	public Date getDate(String operation) {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
 		String dateString = getContent("-d", operation);
 		if (dateString == null) {
 			return null;
@@ -175,6 +157,9 @@ public class Parser {
 	}
 	
 	public Date getDeadline(String operation) {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
 		String deadLineString = getContent("-dd", operation);
 		if (deadLineString == null) {
 			return null;
@@ -184,6 +169,8 @@ public class Parser {
 	}
 
 	private String getContent(String operationType, String operation) {
+		assert(isInOptions(operationType));
+		assert(operation != null);
 		int operationIndex = findType(operationType, operation);
 		if (operationIndex == FAIL) return null;
 		int begin = operationIndex + operationType.length() + 1;
@@ -194,8 +181,19 @@ public class Parser {
 		return operation.substring(begin, end);
 	}
 	
+	private boolean isInOptions(String operationType) {
+		for (String temp : OPTIONS) {
+			if (temp.equals(operationType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	//return the index of an certain exact operation type
 	private int findType(String operationType, String operation) {
+		assert(isInOptions(operationType));
+		assert(operation != null);
 		int temp = operation.indexOf(operationType);
 		boolean isFound = false;
 		while (temp != -1 && !isFound) {

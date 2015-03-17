@@ -13,6 +13,9 @@ public class DateParser {
 	}
 	
 	public Date getDate(String dateString){
+		if (dateString == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
 		List<DateGroup> groups =  dateParser.parse(dateString);
 		if (groups.isEmpty()) {
 			return null;
