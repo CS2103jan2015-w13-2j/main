@@ -2,9 +2,6 @@ package parser;
 
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
-
-import com.joestelmach.natty.*;
 
 /**
  * APIs:
@@ -30,7 +27,6 @@ import com.joestelmach.natty.*;
 public class Parser {
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
-	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
 	private static final int OPERATION_CLEAR = 3;
@@ -78,7 +74,7 @@ public class Parser {
 		operation = operation.trim();
 		Integer operationIndex = getOperationIndex(operation);
 		if (operationIndex == null) {
-			return OPERATION_UNKNOWN;
+			return OPERATION_ADD;
 		} else {
 			return operationIndex;
 		}
@@ -90,19 +86,49 @@ public class Parser {
 	
 	public String getTitle(String operation) throws 
 	StringIndexOutOfBoundsException {
-		int start = operation.indexOf(' ');
-		assert(start >= 0);
-		start = start + 1;
-		if (start >= operation.length()) {
-			throw new StringIndexOutOfBoundsException("no title inputed");
-		}
+		int start;
 		int end = getFirstOptionIndex(operation);
 		if (end != -1) {
 			end = end - 1;
 		} else {
 			end = operation.length();
 		}
+		if (containsOperation(operation)) {
+			start = operation.indexOf(' ');
+			start = start + 1;
+			if (start >= operation.length()) {
+				throw new StringIndexOutOfBoundsException("no title inputed");
+			}
+		} else {
+			start = 0;
+		}
 		return operation.substring(start, end);
+	}
+	
+	//true is the command contains an operation mark
+	private boolean containsOperation(String operation) {
+		String operationString;
+		int end = operation.indexOf(' ');
+		if (end == -1) {
+			operationString = operation;
+		} else {
+			operationString = operation.substring(0, end);
+		}
+		return isInList(operationString);
+	}
+	
+	private boolean isInList(String operationString) {
+		for (String temp:KEYWORD_ADD) {
+			if (temp.equals(operationString)) {
+				return true;
+			}
+		}
+		for (String temp:KEYWORD_DELETE) {
+			if (temp.equals(operationString)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private int getFirstOptionIndex(String operation) {
