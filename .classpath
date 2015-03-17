@@ -4,7 +4,18 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="forms-1.3.0.jar" sourcepath="forms-1.3.0-src.zip"/>
 	<classpathentry kind="lib" path="/Users/sharmaineswee/Documents/Eclipseworkspace/2103main/lib/natty/natty-0.9.jar"/>
+=======
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/antlr-runtime-3.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/backport-util-concurrent-3.1.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/groovy-all-2.1.7.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/ical4j-1.0.6.jar"/>
+	<classpathentry kind="lib" path="/Users/Colonel/Documents/Git/main/lib/natty/natty-0.9.jar"/>
+>>>>>>> parent of 52dcaac... added MainUI for windowsBuilder
 	<classpathentry kind="output" path="bin"/>
 </classpath>
