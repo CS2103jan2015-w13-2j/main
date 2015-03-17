@@ -22,13 +22,13 @@ public class TableLayout {
 	public static TableView<Task> setTable(TableView<Task> table) {
 	
 		TableColumn<Task, String> taskColumn = new TableColumn<Task, String>("task");
-		taskColumn.setPrefWidth(320);
+		taskColumn.setPrefWidth(400);
         
 		TableColumn<Task, String> dateColumn = new TableColumn<Task, String>("date");
-		dateColumn.setPrefWidth(100);
+		dateColumn.setPrefWidth(200);
 
         TableColumn<Task, String> venueColumn = new TableColumn<Task, String>("venue");
-		venueColumn.setPrefWidth(100);
+		venueColumn.setPrefWidth(180);
         
         taskColumn.setCellValueFactory(
         	    new PropertyValueFactory<Task,String>("content")

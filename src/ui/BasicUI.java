@@ -54,7 +54,7 @@ public class BasicUI extends Application {
 		textField.setPromptText(TEXTFIELD_PROMPT_TEXT);
 		gridPaneSettings(root);
 		
-		primaryStage.setScene(new Scene(root, 550, 450));
+		primaryStage.setScene(new Scene(root, 800, 550));
 		primaryStage.show();
 	}
 
