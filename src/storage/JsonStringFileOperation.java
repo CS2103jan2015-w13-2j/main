@@ -18,6 +18,10 @@ import parser.DateParser;
 import taskList.Task;
 
 public class JsonStringFileOperation {
+	private static final String MESSAGE_READ_FILE = "Read file successfully.";
+	private static final String MEAAGE_SAVE_TO_FILE = "Save to file successfully.";
+	private static final String MESSAGE_SAVE_TO_TEMP_FILE = "Save to temp file successfully.";
+	
 	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null\n";
 	private static final String MESSAGE_NO_TEMPFILE = "Temp file is not found.\n";
 	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid\n";
@@ -63,6 +67,7 @@ public class JsonStringFileOperation {
 				readContent = EMPTY_STRING;
 			}
 			br.close();
+			System.out.println(MESSAGE_READ_FILE);
 			return converter.getTaskListFromJsonString(readContent);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_READ);
@@ -78,6 +83,7 @@ public class JsonStringFileOperation {
 			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
+			System.out.println(MEAAGE_SAVE_TO_FILE);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_WRITE);
 		}
@@ -89,6 +95,7 @@ public class JsonStringFileOperation {
 			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
+			System.out.println(MESSAGE_SAVE_TO_TEMP_FILE);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_WRITE);
 		}
@@ -101,6 +108,7 @@ public class JsonStringFileOperation {
 			throw new IOException(MESSAGE_NO_TEMPFILE);
 		}
 		tempFile.renameTo(originalFile);
+		System.out.println(MEAAGE_SAVE_TO_FILE);
 	}
 	
 	private boolean isValidFileName(String fileName){
