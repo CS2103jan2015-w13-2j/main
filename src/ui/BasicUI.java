@@ -21,6 +21,7 @@ public class BasicUI extends Application {
 //	private static final ObservableList<String> data = FXCollections.observableArrayList();
 //	private static final ObservableList<String> list = FXCollections.observableArrayList();	
 		
+	private static final String EXITING_MSG_LOG = "UI exiting...";
 	//Labels
 	private Label brandLabel = new Label("TaskBuddy");
 	public static Label feedbackLabel = new Label();
@@ -59,7 +60,7 @@ public class BasicUI extends Application {
 	}
 
 	public static void exit(int status) {
-		System.out.println("UI exiting...");
+		System.out.println(EXITING_MSG_LOG);
 		System.exit(status);
 	}
 	
