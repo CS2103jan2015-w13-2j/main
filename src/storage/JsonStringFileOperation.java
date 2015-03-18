@@ -19,11 +19,14 @@ import taskList.Task;
 
 public class JsonStringFileOperation {
 	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null";
+	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid";
 	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
 	private static final String MESSAGE_CANNOT_WRITE = "cannot write the file.\n";
 	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
 	private static final String MESSAGE_CANNOT_PARSE = "Cannot parse the file with JSON format, return empty task list.\n";
 	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	
+	private static final char[] invalidChar = {'\\', '?', '%'};
 	
 	private static final String EMPTY_STRING = "";
 	
@@ -77,7 +80,11 @@ public class JsonStringFileOperation {
 	private boolean isValidFileName(String fileName){
 		if(fileName == null)
 			throw new NullPointerException(MESSAGE_NULL_FILENAME);
-		else
-			return true;
+		char lastChar = fileName.charAt(fileName.length()-1);
+		for(char invalid: invalidChar){
+			if(lastChar == invalid)
+				throw new NullPointerException(MESSAGE_INVALID_FILENAME);
+		}
+		return true;
 	}
 }
