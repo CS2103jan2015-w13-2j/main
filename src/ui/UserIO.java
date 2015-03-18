@@ -18,6 +18,7 @@ public class UserIO {
 			public void handle(KeyEvent key) {
 				if(key.getCode() == KeyCode.ENTER) {
 					String input = BasicUI.textField.getText();
+					assert (input != null);
 					taskList.TaskList.executeCommand(input);
 					TableLayout.data.setAll(TaskList.getTasks());
 					FeedbackGuide.setFeedbackGuide(TaskList.getLastFeedBack());

@@ -41,9 +41,6 @@ public class TableLayout {
             	);
         
         	table.setItems(data);
-        	
-        	assert (table != null);
-        	
             table.getColumns().addAll(taskColumn, dateColumn, venueColumn);
             
             return table;
