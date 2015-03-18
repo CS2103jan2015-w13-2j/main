@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,8 @@ import org.json.JSONObject;
 import taskList.Task;
 
 public class ObjectConverter {
+	private static final String LOGGER_NAME = "TaskBuddy.log";
+	
 	private static final String MESSAGE_NOT_FOUND = "%s is not found in the JSON Object.\n";
 
 	private static final String KEY_FOR_TASKLIST = "taskList";
@@ -21,6 +24,7 @@ public class ObjectConverter {
 	private static final String KEY_FOR_DEADLINE = "deadline";
 	private static final String KEY_FOR_VENUE = "venue";
 	
+	private static final Logger logger = Logger.getLogger(LOGGER_NAME);
 	private DateFormat dateFormat;
 	
 	public ObjectConverter(){
@@ -84,7 +88,7 @@ public class ObjectConverter {
 		
 		JSONArray jsonTaskArray = jsonObject.getJSONArray(KEY_FOR_TASKLIST);
 		if(jsonTaskArray == null){
-			System.err.println(MESSAGE_NOT_FOUND);
+			showMessageNotFound(KEY_FOR_TASKLIST);
 			return taskList;
 		}
 		
@@ -142,7 +146,7 @@ public class ObjectConverter {
 	}
 	
 	private void showMessageNotFound(String key){
-		System.err.print(String.format(MESSAGE_NOT_FOUND, key));
+		logger.info(String.format(MESSAGE_NOT_FOUND, key));
 	}
 
 }
