@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,8 @@ import parser.DateParser;
 import taskList.Task;
 
 public class JsonStringFileOperation {
+	private static final String LOGGER_NAME = "TaskBuddy.log";
+	
 	private static final String MESSAGE_READ_FILE = "Read file successfully.";
 	private static final String MEAAGE_SAVE_TO_FILE = "Save to file successfully.";
 	private static final String MESSAGE_SAVE_TO_TEMP_FILE = "Save to temp file successfully.";
@@ -32,6 +35,8 @@ public class JsonStringFileOperation {
 	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
 	
 	private static final String TEMP_FILE_EXTENTION = ".tmp";
+	
+	private static final Logger logger = Logger.getLogger(LOGGER_NAME);
 	
 	private static final char[] invalidChar = {'\\', '?', '%'};
 	
@@ -67,7 +72,7 @@ public class JsonStringFileOperation {
 				readContent = EMPTY_STRING;
 			}
 			br.close();
-			System.out.println(MESSAGE_READ_FILE);
+			logger.info(MESSAGE_READ_FILE);
 			return converter.getTaskListFromJsonString(readContent);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_READ);
@@ -83,7 +88,7 @@ public class JsonStringFileOperation {
 			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
-			System.out.println(MEAAGE_SAVE_TO_FILE);
+			logger.info(MEAAGE_SAVE_TO_FILE);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_WRITE);
 		}
@@ -95,7 +100,7 @@ public class JsonStringFileOperation {
 			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
-			System.out.println(MESSAGE_SAVE_TO_TEMP_FILE);
+			logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_WRITE);
 		}
@@ -108,7 +113,7 @@ public class JsonStringFileOperation {
 			throw new IOException(MESSAGE_NO_TEMPFILE);
 		}
 		tempFile.renameTo(originalFile);
-		System.out.println(MEAAGE_SAVE_TO_FILE);
+		logger.info(MEAAGE_SAVE_TO_FILE);
 	}
 	
 	private boolean isValidFileName(String fileName){
