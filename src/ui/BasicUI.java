@@ -7,12 +7,14 @@ import taskList.TaskList;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class BasicUI extends Application {
@@ -21,7 +23,6 @@ public class BasicUI extends Application {
 //	private static final ObservableList<String> data = FXCollections.observableArrayList();
 //	private static final ObservableList<String> list = FXCollections.observableArrayList();	
 		
-	private static final String EXITING_MSG_LOG = "UI exiting...";
 	//Labels
 	private Label brandLabel = new Label("TaskBuddy");
 	public static Label feedbackLabel = new Label();
@@ -56,11 +57,17 @@ public class BasicUI extends Application {
 		gridPaneSettings(root);
 		
 		primaryStage.setScene(new Scene(root, 800, 550));
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			
+			public void handle(final WindowEvent event) {
+				taskList.TaskList.executeCommand("exit");
+			}
+		});
 		primaryStage.show();
 	}
 
 	public static void exit(int status) {
-		System.out.println(EXITING_MSG_LOG);
+		System.out.println("UI exiting...");
 		System.exit(status);
 	}
 	
