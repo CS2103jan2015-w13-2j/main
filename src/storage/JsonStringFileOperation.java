@@ -18,13 +18,16 @@ import parser.DateParser;
 import taskList.Task;
 
 public class JsonStringFileOperation {
-	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null";
-	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid";
+	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null\n";
+	private static final String MESSAGE_NO_TEMPFILE = "Temp file is not found.\n";
+	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid\n";
 	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
 	private static final String MESSAGE_CANNOT_WRITE = "cannot write the file.\n";
 	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
 	private static final String MESSAGE_CANNOT_PARSE = "Cannot parse the file with JSON format, return empty task list.\n";
 	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	
+	private static final String TEMP_FILE_EXTENTION = ".tmp";
 	
 	private static final char[] invalidChar = {'\\', '?', '%'};
 	
@@ -34,10 +37,13 @@ public class JsonStringFileOperation {
 	
 	private static final ArrayList<Task> EMPTY_FILE = new ArrayList<Task>();
 	private String fileName;
+	private String tempFileName;
 	
 	public JsonStringFileOperation(String fileName) {
-		if(isValidFileName(fileName))
+		if(isValidFileName(fileName)){
 			this.fileName = fileName;
+			this.tempFileName = generateTempFileName(fileName);
+		}
 		this.converter = new ObjectConverter();
 	}
 	
@@ -77,6 +83,26 @@ public class JsonStringFileOperation {
 		}
 	}
 	
+	public void saveToTmpFile(ArrayList<Task> taskList) throws IOException{
+		try {
+			FileOutputStream fileOutput = new FileOutputStream(tempFileName, false);
+			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
+			fileOutput.write('\n');
+			fileOutput.close();
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_WRITE);
+		}
+	}
+	
+	public void replaceFileWithTempFile() throws IOException{
+		File originalFile = new File(fileName);
+		File tempFile = new File(tempFileName);
+		if (tempFile.exists()) {
+			throw new IOException(MESSAGE_NO_TEMPFILE);
+		}
+		tempFile.renameTo(originalFile);
+	}
+	
 	private boolean isValidFileName(String fileName){
 		if(fileName == null)
 			throw new NullPointerException(MESSAGE_NULL_FILENAME);
@@ -86,5 +112,9 @@ public class JsonStringFileOperation {
 				throw new NullPointerException(MESSAGE_INVALID_FILENAME);
 		}
 		return true;
+	}
+	
+	private String generateTempFileName(String fileName){
+		return fileName + TEMP_FILE_EXTENTION;
 	}
 }
