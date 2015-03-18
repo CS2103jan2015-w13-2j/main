@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import taskList.Task;
 
 public class ObjectConverter {
-	private static final String KEY_NOT_FOUND = "Key is not found in the JSON Object.";
+	private static final String MESSAGE_NOT_FOUND = "%s is not found in the JSON Object.\n";
 
 	private static final String KEY_FOR_TASKLIST = "taskList";
 	
@@ -84,7 +84,7 @@ public class ObjectConverter {
 		
 		JSONArray jsonTaskArray = jsonObject.getJSONArray(KEY_FOR_TASKLIST);
 		if(jsonTaskArray == null){
-			System.err.println(KEY_NOT_FOUND);
+			System.err.println(MESSAGE_NOT_FOUND);
 			return taskList;
 		}
 		
@@ -95,6 +95,8 @@ public class ObjectConverter {
 			String date = getDateString(jsonTask);
 			String deadline = getDeadlineString(jsonTask);
 			String venue = getVenue(jsonTask);
+			
+			assert content != null;
 			tempTask = new Task(content, date, deadline, venue);
 			
 			taskList.add(tempTask);
@@ -107,6 +109,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_CONTENT);
 		}catch(JSONException notFound){
+			showMessageNotFound(KEY_FOR_CONTENT);
 			return null;
 		}
 	}
@@ -115,6 +118,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_DATE);
 		}catch(JSONException notFound){
+			showMessageNotFound(KEY_FOR_DATE);
 			return null;
 		}
 	}
@@ -123,6 +127,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_DEADLINE);
 		}catch(JSONException notFound){
+			showMessageNotFound(KEY_FOR_DEADLINE);
 			return null;
 		}
 	}
@@ -131,8 +136,13 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_VENUE);
 		}catch(JSONException notFound){
+			showMessageNotFound(KEY_FOR_VENUE);
 			return null;
 		}
+	}
+	
+	private void showMessageNotFound(String key){
+		System.err.print(String.format(MESSAGE_NOT_FOUND, key));
 	}
 
 }

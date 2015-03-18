@@ -1,11 +1,12 @@
 package storage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import taskList.Task;
 
 public class test {
-	public static void main(String[] a){
+	public static void main(String[] a) throws IOException{
 		JsonStringFileOperation jsto = new JsonStringFileOperation("test.json");
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		taskList.add(new Task("01"));

@@ -34,8 +34,17 @@ public class Task {
 		this.content = content;
 		
 		DateParser dateParser = new DateParser();
-		this.date = dateParser.getDate(date);
-		this.deadline = dateParser.getDate(deadline);
+		try {
+			this.date = dateParser.getDate(date);
+		} catch (Exception e) {
+			this.date = null;
+		}
+		try {
+			this.deadline = dateParser.getDate(deadline);
+		} catch (Exception e) {
+			this.deadline = null;
+		}
+		
 		
 		if(date != null)
 			dateString = date.toString();
