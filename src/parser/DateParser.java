@@ -12,7 +12,7 @@ public class DateParser {
 		dateParser = new com.joestelmach.natty.Parser();
 	}
 	
-	public Date getDate(String dateString){
+	public Date getDate(String dateString) throws NullPointerException {
 		if (dateString == null) {
 			throw new NullPointerException("the command cannot be null");
 		}

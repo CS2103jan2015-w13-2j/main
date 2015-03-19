@@ -19,9 +19,17 @@ public class testParser {
 	@Test
 	public void test() {
 		Parser p = new Parser();
-		Date output = null;
-		output = p.getDate("add school -d tomorrow 2 pm");	
-		System.out.println(output);
+		
+		//test Arguments
+		boolean test;
+		test = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
+		assertEquals(true, test);
+		test = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
+		assertEquals(true, test);
+		test = p.isArgumentsCorrect("add this is for fun -cs dou wo");
+		assertEquals(false, test);
+		
+		
 		
 	}
 	

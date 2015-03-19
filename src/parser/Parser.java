@@ -34,13 +34,17 @@ public class Parser {
 	private static final int OPERATION_DISPLAY = 4;
 	private static final int OPERATION_EXIT = 5;
 	private static final int OPERATION_MODIFY = 6;
+	private static final int OPERATION_UNDO = 7;
+	private static final int OPERATION_REDO = 8;
 	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
 	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
-	private static final String[] KEYWORD_CLEAR = {"clear"};
+	private static final String[] KEYWORD_CLEAR = {"clear", "claen"};
 	private static final String[] KEYWORD_DISPLAY = {"display", "ls", "show"};
 	private static final String[] KEYWORD_EXIT = {"exit", "quit"};
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
+	private static final String[] KEYWORD_UNDO = {"undo"};
+	private static final String[] KEYWORD_REDO = {"redo"};
 	private static final String[] KEYWORD_DATE = {"at", "by", "on", "during", "before", "after", "from"};
 	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
 	
@@ -62,6 +66,8 @@ public class Parser {
 		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
 		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
 		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
+		addSelectedFeature(KEYWORD_UNDO, OPERATION_UNDO);
+		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
 	}
 	
 	private void addSelectedFeature(String[] keyword, Integer operation) {
@@ -72,7 +78,7 @@ public class Parser {
 		}
 	}
 	
-	public int getOperation(String operation) {
+	public int getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
@@ -88,7 +94,7 @@ public class Parser {
 		}
 	}
 	
-	public boolean isValid(String operation){
+	public boolean isValid(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		} else if (operation.indexOf(' ') != -1) {
@@ -98,12 +104,63 @@ public class Parser {
 		}
 	}
 	
+	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		return isArgumentsNumberCorrect(operation) &&
+				isArgumentsTypeCorrect(operation);
+	}
+
+	private boolean isArgumentsTypeCorrect(String operation) {
+		assert(operation != null);
+		String temp = null;
+		int start = operation.indexOf(" -");
+		while (start != FAIL) {
+			int end = operation.indexOf(" ", start+1);
+			if (end == FAIL) {
+				end = operation.length();
+			}
+			temp = operation.substring(start + 1, end);
+			if (!isInOptions(temp)) {
+				return false;
+			}
+			start = operation.indexOf(" -", end);
+		}
+		return true;
+	}
+	
+	private boolean isArgumentsNumberCorrect(String operation) {
+		assert(operation != null);
+		for (String temp : OPTIONS) {
+			if (countOptions(temp, operation) > 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private int countOptions(String operationType, String operation) {
+		assert(isInOptions(operationType));
+		assert(operation != null);
+		String tempOperation = operation;
+		int count = 0;
+		int start = findType(operationType, tempOperation);
+		while (start != FAIL) {
+			count++;
+			tempOperation = tempOperation.substring(start + operationType.length(), tempOperation.length());
+			start = findType(operationType, tempOperation);
+		}
+		return count;
+	}
+	
 	private Integer getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);
 	}
 	
-	public String getTitle(String operation) {
+	public String getTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
@@ -137,7 +194,7 @@ public class Parser {
 		
 	}
 
-	public String getVenue(String operation) {
+	public String getVenue(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
@@ -156,7 +213,7 @@ public class Parser {
 		}
 	}
 	
-	public Date getDeadline(String operation) {
+	public Date getDeadline(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
