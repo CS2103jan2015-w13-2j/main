@@ -1,7 +1,10 @@
 package parser;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * APIs:
@@ -49,6 +52,8 @@ public class Parser {
 	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
+	
+	private static final Pattern NUMBERS = Pattern.compile("/d");
 	
 	private static Hashtable<String, Integer> featureList = null; 
 	private static DateParser dateParser = null;
@@ -222,6 +227,25 @@ public class Parser {
 			return null;
 		} else {
 			return dateParser.getDate(deadLineString);
+		}
+	}
+	
+	public int getIndex(String operation) throws NullPointerException, IOException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		assert(getOperation(operation) == OPERATION_MODIFY);
+		int start = operation.indexOf(" ");
+		int end = operation.indexOf(" ", start +1);
+		if (end == -1) {
+			end = operation.length();
+		}
+		String index = operation.substring(start + 1, end);
+		Matcher m = NUMBERS.matcher(index);
+		if (m.matches()) {
+			return Integer.valueOf(index);
+		} else {
+			throw new IOException("the index you entered is illegal");
 		}
 	}
 

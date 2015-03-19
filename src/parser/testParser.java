@@ -2,6 +2,7 @@ package parser;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.Date;
 
 import org.junit.Test;
@@ -19,17 +20,30 @@ public class testParser {
 	@Test
 	public void test() {
 		Parser p = new Parser();
+		boolean testBoolean;
+		int testNumber;
 		
 		//test Arguments
-		boolean test;
-		test = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
-		assertEquals(true, test);
-		test = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
-		assertEquals(true, test);
-		test = p.isArgumentsCorrect("add this is for fun -cs dou wo");
-		assertEquals(false, test);
 		
+		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
+		assertEquals(true, testBoolean);
+		testBoolean = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
+		assertEquals(true, testBoolean);
+		testBoolean = p.isArgumentsCorrect("add this is for fun -cs dou wo");
+		assertEquals(false, testBoolean);
 		
+		//test getIndex
+		try {
+			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
+			assertEquals(7, testNumber);
+			testNumber = p.getIndex("modfi 7");
+			assertEquals(7, testNumber);
+			testNumber = p.getIndex("update 7s7");
+		} catch (NullPointerException e) {
+			System.out.println("fail to get index");
+		} catch (IOException e) {
+			System.out.println("index format incorrect");
+		}
 		
 	}
 	
