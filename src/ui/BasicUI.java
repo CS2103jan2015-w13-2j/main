@@ -32,12 +32,13 @@ public class BasicUI extends Application {
 	private static final String TEXTFIELD_PROMPT_TEXT = "enter command";
 	private static final String PROGRAM_TITLE = "TaskBuddy, your best personal assistant";
 	public static TableView<Task> table = new TableView<Task>();
-
+	private static BasicUI bui;
 
 	
 	public static void main(String[] args) {
+		bui = new BasicUI();
 		TaskList BTL = new TaskList("Test.txt");
-		launch(args);
+		bui.launch(args);
 		TaskList.startWaitingForCommand();
 	}
 
@@ -79,6 +80,10 @@ public class BasicUI extends Application {
 		root.add(brandLabel,1,2,1,1);
 		root.add(textField,1,7,1,2);
 		root.add(feedbackLabel,1,9,1,2);
+	}
+	
+	public static BasicUI get(){
+		return bui;
 	}
 	
 }
