@@ -111,7 +111,6 @@ import taskList.Task;
      }
      
      public void updateTable(ArrayList<Task> taskList) {
-    	 System.out.println("In updateTable method");
     	 this.fireTableDataChanged();
     	 int row = 0;
        	 clearRows();
@@ -127,10 +126,6 @@ import taskList.Task;
     			 //         } else {
     			 //             dateFormatter = DateTimeFormatter.ofPattern("dd/MM/YYYY");
     			 //         }
-
-    			 System.out.println("Task name is " + task.getContent());
-    			 System.out.println("Date is " + task.getDateString());
-    			 System.out.println("Venue name is " + task.getVenue());
 
     			 this.setValueAt("" + (row + 1), row, TASK_INDEX);
     			 this.setValueAt("" + task.getContent(), row, CONTENT_INDEX);

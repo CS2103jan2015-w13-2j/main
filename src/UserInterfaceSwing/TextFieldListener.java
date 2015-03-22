@@ -13,13 +13,20 @@ import javax.swing.event.DocumentListener;
 public class TextFieldListener implements DocumentListener {
 	
 	private String inputStream = "";
+	private final String COMMAND_GUIDE_ADD_MESSAGE = "Tip: add <task name> -d <date> -v <venue> to add a task with date and venue";
+	private final String COMMAND_GUIDE_DELETE_MESSAGE = "Tip: delete <index number> to delete a task";
 	
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
-		if (inputStream.equals("add")) {
+		if (inputStream.equalsIgnoreCase("add")) {
 			System.out.println("add detected");
-			UserInterface.commandGuideLabel.setText("Tip: add <task name> -d <date> -v <venue> to add a task with date and venue");
+			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_ADD_MESSAGE);
+		}
+		
+		else if (inputStream.equalsIgnoreCase("delete")) {
+			System.out.println("delete detected");
+			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 	}
 
@@ -28,7 +35,12 @@ public class TextFieldListener implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		if (inputStream.equals("add")) {
 			System.out.println("add detected");
-			UserInterface.commandGuideLabel.setText("Tip: add <task name> -d <date> -v <venue> to add a task with date and venue");
+			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_ADD_MESSAGE);
+		}
+		
+		else if (inputStream.equalsIgnoreCase("delete")) {
+			System.out.println("delete detected");
+			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 		
 	}

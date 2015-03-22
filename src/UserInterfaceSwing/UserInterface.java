@@ -85,6 +85,7 @@ public class UserInterface extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
 						processTextField();
+						commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 						generateStatusMessage(TaskList.getLastFeedBack());
 				}
 		});

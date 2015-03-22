@@ -113,7 +113,7 @@ public class InteractiveForm extends JPanel {
             if (evt.getType() == TableModelEvent.UPDATE) {
                 int column = evt.getColumn();
                 int row = evt.getFirstRow();
-                System.out.println("row: " + row + " column: " + column);
+//               System.out.println("row: " + row + " column: " + column);
                 table.setColumnSelectionInterval(column + 1, column + 1);
 //                table.setRowSelectionInterval(row, row);
             }
