@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
 public class UserInterface extends JPanel{
@@ -28,6 +29,7 @@ public class UserInterface extends JPanel{
 	ArrayList<Task> taskList;
 	private JTextField textField;
 	private static TaskList BTL;
+	private static JLabel statusFeedback = new JLabel("Status Message");
 
 	/**
 	 * Launch the application.
@@ -81,6 +83,7 @@ public class UserInterface extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
 						processTextField();
+						generateStatusMessage(TaskList.getLastFeedBack());
 				}
 		});
 		textField.setBounds(22, 382, 616, 33);
@@ -92,12 +95,20 @@ public class UserInterface extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Enter pressed");
 				processTextField();
+				generateStatusMessage(TaskList.getLastFeedBack());
 			}
 		});
 		btnEnter.setBounds(655, 382, 117, 33);
 		panel.add(btnEnter);
 		
+		statusFeedback.setBounds(32, 335, 740, 50);
+		panel.add(statusFeedback);
+		
 		interactiveForm.updateTable(taskList);
+	}
+	
+	public void generateStatusMessage(String message) {
+		statusFeedback.setText(message);
 	}
 	
 	public void exit() {

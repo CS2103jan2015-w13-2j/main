@@ -1,1 +1,1 @@
-{"taskList":[{"content":"have fun -ac jajajajaja"},{"date":"2015-09-09 13:01","content":"hahahahahha"},{"date":"2015-03-19 13:17","content":"have fun"},{"date":"2015-03-23 01:00","venue":"home","content":"not fun!"},{"content":"testing button"}]}
+{"taskList":[{"content":"have fun -ac jajajajaja"},{"date":"2015-03-19 13:17","content":"have fun"},{"date":"2015-03-23 01:00","venue":"home","content":"not fun!"},{"content":"testing button"},{"content":"testing status message"}]}
