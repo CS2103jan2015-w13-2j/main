@@ -39,6 +39,9 @@ public class Parser {
 	private static final int OPERATION_MODIFY = 6;
 	private static final int OPERATION_UNDO = 7;
 	private static final int OPERATION_REDO = 8;
+	private static final int OPERATION_SORT = 9;
+	private static final int OPERATION_SEARCH = 10;
+	
 	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
 	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
@@ -50,6 +53,10 @@ public class Parser {
 	private static final String[] KEYWORD_REDO = {"redo"};
 	private static final String[] KEYWORD_DATE = {"at", "by", "on", "during", "before", "after", "from"};
 	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
+	private static final String[] KEYWORD_SORT = {"sort"};
+	private static final String[] KEYWORD_SEARCH = {"find","search"};
+	
+	
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
@@ -73,6 +80,9 @@ public class Parser {
 		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
 		addSelectedFeature(KEYWORD_UNDO, OPERATION_UNDO);
 		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
+		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
+		addSelectedFeature(KEYWORD_SORT, OPERATION_SORT);
+		addSelectedFeature(KEYWORD_SEARCH, OPERATION_SEARCH);
 	}
 	
 	private void addSelectedFeature(String[] keyword, Integer operation) {

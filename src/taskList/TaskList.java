@@ -164,6 +164,10 @@ public class TaskList {
 		saveFile();
 	}
 	
+	private static void sort(){
+		
+	}
+	
 	/*
 	 * exit the program
 	 * close the scanner, store the arraylist in disk to update the file
@@ -190,7 +194,7 @@ public class TaskList {
 		}
 		return content;
 	}
-	
+
 	public static ArrayList<Task> getTasks(){
 		return (ArrayList<Task>) taskList.clone();
 	}
