@@ -12,16 +12,24 @@ import javax.swing.event.DocumentListener;
 
 public class TextFieldListener implements DocumentListener {
 	
+	private String inputStream = "";
+	
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-		System.out.println(UserInterface.textField.getText());
-		
+		inputStream = UserInterface.textField.getText();
+		if (inputStream.equals("add")) {
+			System.out.println("add detected");
+			UserInterface.commandGuideLabel.setText("Tip: add <task name> -d <date> -v <venue> to add a task with date and venue");
+		}
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
-		System.out.println(UserInterface.textField.getText());
-
+		inputStream = UserInterface.textField.getText();
+		if (inputStream.equals("add")) {
+			System.out.println("add detected");
+			UserInterface.commandGuideLabel.setText("Tip: add <task name> -d <date> -v <venue> to add a task with date and venue");
+		}
 		
 	}
 

@@ -29,8 +29,9 @@ public class UserInterface extends JPanel{
 	ArrayList<Task> taskList;
 	public static JTextField textField;
 	private static TaskList BTL;
-	private static JLabel statusFeedback = new JLabel("Status Message");
-
+	private static JLabel statusFeedback = new JLabel("");	
+	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add to create a task";
+	public static JLabel commandGuideLabel = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
 	/**
 	 * Launch the application.
 	 */
@@ -96,6 +97,7 @@ public class UserInterface extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Enter pressed");
 				processTextField();
+				commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 				generateStatusMessage(TaskList.getLastFeedBack());
 			}
 		});
@@ -104,6 +106,9 @@ public class UserInterface extends JPanel{
 		
 		statusFeedback.setBounds(32, 335, 740, 50);
 		panel.add(statusFeedback);
+		
+		commandGuideLabel.setBounds(32, 427, 571, 16);
+		panel.add(commandGuideLabel);
 		
 		interactiveForm.updateTable(taskList);
 	}
