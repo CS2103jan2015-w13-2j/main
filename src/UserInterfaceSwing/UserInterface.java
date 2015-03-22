@@ -27,7 +27,7 @@ public class UserInterface extends JPanel{
 	private JFrame frame;
 	public static final InteractiveForm interactiveForm = new InteractiveForm();
 	ArrayList<Task> taskList;
-	private JTextField textField;
+	public static JTextField textField;
 	private static TaskList BTL;
 	private static JLabel statusFeedback = new JLabel("Status Message");
 
@@ -79,6 +79,7 @@ public class UserInterface extends JPanel{
 		interactiveForm.setLayout(null);
 		
 		textField = new JTextField();
+		textField.getDocument().addDocumentListener(new TextFieldListener());
 		textField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
