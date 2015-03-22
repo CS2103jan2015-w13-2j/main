@@ -80,10 +80,7 @@ public class UserInterface extends JPanel{
 		textField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
-						String input = textField.getText();
-						BTL.executeCommand(input);
-						interactiveForm.updateTable(TaskList.getTasks());
-						textField.setText(null);
+						processTextField();
 				}
 		});
 		textField.setBounds(22, 382, 616, 33);
@@ -91,6 +88,12 @@ public class UserInterface extends JPanel{
 		textField.setColumns(10);
 		
 		JButton btnEnter = new JButton("Enter");
+		btnEnter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Enter pressed");
+				processTextField();
+			}
+		});
 		btnEnter.setBounds(655, 382, 117, 33);
 		panel.add(btnEnter);
 		
@@ -99,5 +102,12 @@ public class UserInterface extends JPanel{
 	
 	public void exit() {
 		frame.dispose();
+	}
+	
+	public void processTextField() {
+		String input = textField.getText();
+		BTL.executeCommand(input);
+		interactiveForm.updateTable(TaskList.getTasks());
+		textField.setText(null);
 	}
 }
