@@ -26,7 +26,11 @@ public class TaskList {
 	private static final int OPERATION_CLEAR = 3;
 	private static final int OPERATION_DISPLAY = 4;
 	private static final int OPERATION_EXIT = 5;
-
+	private static final int OPERATION_MODIFY = 6;
+	private static final int OPERATION_UNDO = 7;
+	private static final int OPERATION_REDO = 8;
+	private static final int OPERATION_SORT = 9;
+	private static final int OPERATION_SEARCH = 10;
 	private static final int NORMAL_EXIT = 0;
 
 	private static Scanner sc;
@@ -92,6 +96,21 @@ public class TaskList {
 		case OPERATION_CLEAR:
 			clear();
 			break;
+		case OPERATION_MODIFY:
+			modify(command);
+			break;
+		case OPERATION_UNDO:
+			undo();
+			break;
+		case OPERATION_REDO:
+			redo();
+			break;
+		case OPERATION_SORT:
+			sort();
+			break;
+		case OPERATION_SEARCH:
+			search(command);
+			break;
 		case OPERATION_EXIT:
 			exit();
 			break;
@@ -154,7 +173,40 @@ public class TaskList {
 			i += 1;
 		}
 	}
+	
+	/*
+	 * modify the content in arraylist, which is the real-time file content
+	 */
+	private static void modify(String command) {
 
+	}	
+	/*
+	 * rodo, return the arrayList before last operation.
+	 */
+	private static void redo() {
+
+	}	
+
+	/*
+	 * undo, return the arrayList before last undo operation.
+	 */
+	private static void undo() {
+
+	}	
+	/*
+	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
+	 */
+	private static void sort() {
+
+	}	
+	
+	/*
+	 * search operation would return all the tasks which conform to the sort requirements.
+	 */
+	private static void search(String command) {
+
+	}
+	
 	/*
 	 * clear all data in arraylist, but do not actully store to file
 	 */
@@ -164,9 +216,6 @@ public class TaskList {
 		saveFile();
 	}
 	
-	private static void sort(){
-		
-	}
 	
 	/*
 	 * exit the program
