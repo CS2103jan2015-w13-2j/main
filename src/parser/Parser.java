@@ -8,12 +8,18 @@ import java.util.regex.Pattern;
 
 /**
  * APIs:
- * 	int getOperation(String): implemented
- * 	String getTitle(String) throws StringIndexOutOfBoundsException: implemented
- * 	String getVenue(String): implemented
- *  Date getDate(String): implemented
- *  	notice! time also included in getDate() method
- *  Date getDeadline(String): implemented
+ * 	int getOperation(String operation) throws NullPointerException
+ *  boolean isValid(String operation) throws NullPointerException
+ * 	boolean isArgumentsCorrect(String operation) throws NullPointerException
+ * 	int getIndex(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException, IOException
+ *  String getNewTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException
+ *  String getTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException
+ * 	String getVenue(String operation) throws NullPointerException
+ *  Date getDate(String operation) throws NullPointerException, IOException
+ *  Date getDeadline(String operation) throws NullPointerException, IOException
  *  
  * Make sure your operation index is up-to-date every time before calling parser.
  * The latest operation indexes are:
@@ -67,29 +73,6 @@ public class Parser {
 		dateParser = new DateParser();
 	}
 	
-	private void initFeatureList() {
-		featureList = new Hashtable<String, Integer>();
-		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
-		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
-		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
-		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
-		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
-		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
-		addSelectedFeature(KEYWORD_UNDO, OPERATION_UNDO);
-		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
-		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
-		addSelectedFeature(KEYWORD_SORT, OPERATION_SORT);
-		addSelectedFeature(KEYWORD_SEARCH, OPERATION_SEARCH);
-	}
-	
-	private void addSelectedFeature(String[] keyword, Integer operation) {
-		assert(keyword != null);
-		assert(operation != null);
-		for (int i = 0; i < keyword.length; i++) {
-			featureList.put(keyword[i], operation);
-		}
-	}
-	
 	public int getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
@@ -124,6 +107,81 @@ public class Parser {
 				isArgumentsTypeCorrect(operation);
 	}
 
+	public int getIndex(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException, IOException {
+		assert(getOperation(operation) == OPERATION_MODIFY);
+		String temp = getTitle(operation);
+		String[] temps = temp.split(" ");
+		Matcher m = NUMBERS.matcher(temps[0]);
+		if (m.matches()) {
+			return Integer.valueOf(temps[0]);
+		} else {
+			throw new IOException("the index you entered is illegal");
+		}
+	}
+	
+	public String getNewTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException {
+		assert(getOperation(operation) == OPERATION_MODIFY);
+		String temp = getTitle(operation);
+		String[] temps = temp.split(" ");
+		if (temps.length < 2) {
+			return null;
+		} else {
+			return combineString(temps);
+		}
+	}
+
+	public String getTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		assert(getOperation(operation) == OPERATION_ADD);
+		int start = operation.indexOf(' ') + 1;
+		if (start >= operation.length()) {
+			throw new StringIndexOutOfBoundsException("no title inputed");
+		}
+		int end = getFirstOptionIndex(operation);
+		if (end != -1) {
+			end = end - 1;
+		} else {
+			end = operation.length();
+		}
+		return operation.substring(start, end);
+	}
+
+	public String getVenue(String operation) throws NullPointerException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		return getContent("-v", operation);
+	}
+	
+	public Date getDate(String operation) throws NullPointerException, IOException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		String dateString = getContent("-d", operation);
+		if (dateString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(dateString);
+		}
+	}
+	
+	public Date getDeadline(String operation) throws NullPointerException, IOException {
+		if (operation == null) {
+			throw new NullPointerException("the command cannot be null");
+		}
+		String deadLineString = getContent("-dd", operation);
+		if (deadLineString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(deadLineString);
+		}
+	}
+	
 	private boolean isArgumentsTypeCorrect(String operation) {
 		assert(operation != null);
 		String temp = null;
@@ -171,31 +229,6 @@ public class Parser {
 		return featureList.get(operation);
 	}
 	
-	public int getIndex(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException, IOException {
-		assert(getOperation(operation) == OPERATION_MODIFY);
-		String temp = getTitle(operation);
-		String[] temps = temp.split(" ");
-		Matcher m = NUMBERS.matcher(temps[0]);
-		if (m.matches()) {
-			return Integer.valueOf(temps[0]);
-		} else {
-			throw new IOException("the index you entered is illegal");
-		}
-	}
-	
-	public String getNewTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException {
-		assert(getOperation(operation) == OPERATION_MODIFY);
-		String temp = getTitle(operation);
-		String[] temps = temp.split(" ");
-		if (temps.length < 2) {
-			return null;
-		} else {
-			return combineString(temps);
-		}
-	}
-	
 	//combine the array of String from the second element onwards
 	private String combineString(String[] temps) {
 		String str = "";
@@ -204,25 +237,6 @@ public class Parser {
 			str = str + temp;
 		}
 		return str;
-	}
-
-	public String getTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException {
-		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		}
-		assert(getOperation(operation) == OPERATION_ADD);
-		int start = operation.indexOf(' ') + 1;
-		if (start >= operation.length()) {
-			throw new StringIndexOutOfBoundsException("no title inputed");
-		}
-		int end = getFirstOptionIndex(operation);
-		if (end != -1) {
-			end = end - 1;
-		} else {
-			end = operation.length();
-		}
-		return operation.substring(start, end);
 	}
 	
 	private int getFirstOptionIndex(String operation) {
@@ -241,35 +255,27 @@ public class Parser {
 		return tempIndex;
 		
 	}
-
-	public String getVenue(String operation) throws NullPointerException {
-		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		}
-		return getContent("-v", operation);
+	
+	private void initFeatureList() {
+		featureList = new Hashtable<String, Integer>();
+		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
+		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
+		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
+		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
+		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
+		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
+		addSelectedFeature(KEYWORD_UNDO, OPERATION_UNDO);
+		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
+		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
+		addSelectedFeature(KEYWORD_SORT, OPERATION_SORT);
+		addSelectedFeature(KEYWORD_SEARCH, OPERATION_SEARCH);
 	}
 	
-	public Date getDate(String operation) throws NullPointerException, IOException {
-		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		}
-		String dateString = getContent("-d", operation);
-		if (dateString == null) {
-			return null;
-		} else {
-			return dateParser.getDate(dateString);
-		}
-	}
-	
-	public Date getDeadline(String operation) throws NullPointerException, IOException {
-		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		}
-		String deadLineString = getContent("-dd", operation);
-		if (deadLineString == null) {
-			return null;
-		} else {
-			return dateParser.getDate(deadLineString);
+	private void addSelectedFeature(String[] keyword, Integer operation) {
+		assert(keyword != null);
+		assert(operation != null);
+		for (int i = 0; i < keyword.length; i++) {
+			featureList.put(keyword[i], operation);
 		}
 	}
 	

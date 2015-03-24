@@ -24,7 +24,6 @@ public class testParser {
 		int testNumber;
 		
 		//test Arguments
-		
 		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
 		assertEquals(true, testBoolean);
 		testBoolean = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
