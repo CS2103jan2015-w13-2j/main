@@ -2,6 +2,8 @@ package ui.list.swing;
 
 
 import java.awt.EventQueue;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +19,7 @@ import javax.swing.JTextField;
 
 import taskList.Task;
 import taskList.TaskList;
+
 import javax.swing.JButton;
 
 public class UserInterface {
@@ -29,7 +32,9 @@ public class UserInterface {
 	private static JLabel lblStatusMessage = new JLabel("");
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\" or \"delete\" to begin";
 	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
-	public static final JLabel lblBackground = new JLabel();
+	private final JLabel lblBackground = new JLabel("");
+
+
 	/**
 	 * Launch the application.
 	 */
@@ -59,11 +64,17 @@ public class UserInterface {
 	 */
 	private void initialize() {
 		frame.setBounds(100, 100, 653, 562);
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
+		lblBackground.setBounds(0, 0, 653, 562);
+
+
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(62, 62, 530, 381);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBounds(76, 62, 525, 381);
 		frame.getContentPane().add(scrollPane);
 		scrollPane.setViewportView(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -80,7 +91,7 @@ public class UserInterface {
 						printStatusMessage();
 				}
 		});
-		textField.setBounds(62, 478, 428, 36);
+		textField.setBounds(59, 466, 445, 36);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -90,15 +101,17 @@ public class UserInterface {
 				processTextField();
 			}
 		});
-		btnEnter.setBounds(500, 480, 92, 34);
+		btnEnter.setBounds(509, 468, 92, 34);
 		frame.getContentPane().add(btnEnter);
 		
 
-		lblStatusMessage.setBounds(72, 453, 520, 29);
+		lblStatusMessage.setBounds(76, 440, 520, 29);
 		frame.getContentPane().add(lblStatusMessage);
-		lblCommandGuide.setBounds(72, 511, 510, 29);
+		lblCommandGuide.setBounds(76, 505, 510, 29);
 		
 		frame.getContentPane().add(lblCommandGuide);
+		
+		frame.getContentPane().add(lblBackground);
 
 		
 	}
@@ -132,9 +145,9 @@ public class UserInterface {
 		lblStatusMessage.setText(statusMessage);
 	}
 	
-	public void setBackground() {
+	public void setBackground(JLabel lblBackground) {
+		System.out.println("setting background image");
 		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
-		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
-		frame.getContentPane().add(UserInterface.lblBackground);
+		frame.getContentPane().add(lblBackground);
 	}
 }
