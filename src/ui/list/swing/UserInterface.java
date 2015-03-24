@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JTextField;
@@ -86,7 +87,12 @@ public class UserInterface {
 		textField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
-						processTextField();
+						try {
+							processTextField();
+						} catch (NullPointerException | IOException e1) {
+							new Exception("NullPointerException");
+							e1.printStackTrace();
+						}
 						lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 						printStatusMessage();
 				}
@@ -98,7 +104,12 @@ public class UserInterface {
 		JButton btnEnter = new JButton("Enter");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				processTextField();
+				try {
+					processTextField();
+				} catch (NullPointerException | IOException e1) {
+					new Exception("NullPointerException");
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnEnter.setBounds(509, 468, 92, 34);
@@ -115,7 +126,7 @@ public class UserInterface {
 
 		
 	}
-	public void processTextField() {
+	public void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
 		String input = textField.getText();
 		BTL.executeCommand(input);

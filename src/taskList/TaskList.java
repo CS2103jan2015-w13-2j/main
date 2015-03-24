@@ -1,6 +1,7 @@
 package taskList;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ public class TaskList {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
 	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
+	private static final String MESSAGE_DELETE_OPERATION_FAILURE = "index is not valid for delete operation";
 	private static final String MESSAGE_CLEAR_OPERATION = "all content deleted from %s\n";
 	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
 
@@ -38,6 +40,7 @@ public class TaskList {
 	private static JsonStringFileOperation fo;
 	private static ArrayList<Task> taskList;
 	private static Parser bp;
+	private static Undo undo;
 	private static ArrayList<String> feedBack = new ArrayList<String>();
 	private static String name = TaskList.class.getName(); 
 	private static Logger log = Logger.getLogger(name);// <= (2)  
@@ -47,6 +50,7 @@ public class TaskList {
 		feedBack.clear();
 		try{
 			taskList = fo.readFile();
+			undo = new Undo(taskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
 			feedBack.add("Cannot open the file correctly");
@@ -72,7 +76,7 @@ public class TaskList {
 				content));
 	}
 	
-	public static void startWaitingForCommand(){
+	public static void startWaitingForCommand() throws NullPointerException, IOException{
 		sc = new Scanner(System.in);
 		String inputCommand;
 		while (true) {
@@ -82,7 +86,7 @@ public class TaskList {
 		}
 	}
 	
-	public static void executeCommand(String command) {
+	public static void executeCommand(String command) throws NullPointerException, IOException {
 		switch (bp.getOperation(command)) {
 		case OPERATION_ADD:
 			add(command);
@@ -130,7 +134,7 @@ public class TaskList {
 	/*
 	 * add new content to arraylist, but do not actully store to file
 	 */
-	private static void add(String command) {
+	private static void add(String command) throws NullPointerException, IOException {
 		assert(bp.isValid(command));
 		String content = bp.getTitle(command);
 		Date date = bp.getDate(command);
@@ -140,6 +144,7 @@ public class TaskList {
 		showMessage(MESSAGE_ADD_OPERATION, content);
 		taskList.add(new Task(content,date,deadLine,venue));
 		saveFile();
+		undo.add(taskList);
 	}
 	
 	/*
@@ -152,11 +157,13 @@ public class TaskList {
 		}
 		int removeIndex = Integer.valueOf(content);
 		if (removeIndex < 0 || removeIndex > taskList.size()) {
+			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 			return;
 		}
 		showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 		taskList.remove(removeIndex - 1);
 		saveFile();
+		undo.add(taskList);
 	}
 
 	/*
@@ -177,8 +184,16 @@ public class TaskList {
 	/*
 	 * modify the content in arraylist, which is the real-time file content
 	 */
-	private static void modify(String command) {
-
+	private static void modify(String command) throws NullPointerException, IOException {
+		assert(bp.isValid(command));
+		String content = bp.getNewTitle(command);
+		int index = bp.getIndex(command);
+		Date newDate = bp.getDate(command);
+		Date deadLine = bp.getDeadline(command);
+		String venue = bp.getVenue(command);
+		showMessage(MESSAGE_ADD_OPERATION, content);
+		saveFile();
+		undo.add(taskList);
 	}	
 	/*
 	 * rodo, return the arrayList before last operation.

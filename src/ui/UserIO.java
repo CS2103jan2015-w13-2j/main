@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
@@ -25,7 +26,12 @@ public class UserIO {
 					String input = BasicUI.textField.getText();
 					logger.info("UI user input received is: " + input);
 					assert (input != null);
-					taskList.TaskList.executeCommand(input);
+					try {
+						taskList.TaskList.executeCommand(input);
+					} catch (NullPointerException | IOException e) {
+						new Exception("NullPointerException");
+						e.printStackTrace();
+					}
 					TableLayout.data.setAll(TaskList.getTasks());
 					FeedbackGuide.setFeedbackGuide(TaskList.getLastFeedBack());
 					BasicUI.textField.clear();

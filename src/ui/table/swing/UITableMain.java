@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import taskList.Task;
@@ -85,7 +86,12 @@ public class UITableMain extends JPanel{
 		textField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 						System.out.println("Enter pressed");
-						processTextField();
+						try {
+							processTextField();
+						} catch (NullPointerException | IOException e1) {
+							new Exception("NullPointerException");
+							e1.printStackTrace();
+						}
 						commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 						generateStatusMessage(TaskList.getLastFeedBack());
 				}
@@ -98,7 +104,12 @@ public class UITableMain extends JPanel{
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Enter pressed");
-				processTextField();
+				try {
+					processTextField();
+				} catch (NullPointerException | IOException e1) {
+					new Exception("NullPointerException");
+					e1.printStackTrace();
+				}
 				commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 				generateStatusMessage(TaskList.getLastFeedBack());
 			}
@@ -123,7 +134,7 @@ public class UITableMain extends JPanel{
 		frame.dispose();
 	}
 	
-	public void processTextField() {
+	public void processTextField() throws NullPointerException, IOException {
 		String input = textField.getText();
 		BTL.executeCommand(input);
 		interactiveForm.updateTable(TaskList.getTasks());

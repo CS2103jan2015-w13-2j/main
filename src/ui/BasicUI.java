@@ -1,5 +1,6 @@
 package ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import taskList.Task;
@@ -35,7 +36,7 @@ public class BasicUI extends Application {
 	private static BasicUI bui;
 
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NullPointerException, IOException {
 		bui = new BasicUI();
 		TaskList BTL = new TaskList("Test.txt");
 		bui.launch(args);
@@ -61,7 +62,12 @@ public class BasicUI extends Application {
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			
 			public void handle(final WindowEvent event) {
-				taskList.TaskList.executeCommand("exit");
+				try {
+					taskList.TaskList.executeCommand("exit");
+				} catch (NullPointerException | IOException e) {
+					new Exception("NullPointerException");
+					e.printStackTrace();
+				}
 			}
 		});
 		primaryStage.show();

@@ -1,5 +1,6 @@
 package taskList;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,11 +20,15 @@ public class Task {
 		this.content = content;
 	}
 	
-	public Task(String content, String date){
+	public Task(String content, String date) throws NullPointerException, IOException{
 		this.content = content;
 		
 		DateParser dateParser = new DateParser();
-		this.date = dateParser.getDate(date);
+		try{
+			this.date = dateParser.getDate(date);	
+		}catch (Exception exception){
+			new Exception("NullPointerException");
+		}
 		
 		if(date != null)
 			dateString = date.toString();
