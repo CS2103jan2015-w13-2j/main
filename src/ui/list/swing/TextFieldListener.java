@@ -15,7 +15,22 @@ public class TextFieldListener implements DocumentListener {
 	private String inputStream = "";
 	private final String COMMAND_GUIDE_ADD_MESSAGE = "Tip: add <task name> -d <date> -v <venue> to add a task with date and venue";
 	private final String COMMAND_GUIDE_DELETE_MESSAGE = "Tip: delete <index number> to delete a task";
-
+	
+	/*
+	 * Testing of GUI interface can be done by performing black-box testing. That is, just running the program without looking at any code.
+	 * In order to be Effective and Efficient, we have to make use of some testing heuristics such as Equivalence partitioning, boundary value analysis (bva)
+	 * and combining multiple inputs.
+	 * 
+	 * For testing of GUI, the most relevant testing heuristics would be combining of multiple inputs.
+	 * Because user are required to enter task description, task date(optional), task venue (optional), etc...
+	 * We can test input in such a way that only one invalid input per case 
+	 * e.g. add <valid task name> -d <invalid date> -v <valid venue> or "add <valid task name> -d <valid date> -v <invalid venue>
+	 * In this case, we need to consider the factor, whether the entire operation will be voided or only valid input will be registered. 
+	 * 
+	 */
+	
+	
+	
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
