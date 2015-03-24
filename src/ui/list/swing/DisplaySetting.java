@@ -14,7 +14,10 @@ public class DisplaySetting {
 	private static final String HTML_FONT_CLOSE = "</font>";
 	
 	public DisplaySetting(Task task, int i) {
-		data.setLength(0);;
+		
+		data.setLength(0);
+		assert(data.length()==0);
+		
 		String index = Integer.toString(i+1);
 		String taskName = task.getContent();
 		String date = task.getDateString();
