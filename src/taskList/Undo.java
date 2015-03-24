@@ -13,7 +13,9 @@ public class Undo<T> {
 	
 	
 	public Undo(T initElement){
-		stack.add(initElement);
+		ArrayList<Task> newStatusClone = (ArrayList<Task>) initElement;
+		ArrayList<Task> newStatusClone2 = (ArrayList<Task>) newStatusClone.clone();
+		stack.add((T) newStatusClone2);
 		pointer = 0;
 	}
 	
@@ -22,6 +24,8 @@ public class Undo<T> {
 			return stack.get(pointer);
 		}else{
 			pointer--;
+			System.out.println("undo here pointer is "+ pointer);
+			
 			return stack.get(pointer);
 		}
 	}
@@ -31,11 +35,11 @@ public class Undo<T> {
 		for (int i=1; i< stack.size(); i++){
 			stack.remove(i);
 		}
-		pointer = 1;
+		pointer = 0;
 	}
 	
 	public T redo(){
-		if (pointer >= stack.size()-1){
+		if (pointer < stack.size()-1){
 			pointer++;
 		}
 		return stack.get(pointer);
@@ -45,7 +49,9 @@ public class Undo<T> {
 		for (int i = pointer+1; i < stack.size();i++){
 			stack.remove(i);
 		}
-		stack.add(newStatus);
+		ArrayList<Task> newStatusClone = (ArrayList<Task>) newStatus;
+		ArrayList<Task> newStatusClone2 = (ArrayList<Task>) newStatusClone.clone();
+		stack.add((T)newStatusClone2);
 		pointer++;
 	}
 	
@@ -53,8 +59,11 @@ public class Undo<T> {
 		return pointer<stack.size()-1;
 	}
 	
-	//public boolean canUndo(){
+	public boolean canUndo(){
+		return pointer>0;
+	}
+
 	
-	//}
+	
 	
 }  

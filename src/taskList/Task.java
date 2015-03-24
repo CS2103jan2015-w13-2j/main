@@ -7,7 +7,7 @@ import java.util.Date;
 import parser.DateParser;
 
 
-public class Task {
+public class Task implements Comparable{
 	private String content;
 	private int index;
 	private String venue;
@@ -78,16 +78,40 @@ public class Task {
 		return content;
 	}
 	
+	public void setContent(String newContent){
+		if (newContent == null) return;
+		this.content = newContent;
+	}
+	
 	public Date getDate(){
 		return this.date;
+	}
+	
+	public void setDate(Date newDate){
+		if (newDate == null) return;
+		this.date = newDate;
 	}
 	
 	public String getVenue(){
 		return this.venue;
 	}
 	
+	public void setVenue(String newVenue){
+		if (newVenue == null){
+			return;
+		}
+		this.venue = newVenue;
+	}
+	
 	public Date getDeadline(){
 		return this.deadline;
+	}
+	
+	public void setDeadLine(Date newDeadLine){
+		if (newDeadLine == null){
+			return;
+		}
+		this.deadline = newDeadLine;
 	}
 	
 	public String getDeadlineString(){
@@ -95,5 +119,11 @@ public class Task {
 	}
 	public String getDateString(){
 		return dateString;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		Task arg = (Task) arg0;
+		return -(arg.getContent().compareTo(this.getContent()));
 	}
 }

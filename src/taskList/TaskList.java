@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import parser.Parser;
@@ -18,10 +19,12 @@ public class TaskList {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
 	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
-	private static final String MESSAGE_DELETE_OPERATION_FAILURE = "index is not valid for delete operation";
+	private static final String MESSAGE_DELETE_OPERATION_FAILURE = "index is not valid for delete from %s %s\n ";
 	private static final String MESSAGE_CLEAR_OPERATION = "all content deleted from %s\n";
 	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
-
+	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
+	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify from %s %s\n";
+	
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
@@ -39,17 +42,23 @@ public class TaskList {
 	private static String fileName;
 	private static JsonStringFileOperation fo;
 	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> searchResult;
+	//mode == 0 means the result shown in screen is taskList,
+	//mode == 1 means the result shown in screen is searchResult
+	private static int mode;
 	private static Parser bp;
 	private static Undo undo;
 	private static ArrayList<String> feedBack = new ArrayList<String>();
 	private static String name = TaskList.class.getName(); 
 	private static Logger log = Logger.getLogger(name);// <= (2)  
 	public TaskList(String inputFileName){
+		mode = 0;
 		fileName = inputFileName;
 		fo = new JsonStringFileOperation(fileName);
 		feedBack.clear();
 		try{
 			taskList = fo.readFile();
+			searchResult = new ArrayList<Task>();
 			undo = new Undo(taskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
@@ -68,6 +77,16 @@ public class TaskList {
 		System.out.print(String.format(message, fileName, content));
 	}
 
+	/*
+	 * print single messages
+	 */
+	private static void showMessage(String message) {
+		feedBack.add(message);
+		System.out.print(message);
+	}
+
+	
+	
 	/*
 	 * show the file content in format
 	 */
@@ -170,6 +189,7 @@ public class TaskList {
 	 * display the content in arraylist, which is the real-time file content
 	 */
 	private static void display() {
+		mode = 0;
 		if (taskList.size() == 0) {
 			showMessage(MESSAGE_EMPTY_FILE, null);
 			return;
@@ -187,11 +207,22 @@ public class TaskList {
 	private static void modify(String command) throws NullPointerException, IOException {
 		assert(bp.isValid(command));
 		String content = bp.getNewTitle(command);
-		int index = bp.getIndex(command);
+		int index = bp.getIndex(command) - 1;
 		Date newDate = bp.getDate(command);
 		Date deadLine = bp.getDeadline(command);
-		String venue = bp.getVenue(command);
-		showMessage(MESSAGE_ADD_OPERATION, content);
+		String newVenue = bp.getVenue(command);
+		if ((index < 0)||(index > taskList.size())){
+			showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
+			return;
+		}
+		if (content == null) content = taskList.get(index).getContent();
+		if (newVenue == null) newVenue = taskList.get(index).getVenue();
+		if (deadLine == null) deadLine = taskList.get(index).getDeadline();
+		if (newDate == null) newDate = taskList.get(index).getDate();
+		Task newTask = new Task(content,newDate,deadLine,newVenue);
+		taskList.remove(index);
+		taskList.add(index, newTask);
+		showMessage(MESSAGE_MODIFY_OPERATION, content);
 		saveFile();
 		undo.add(taskList);
 	}	
@@ -199,27 +230,48 @@ public class TaskList {
 	 * rodo, return the arrayList before last operation.
 	 */
 	private static void redo() {
-
-	}	
+		if (undo.canRedo()){
+			taskList = (ArrayList<Task>) undo.redo();
+			showMessage("redo operation successfully");
+		}else{
+			showMessage("no redo operation avaiable");
+		}
+	}
 
 	/*
 	 * undo, return the arrayList before last undo operation.
 	 */
 	private static void undo() {
-
+		if (undo.canUndo()){
+			taskList = (ArrayList<Task>) undo.undo();
+			showMessage("undo operation successfully");
+		}else{
+			showMessage("no undo operation avaiable");
+		}
 	}	
 	/*
 	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
 	 */
 	private static void sort() {
-
+		Collections.sort(taskList);
+		undo.add(taskList);
+		showMessage("sort finished");
+		saveFile();
 	}	
 	
 	/*
 	 * search operation would return all the tasks which conform to the sort requirements.
 	 */
 	private static void search(String command) {
-
+		mode = 1;
+		searchResult.clear();
+		String keyWord = bp.getTitle(command);
+		for (int i = 0; i < taskList.size(); i++){
+			if (taskList.get(i).getContent().contains(keyWord)){
+				searchResult.add(taskList.get(i));
+			}
+		}
+		showMessage("search result is right here");
 	}
 	
 	/*
@@ -260,7 +312,10 @@ public class TaskList {
 	}
 
 	public static ArrayList<Task> getTasks(){
-		return (ArrayList<Task>) taskList.clone();
+		if (mode == 0)
+			return (ArrayList<Task>) taskList.clone();
+		else
+			return (ArrayList<Task>) searchResult.clone();
 	}
 	
 	public static ArrayList<String> getFeedBacks(){
