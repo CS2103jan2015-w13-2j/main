@@ -22,6 +22,7 @@ public class testParser {
 		Parser p = new Parser();
 		boolean testBoolean;
 		int testNumber;
+		String testString;
 		
 		//test Arguments
 		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
@@ -31,18 +32,26 @@ public class testParser {
 		testBoolean = p.isArgumentsCorrect("add this is for fun -cs dou wo");
 		assertEquals(false, testBoolean);
 		
-		//test getIndex
+		//test getIndex normal
 		try {
 			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
 			assertEquals(7, testNumber);
-			testNumber = p.getIndex("modfi 7");
-			assertEquals(7, testNumber);
-			testNumber = p.getIndex("update 7s7");
-		} catch (NullPointerException e) {
-			System.out.println("fail to get index");
-		} catch (IOException e) {
-			System.out.println("index format incorrect");
+		} catch (Exception e) {
+			fail("unexpected exception");
 		}
+		
+		//test getIndex operation type not match
+		try {
+			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains("the index you entered is illegal"));
+		}
+		
+		//test getNewTitle
+		testString = p.getNewTitle("modify 8 go to school -d tomorrow");
+		assertEquals("go to school", testString);
+		
 		
 	}
 	

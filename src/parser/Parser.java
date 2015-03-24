@@ -63,7 +63,7 @@ public class Parser {
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
-	private static final Pattern NUMBERS = Pattern.compile("/d");
+	private static final Pattern NUMBERS = Pattern.compile(".*[^0-9].*");
 	
 	private static Hashtable<String, Integer> featureList = null; 
 	private static DateParser dateParser = null;
@@ -111,9 +111,12 @@ public class Parser {
 	StringIndexOutOfBoundsException, IOException {
 		assert(getOperation(operation) == OPERATION_MODIFY);
 		String temp = getTitle(operation);
+		if (temp == null) {
+			throw new IOException("you must enter an index");
+		}
 		String[] temps = temp.split(" ");
 		Matcher m = NUMBERS.matcher(temps[0]);
-		if (m.matches()) {
+		if (!m.matches()) {
 			return Integer.valueOf(temps[0]);
 		} else {
 			throw new IOException("the index you entered is illegal");
@@ -137,7 +140,8 @@ public class Parser {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
-		assert(getOperation(operation) == OPERATION_ADD);
+		assert(getOperation(operation) == OPERATION_ADD ||
+				getOperation(operation) == OPERATION_SEARCH);
 		int start = operation.indexOf(' ') + 1;
 		if (start >= operation.length()) {
 			throw new StringIndexOutOfBoundsException("no title inputed");
@@ -233,10 +237,10 @@ public class Parser {
 	private String combineString(String[] temps) {
 		String str = "";
 		temps[0] = "";
-		for (String temp : temps) {
-			str = str + temp;
+		for (int i = 1; i < temps.length; i++) {
+			str = str + temps[i] + " ";
 		}
-		return str;
+		return str.substring(0, str.length()-1);
 	}
 	
 	private int getFirstOptionIndex(String operation) {
