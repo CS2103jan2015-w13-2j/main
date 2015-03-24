@@ -325,4 +325,31 @@ public class TaskList {
 	public static String getLastFeedBack(){
 		return feedBack.get(feedBack.size()-1);
 	}
+	
+	public static String getAllTitles(){
+		String answer = new String("");
+		if (mode == 0){
+			for (int i = 0; i < taskList.size(); i++){
+				answer = answer + (i+1) + ". "+ taskList.get(i).getContent()+"\n";
+			}
+			return answer;
+		}else{
+			for (int i = 0; i < searchResult.size(); i++){
+				answer = answer + (i+1) + ". "+ searchResult.get(i).getContent()+"\n";
+			}
+			if (answer.equals("")){
+				return "No results found\n";
+			}
+			return answer;		
+		}
+	}
+	
+	public static ArrayList<String> getTaskList(){
+		ArrayList<String> answers = new ArrayList<String>();
+		for (int i = 0; i < taskList.size(); i++){
+			answers.add(taskList.get(i).getContent());
+		}
+		return answers;
+	}
+	
 }
