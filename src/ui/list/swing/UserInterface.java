@@ -134,7 +134,7 @@ public class UserInterface {
 	
 	public void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
-//		System.out.println("adding label with: " + str);
+		System.out.println("adding label with: " + str);
 		panel.add(new JLabel(str));
 		panel.revalidate();
 		panel.repaint();
