@@ -60,7 +60,7 @@ public class UserInterface {
 		frame.getContentPane().setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(42, 62, 520, 381);
+		scrollPane.setBounds(62, 62, 530, 381);
 		frame.getContentPane().add(scrollPane);
 		scrollPane.setViewportView(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -77,7 +77,7 @@ public class UserInterface {
 						printStatusMessage();
 				}
 		});
-		textField.setBounds(42, 478, 428, 36);
+		textField.setBounds(62, 478, 428, 36);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
@@ -87,13 +87,13 @@ public class UserInterface {
 				processTextField();
 			}
 		});
-		btnEnter.setBounds(470, 480, 92, 34);
+		btnEnter.setBounds(500, 480, 92, 34);
 		frame.getContentPane().add(btnEnter);
 		
 
-		lblStatusMessage.setBounds(52, 451, 520, 29);
+		lblStatusMessage.setBounds(72, 453, 520, 29);
 		frame.getContentPane().add(lblStatusMessage);
-		lblCommandGuide.setBounds(52, 511, 510, 29);
+		lblCommandGuide.setBounds(72, 511, 510, 29);
 		
 		frame.getContentPane().add(lblCommandGuide);
 
