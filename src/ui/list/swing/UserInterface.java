@@ -2,22 +2,26 @@ package ui.list.swing;
 
 
 import java.awt.EventQueue;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 import javax.swing.JTextField;
+
 import taskList.Task;
 import taskList.TaskList;
 import javax.swing.JButton;
 
 public class UserInterface {
 
-	private JFrame frame;
+	public static final JFrame frame = new JFrame("TaskBuddy!");
 	public static JTextField textField;
 	private static TaskList BTL;
 	private static JPanel panel = new JPanel();
@@ -25,7 +29,7 @@ public class UserInterface {
 	private static JLabel lblStatusMessage = new JLabel("");
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\" or \"delete\" to begin";
 	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
-
+	public static final JLabel lblBackground = new JLabel();
 	/**
 	 * Launch the application.
 	 */
@@ -54,7 +58,6 @@ public class UserInterface {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
 		frame.setBounds(100, 100, 653, 562);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -127,5 +130,11 @@ public class UserInterface {
 	public void printStatusMessage() {
 		String statusMessage = BTL.getLastFeedBack();
 		lblStatusMessage.setText(statusMessage);
+	}
+	
+	public void setBackground() {
+		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
+		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+		frame.getContentPane().add(UserInterface.lblBackground);
 	}
 }
