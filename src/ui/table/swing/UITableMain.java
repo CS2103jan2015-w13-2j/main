@@ -1,4 +1,4 @@
-package UserInterfaceSwing;
+package ui.table.swing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import taskList.Task;
 import taskList.TaskList;
-import UserInterfaceSwing.InteractiveForm;
+import ui.table.swing.InteractiveForm;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -19,10 +19,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
-public class UserInterface extends JPanel{
+public class UITableMain extends JPanel{
 
 	private JFrame frame;
 	public static final InteractiveForm interactiveForm = new InteractiveForm();
@@ -39,7 +40,7 @@ public class UserInterface extends JPanel{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UserInterface window = new UserInterface();
+					UITableMain window = new UITableMain();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -51,7 +52,7 @@ public class UserInterface extends JPanel{
 	/**
 	 * Create the application.
 	 */
-	public UserInterface() {
+	public UITableMain() {
 		BTL = new TaskList("Test.txt");
 		taskList = TaskList.getTasks();
 		initialize();

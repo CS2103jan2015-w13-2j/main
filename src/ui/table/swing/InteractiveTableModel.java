@@ -1,4 +1,4 @@
-package UserInterfaceSwing;
+package ui.table.swing;
 
 
 import java.util.ArrayList;

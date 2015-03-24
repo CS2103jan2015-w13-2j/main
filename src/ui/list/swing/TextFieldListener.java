@@ -1,4 +1,4 @@
-package UserInterfaceSwing;
+package ui.list.swing;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -21,16 +21,16 @@ public class TextFieldListener implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		if (inputStream.toLowerCase().contains("add")) {
 			System.out.println("add detected");
-			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_ADD_MESSAGE);
+			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
 		}
 		
 		else if (inputStream.toLowerCase().contains("delete")) {
 			System.out.println("delete detected");
-			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_DELETE_MESSAGE);
+			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 		
 		else {
-			UserInterface.commandGuideLabel.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 	}
 
@@ -39,16 +39,16 @@ public class TextFieldListener implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		if (inputStream.toLowerCase().contains("add")) {
 			System.out.println("add detected");
-			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_ADD_MESSAGE);
+			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
 		}
 		
 		else if (inputStream.toLowerCase().contains("delete")) {
 			System.out.println("delete detected");
-			UserInterface.commandGuideLabel.setText(COMMAND_GUIDE_DELETE_MESSAGE);
+			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 		
 		else {
-			UserInterface.commandGuideLabel.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 	}
 

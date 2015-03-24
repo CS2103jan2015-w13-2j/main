@@ -1,4 +1,4 @@
-package UserInterfaceSwing;
+package ui.table.swing;
 
 public class TableInfo {
 	protected String index;
