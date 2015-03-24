@@ -24,11 +24,13 @@ public class testParser {
 		int testNumber;
 		String testString;
 		
-		//test Arguments
+		//test Arguments normal
 		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
 		assertEquals(true, testBoolean);
+		//test Arguments some string with '-'
 		testBoolean = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
 		assertEquals(true, testBoolean);
+		//test Arguments unknown arguments
 		testBoolean = p.isArgumentsCorrect("add this is for fun -cs dou wo");
 		assertEquals(false, testBoolean);
 		
@@ -39,20 +41,27 @@ public class testParser {
 		} catch (Exception e) {
 			fail("unexpected exception");
 		}
-		
-		//test getIndex operation type not match
+		//test getIndex no index
 		try {
-			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
+			testNumber = p.getIndex("modify -d the day after tomorrow");
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains("you must enter an index"));
+		}
+		//test getIndex index not digits
+		try {
+			testNumber = p.getIndex("modify sd -d the day after tomorrow");
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
 			assertTrue(e.getMessage().contains("the index you entered is illegal"));
 		}
 		
-		//test getNewTitle
+		//test getNewTitle normal
 		testString = p.getNewTitle("modify 8 go to school -d tomorrow");
 		assertEquals("go to school", testString);
-		
-		
+		//test getNewTitle no new title
+		testString = p.getNewTitle("modify 8   -d tomorrow");
+		assertEquals(null, testString);
 	}
 	
 	

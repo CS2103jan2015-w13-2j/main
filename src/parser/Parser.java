@@ -111,7 +111,7 @@ public class Parser {
 	StringIndexOutOfBoundsException, IOException {
 		assert(getOperation(operation) == OPERATION_MODIFY);
 		String temp = getTitle(operation);
-		if (temp == null) {
+		if (temp == null || temp == "") {
 			throw new IOException("you must enter an index");
 		}
 		String[] temps = temp.split(" ");
@@ -152,7 +152,11 @@ public class Parser {
 		} else {
 			end = operation.length();
 		}
-		return operation.substring(start, end);
+		if (start <= end) {
+			return operation.substring(start, end);
+		} else {
+			return null;
+		}
 	}
 
 	public String getVenue(String operation) throws NullPointerException {
