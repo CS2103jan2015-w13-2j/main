@@ -137,7 +137,8 @@ public class Parser {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
-		assert(getOperation(operation) == OPERATION_ADD);
+		assert(getOperation(operation) == OPERATION_ADD ||
+				getOperation(operation) == OPERATION_SEARCH);
 		int start = operation.indexOf(' ') + 1;
 		if (start >= operation.length()) {
 			throw new StringIndexOutOfBoundsException("no title inputed");
