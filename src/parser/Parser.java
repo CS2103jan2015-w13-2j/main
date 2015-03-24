@@ -42,7 +42,6 @@ public class Parser {
 	private static final int OPERATION_SORT = 9;
 	private static final int OPERATION_SEARCH = 10;
 	
-	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
 	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
 	private static final String[] KEYWORD_CLEAR = {"clear", "claen"};
@@ -55,8 +54,6 @@ public class Parser {
 	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
 	private static final String[] KEYWORD_SORT = {"sort"};
 	private static final String[] KEYWORD_SEARCH = {"find","search"};
-	
-	
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
@@ -174,20 +171,56 @@ public class Parser {
 		return featureList.get(operation);
 	}
 	
+	public int getIndex(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException, IOException {
+		assert(getOperation(operation) == OPERATION_MODIFY);
+		String temp = getTitle(operation);
+		String[] temps = temp.split(" ");
+		Matcher m = NUMBERS.matcher(temps[0]);
+		if (m.matches()) {
+			return Integer.valueOf(temps[0]);
+		} else {
+			throw new IOException("the index you entered is illegal");
+		}
+	}
+	
+	public String getNewTitle(String operation) throws NullPointerException, 
+	StringIndexOutOfBoundsException {
+		assert(getOperation(operation) == OPERATION_MODIFY);
+		String temp = getTitle(operation);
+		String[] temps = temp.split(" ");
+		if (temps.length < 2) {
+			return null;
+		} else {
+			return combineString(temps);
+		}
+	}
+	
+	//combine the array of String from the second element onwards
+	private String combineString(String[] temps) {
+		String str = "";
+		temps[0] = "";
+		for (String temp : temps) {
+			str = str + temp;
+		}
+		return str;
+	}
+
 	public String getTitle(String operation) throws NullPointerException, 
 	StringIndexOutOfBoundsException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
+		}
+		assert(getOperation(operation) == OPERATION_ADD);
+		int start = operation.indexOf(' ') + 1;
+		if (start >= operation.length()) {
+			throw new StringIndexOutOfBoundsException("no title inputed");
 		}
 		int end = getFirstOptionIndex(operation);
 		if (end != -1) {
 			end = end - 1;
 		} else {
 			end = operation.length();
-		}
-		int start = operation.indexOf(' ') + 1;
-		if (start >= operation.length()) {
-			throw new StringIndexOutOfBoundsException("no title inputed");
 		}
 		return operation.substring(start, end);
 	}
@@ -216,7 +249,7 @@ public class Parser {
 		return getContent("-v", operation);
 	}
 	
-	public Date getDate(String operation) {
+	public Date getDate(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
@@ -228,7 +261,7 @@ public class Parser {
 		}
 	}
 	
-	public Date getDeadline(String operation) throws NullPointerException {
+	public Date getDeadline(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
 			throw new NullPointerException("the command cannot be null");
 		}
@@ -240,25 +273,6 @@ public class Parser {
 		}
 	}
 	
-	public int getIndex(String operation) throws NullPointerException, IOException {
-		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		}
-		assert(getOperation(operation) == OPERATION_MODIFY);
-		int start = operation.indexOf(" ");
-		int end = operation.indexOf(" ", start +1);
-		if (end == -1) {
-			end = operation.length();
-		}
-		String index = operation.substring(start + 1, end);
-		Matcher m = NUMBERS.matcher(index);
-		if (m.matches()) {
-			return Integer.valueOf(index);
-		} else {
-			throw new IOException("the index you entered is illegal");
-		}
-	}
-
 	private String getContent(String operationType, String operation) {
 		assert(isInOptions(operationType));
 		assert(operation != null);

@@ -2,6 +2,7 @@ package parser;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,8 +28,14 @@ public class testDateParser {
 		}
 		
 		//test empty input
-		output = dp.getDate("");
-		assertEquals(null, output);
+		try {
+			output = dp.getDate("");
+			assertEquals(null, output);
+		} catch (NullPointerException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		
 		//test date string with illegal date flat/leap
 		try {
@@ -39,6 +46,8 @@ public class testDateParser {
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		try {
@@ -49,18 +58,32 @@ public class testDateParser {
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-		
-		//test date string with illegal date month illegal
-		try {
-			sdf = new SimpleDateFormat("yyyy-MM-dd");
-			dateString = "2015-13-29";
-			output = dp.getDate(dateString);
-			dateString = "2015-3-1";
-			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		//test date string with illegal date, month illegal
+		try {
+			dateString = "2018-13-29";
+			output = dp.getDate(dateString);
+			fail("No exception thrown.");
+		} catch (Exception ex) {
+			assertTrue(ex instanceof IOException);
+			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
+		}
+		
+		//test date string with illegal date, day illegal
+		try {
+			dateString = "2018-5-32";
+			output = dp.getDate(dateString);
+			fail("No exception thrown.");
+		} catch (Exception ex) {
+			assertTrue(ex instanceof IOException);
+			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
+		}
+		
+		//test date string with illegal time, hour illegal
+		
 		
 		//test date only string yyyy-MM-dd
 		try {
@@ -69,6 +92,8 @@ public class testDateParser {
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
 		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
@@ -80,6 +105,8 @@ public class testDateParser {
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		//test date only string MM/dd/yyyy
@@ -90,6 +117,8 @@ public class testDateParser {
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		//test string with both time and date
@@ -99,6 +128,8 @@ public class testDateParser {
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), output);
 		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
