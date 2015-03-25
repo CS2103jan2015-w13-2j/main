@@ -40,8 +40,8 @@ public class UserInterface {
 	private final JLabel lblBackground = new JLabel("");
 	public static boolean isAdd = false;
 	public static int currentPage = 0;
-	public static int lastPage = 0;
 	private static double printPerPage = 5.0;
+	public static int lastPage = 0;
 
 
 	/**
@@ -107,17 +107,22 @@ public class UserInterface {
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
 					System.out.println("Left arrow pressed!");
+					if (currentPage > 0) {
 					if (display(currentPage - 1) == true && currentPage > 0) {
 						currentPage -= 1;
+					}
 					}
 					
 					System.out.println("current page = " + currentPage);
 				}
+					
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
 					System.out.println("Right Arrow Pressed!");
+					if (currentPage < lastPage) {
 					if (display(currentPage + 1) == true) {
 						currentPage += 1;
+					}
 					}
 					System.out.println("current page = " + currentPage);
 				}
@@ -190,6 +195,7 @@ public class UserInterface {
 		int start = pageNumber * 5;
 		int end = start + 5;
 		taskList = BTL.getTasks();
+		lastPage = (int) Math.ceil(taskList.size()/printPerPage) - 1;
 		panel.removeAll();
 		panel.revalidate();
 		panel.repaint();
