@@ -14,6 +14,8 @@ import javax.swing.JScrollPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -87,18 +89,27 @@ public class UserInterface {
 		
 		textField = new JTextField();
 		textField.getDocument().addDocumentListener(new TextFieldListener());
-		textField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-						System.out.println("Enter pressed");
-						try {
-							processTextField();
-						} catch (NullPointerException | IOException e1) {
-							new Exception("NullPointerException");
-							e1.printStackTrace();
-						}
-						lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
-						printStatusMessage();
+		textField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg1) {
+				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
+					try {
+						processTextField();
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
+					System.out.println("Left arrow pressed!");
+				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
+					System.out.println("Right Arrow Pressed!");
+				}
+			}
 		});
 		textField.setBounds(59, 466, 445, 36);
 		frame.getContentPane().add(textField);
