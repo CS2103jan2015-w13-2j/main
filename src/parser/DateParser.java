@@ -106,6 +106,9 @@ public class DateParser {
 			if (dateString.contains(temp)) {
 				int count = 0;
 				start = getNearestSpaceBefore(dateString, temp);
+				if (start == -1) {
+					start = 0;
+				}
 				while (count < intendedPotion) {
 					count++;
 					start = dateString.indexOf(temp, start + 1);

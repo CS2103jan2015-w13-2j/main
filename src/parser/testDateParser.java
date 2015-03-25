@@ -82,9 +82,6 @@ public class testDateParser {
 			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
 		}
 		
-		//test date string with illegal time, hour illegal
-		
-		
 		//test date only string yyyy-MM-dd
 		try {
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -132,6 +129,15 @@ public class testDateParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		//test date string with illegal time, minute illegal
+		try {
+			dateString = "2015-4-25 13:60";
+			output = dp.getDate(dateString);
+			fail("no exception thrown");
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains("the date format you entered is incorrect"));
+		}
 	}
-
 }
