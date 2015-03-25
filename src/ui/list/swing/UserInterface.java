@@ -1,6 +1,7 @@
 package ui.list.swing;
 
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,7 @@ import taskList.Task;
 import taskList.TaskList;
 
 import javax.swing.JButton;
+import javax.swing.border.TitledBorder;
 
 public class UserInterface {
 
@@ -34,6 +36,7 @@ public class UserInterface {
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
 	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
 	private final JLabel lblBackground = new JLabel("");
+	public static boolean isAdd = false;
 
 
 	/**
@@ -132,6 +135,7 @@ public class UserInterface {
 		textField.setText(null);
 		BTL.executeCommand(input);
 		display();
+		isAdd = false;
 	}
 	
 	public void display() {
@@ -146,7 +150,22 @@ public class UserInterface {
 	public void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
 //		System.out.println("adding label with: " + str);
-		panel.add(new JLabel(str));
+		
+		// to highlight added row
+		if (i+1 == taskList.size() && isAdd) {
+			System.out.println("adding last row");
+			JLabel addedRow = new JLabel(str);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
+			title.setTitleJustification(TitledBorder.CENTER);
+			addedRow.setBorder(BorderFactory.createTitledBorder(title));
+			panel.add(addedRow);
+		}
+		
+		else {
+			System.out.println("printing non last row");
+			panel.add(new JLabel(str));
+		}
+		
 		panel.revalidate();
 		panel.repaint();
 	}
