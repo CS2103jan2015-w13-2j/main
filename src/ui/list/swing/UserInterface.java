@@ -161,4 +161,8 @@ public class UserInterface {
 		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
 		frame.getContentPane().add(lblBackground);
 	}
+	
+	public void exit() {
+		frame.dispose();
+	}
 }
