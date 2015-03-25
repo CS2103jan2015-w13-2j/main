@@ -31,7 +31,7 @@ public class UserInterface {
 	private static JPanel panel = new JPanel();
 	private ArrayList<Task> taskList;
 	private static JLabel lblStatusMessage = new JLabel("");
-	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\" or \"delete\" to begin";
+	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
 	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
 	private final JLabel lblBackground = new JLabel("");
 
