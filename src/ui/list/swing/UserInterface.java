@@ -145,7 +145,7 @@ public class UserInterface {
 	
 	public void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
-		System.out.println("adding label with: " + str);
+//		System.out.println("adding label with: " + str);
 		panel.add(new JLabel(str));
 		panel.revalidate();
 		panel.repaint();
@@ -157,7 +157,7 @@ public class UserInterface {
 	}
 	
 	public void setBackground(JLabel lblBackground) {
-		System.out.println("setting background image");
+//		System.out.println("setting background image");
 		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
 		frame.getContentPane().add(lblBackground);
 	}
