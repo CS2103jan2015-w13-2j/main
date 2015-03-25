@@ -129,9 +129,9 @@ public class UserInterface {
 	public void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
 		String input = textField.getText();
+		textField.setText(null);
 		BTL.executeCommand(input);
 		display();
-		textField.setText(null);
 	}
 	
 	public void display() {
