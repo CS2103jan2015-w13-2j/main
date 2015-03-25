@@ -24,14 +24,16 @@ public class DisplaySetting {
 		String venue = task.getVenue();
 				
 		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
+		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE + HTML_BREAK);
+		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
 		
-		if (date != null) {
-			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE + HTML_BREAK);
-		}
-		
-		if (venue != null) {
-			data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
-		}
+//		if (date != null) {
+//			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE + HTML_BREAK);
+//		}
+//		
+//		if (venue != null) {
+//			data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
+//		}
 		
 		data.append(HTML_CLOSE);	
 	}
