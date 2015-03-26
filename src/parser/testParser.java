@@ -11,6 +11,11 @@ import org.junit.Test;
 
 public class testParser {
 	
+	private static final String EXCEPTION_NOTITLE = "no title inputed";
+	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
+	private static final String EXCEPTION_NOINDEX = "you must enter an index";
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
@@ -31,9 +36,22 @@ public class testParser {
 	public void initParser() {
 		p = new Parser();
 	}
+	/*
+	@Test
+	public void testGetOperation() {
+		testNumber = p.getOperation(null);
+		
+	}*/
 	
 	@Test
 	public void testArguments() {
+		//test Arguments null
+		try {
+			testBoolean = p.isArgumentsCorrect(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
 		//test Arguments normal
 		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
 		assertEquals(true, testBoolean);
@@ -47,37 +65,57 @@ public class testParser {
 	
 	@Test
 	public void testGetIndex() {
+		//test getIndex null
+		try {
+			testNumber = p.getIndex(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
 		//test getIndex normal
 		try {
 			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
 			assertEquals(7, testNumber);
 		} catch (Exception e) {
-			fail("unexpected exception");
+			e.printStackTrace();
 		}
 		//test getIndex no index
 		try {
 			testNumber = p.getIndex("modify -d the day after tomorrow");
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
-			assertTrue(e.getMessage().contains("you must enter an index"));
+			assertTrue(e.getMessage().contains(EXCEPTION_NOTITLE));
 		}
 		//test getIndex index not digits
 		try {
 			testNumber = p.getIndex("modify sd -d the day after tomorrow");
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
-			assertTrue(e.getMessage().contains("the index you entered is illegal"));
+			assertTrue(e.getMessage().contains(EXCEPTION_INDEXILLEGAL));
 		}
 	}
 	
 	@Test
 	public void testGetNewTitle() {
+		//test getNewTitle null
+				try {
+					testString = p.getNewTitle(null);
+				} catch (Exception e) {
+					assertTrue(e instanceof NullPointerException);
+					assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+				}
 		//test getNewTitle normal
-		testString = p.getNewTitle("modify 8 go to school -d tomorrow");
-		assertEquals("go to school", testString);
-		//test getNewTitle no new title
-		testString = p.getNewTitle("modify 8   -d tomorrow");
-		assertEquals(null, testString);
+		try {
+			testString = p.getNewTitle("modify 8 go to school -d tomorrow");
+			assertEquals("go to school", testString);
+			//test getNewTitle no new title
+			testString = p.getNewTitle("modify 8   -d tomorrow");
+			assertEquals(null, testString);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@After

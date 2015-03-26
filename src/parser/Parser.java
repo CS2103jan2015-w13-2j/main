@@ -3,8 +3,12 @@ package parser;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import taskList.TaskList;
 
 /**
  * APIs:
@@ -34,6 +38,11 @@ import java.util.regex.Pattern;
  *
  */
 public class Parser {
+	private static final String EXCEPTION_NOTITLE = "no title inputed";
+	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
+	private static final String EXCEPTION_NOINDEX = "you must enter an index";
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
 	private static final int OPERATION_UNKNOWN = 0;
@@ -68,6 +77,9 @@ public class Parser {
 	private static Hashtable<String, Integer> featureList = null; 
 	private static DateParser dateParser = null;
 	
+	private static String name = Parser.class.getName(); 
+	private static Logger logger = Logger.getLogger(name);
+	
 	public Parser() {
 		initFeatureList();
 		dateParser = new DateParser();
@@ -75,7 +87,7 @@ public class Parser {
 	
 	public int getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		if (operation.indexOf(' ') != -1) {
 			operation = operation.substring(0, operation.indexOf(' '));
@@ -91,8 +103,9 @@ public class Parser {
 	
 	public boolean isValid(String operation) throws NullPointerException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
-		} else if (operation.indexOf(' ') != -1) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		} 
+		if (operation.indexOf(' ') != -1) {
 			return true;
 		} else {
 			return false;
@@ -101,30 +114,29 @@ public class Parser {
 	
 	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		return isArgumentsNumberCorrect(operation) &&
 				isArgumentsTypeCorrect(operation);
 	}
 
-	public int getIndex(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException, IOException {
-		assert(getOperation(operation) == OPERATION_MODIFY);
+	public int getIndex(String operation) throws IOException {
+		assert(getOperation(operation) == OPERATION_MODIFY ||
+				getOperation(operation) == OPERATION_DELETE);
 		String temp = getTitle(operation);
-		if (temp == null || temp == "") {
-			throw new IOException("you must enter an index");
+		if (temp == "" || temp == null) {
+			logIOException(EXCEPTION_NOINDEX);
 		}
 		String[] temps = temp.split(" ");
 		Matcher m = NUMBERS.matcher(temps[0]);
-		if (!m.matches()) {
-			return Integer.valueOf(temps[0]);
-		} else {
-			throw new IOException("the index you entered is illegal");
-		}
+		if (m.matches()) {
+			logIOException(EXCEPTION_INDEXILLEGAL);
+		} 
+		return Integer.valueOf(temps[0]);
 	}
 	
 	public String getNewTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException {
+	IOException {
 		assert(getOperation(operation) == OPERATION_MODIFY);
 		String temp = getTitle(operation);
 		String[] temps = temp.split(" ");
@@ -136,39 +148,36 @@ public class Parser {
 	}
 
 	public String getTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException {
+	IOException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		assert(getOperation(operation) == OPERATION_ADD ||
 				getOperation(operation) == OPERATION_SEARCH);
 		int start = operation.indexOf(' ') + 1;
-		if (start >= operation.length()) {
-			throw new StringIndexOutOfBoundsException("no title inputed");
+		if (start >= operation.length() || start == 0) {
+			logIOException(EXCEPTION_NOTITLE);
 		}
 		int end = getFirstOptionIndex(operation);
-		if (end != -1) {
-			end = end - 1;
-		} else {
+		if (end == -1) {
 			end = operation.length();
 		}
-		if (start <= end) {
-			return operation.substring(start, end);
-		} else {
-			return null;
+		if (start >= end) {
+			logIOException(EXCEPTION_NOTITLE);
 		}
+		return operation.substring(start, end);
 	}
 
 	public String getVenue(String operation) throws NullPointerException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		return getContent("-v", operation);
 	}
 	
 	public Date getDate(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		String dateString = getContent("-d", operation);
 		if (dateString == null) {
@@ -180,7 +189,7 @@ public class Parser {
 	
 	public Date getDeadline(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
-			throw new NullPointerException("the command cannot be null");
+			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		String deadLineString = getContent("-dd", operation);
 		if (deadLineString == null) {
@@ -327,5 +336,15 @@ public class Parser {
 		} else {
 			return FAIL;
 		}
+	}
+	
+	private void logNullPointer(String msg) throws NullPointerException {
+		logger.log(Level.WARNING, msg);
+		throw new NullPointerException(msg);
+	}
+	
+	private void logIOException(String msg) throws IOException {
+		logger.log(Level.WARNING, msg);
+		throw new IOException(msg);
 	}
 }
