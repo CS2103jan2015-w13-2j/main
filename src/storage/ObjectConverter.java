@@ -146,7 +146,7 @@ public class ObjectConverter {
 	}
 	
 	private void showMessageNotFound(String key){
-		logger.info(String.format(MESSAGE_NOT_FOUND, key));
+		//logger.info(String.format(MESSAGE_NOT_FOUND, key));
 	}
 
 }
