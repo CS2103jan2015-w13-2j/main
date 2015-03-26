@@ -13,9 +13,6 @@ import taskList.Task;
 import parser.Parser;
 
 public class TaskList {
-	private static final String FILE_NAME_DEFAULT = "default_output.txt";
-	private static final String WELCOME_MESSAGE = "Welcome to TextBuddy. %s is ready for use\n";
-	private static final String MESSAGE_INVALID_COMMOND = "Invalid operation.\n";
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
 	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
@@ -25,7 +22,6 @@ public class TaskList {
 	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
 	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify from %s %s\n";
 	
-	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
 	private static final int OPERATION_CLEAR = 3;
@@ -38,19 +34,20 @@ public class TaskList {
 	private static final int OPERATION_SEARCH = 10;
 	private static final int NORMAL_EXIT = 0;
 
-	private static Scanner sc;
-	private static String fileName;
-	private static JsonStringFileOperation fo;
-	private static ArrayList<Task> taskList;
-	private static ArrayList<Task> searchResult;
+	private Scanner sc;
+	private String fileName;
+	private JsonStringFileOperation fo;
+	private ArrayList<Task> taskList;
+	private ArrayList<Task> searchResult;
 	//mode == 0 means the result shown in screen is taskList,
 	//mode == 1 means the result shown in screen is searchResult
-	private static int mode;
-	private static Parser bp;
-	private static Undo undo;
-	private static ArrayList<String> feedBack = new ArrayList<String>();
-	private static String name = TaskList.class.getName(); 
-	private static Logger log = Logger.getLogger(name);// <= (2)  
+	private int mode;
+	private Parser bp;
+	private Undo<ArrayList<Task>> undo;
+	private ArrayList<String> feedBack = new ArrayList<String>();
+	private String name = TaskList.class.getName(); 
+	private Logger log = Logger.getLogger(name);// <= (2)  
+	private static TaskList sharedInstance; 
 	public TaskList(String inputFileName){
 		mode = 0;
 		fileName = inputFileName;
@@ -59,7 +56,7 @@ public class TaskList {
 		try{
 			taskList = fo.readFile();
 			searchResult = new ArrayList<Task>();
-			undo = new Undo(taskList);
+			undo = new Undo<ArrayList<Task>>(taskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
 			feedBack.add("Cannot open the file correctly");
@@ -69,19 +66,26 @@ public class TaskList {
 		//Add in a initParser() command.
 	}
 	
+	public TaskList getStaredInstance(String inputFileName){
+		if (sharedInstance == null) {
+			sharedInstance = new TaskList(inputFileName);
+		}
+		return sharedInstance;
+	}
+	
 	/*
 	 * print messages
 	 */
-	private static void showMessage(String message, String content) {
-		feedBack.add(String.format(message, fileName, content));
-		System.out.print(String.format(message, fileName, content));
+	private void showMessage(String message, String content) {
+		feedBack.add(String.format(message, this.fileName, content));
+		System.out.print(String.format(message, this.fileName, content));
 	}
 
 	/*
 	 * print single messages
 	 */
-	private static void showMessage(String message) {
-		feedBack.add(message);
+	private void showMessage(String message) {
+		this.feedBack.add(message);
 		System.out.print(message);
 	}
 
@@ -90,12 +94,12 @@ public class TaskList {
 	/*
 	 * show the file content in format
 	 */
-	private static void showFileContent(int index, String content) {
+	private void showFileContent(int index, String content) {
 		System.out.print(String.format(MESSAGE_DISPLAY_OPERATION, index,
 				content));
 	}
 	
-	public static void startWaitingForCommand() throws NullPointerException, IOException{
+	public void startWaitingForCommand() throws NullPointerException, IOException{
 		sc = new Scanner(System.in);
 		String inputCommand;
 		while (true) {
@@ -105,10 +109,15 @@ public class TaskList {
 		}
 	}
 	
-	public static void executeCommand(String command) throws NullPointerException, IOException {
+	public void executeCommand(String command) {
 		switch (bp.getOperation(command)) {
 		case OPERATION_ADD:
-			add(command);
+			try {
+				add(command);
+			} catch (Exception e) {
+				showMessage(e.getMessage());
+				e.printStackTrace();
+			}
 			break;
 		case OPERATION_DELETE:
 			delete(command);
@@ -120,7 +129,12 @@ public class TaskList {
 			clear();
 			break;
 		case OPERATION_MODIFY:
-			modify(command);
+			try {
+				modify(command);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		case OPERATION_UNDO:
 			undo();
@@ -139,37 +153,34 @@ public class TaskList {
 			break;
 		default:
 			assert(false);
-			feedBack.add("No such command");
+			showMessage("No such command");
 		}
-	}
-	
-	/*
-	 * show the input operation is invalid
-	 */
-	private static void unknownOperation() {
-		System.err.print(MESSAGE_INVALID_COMMOND);
 	}
 	
 	/*
 	 * add new content to arraylist, but do not actully store to file
 	 */
-	private static void add(String command) throws NullPointerException, IOException {
+	private void add(String command) throws Exception{
 		assert(bp.isValid(command));
 		String content = bp.getTitle(command);
-		Date date = bp.getDate(command);
-		System.out.println(date);
-		Date deadLine = bp.getDeadline(command);
-		String venue = bp.getVenue(command);
-		showMessage(MESSAGE_ADD_OPERATION, content);
-		taskList.add(new Task(content,date,deadLine,venue));
-		saveFile();
-		undo.add(taskList);
+		try{
+			Date date = bp.getDate(command);
+			System.out.println(date);
+			Date deadLine = bp.getDeadline(command);
+			String venue = bp.getVenue(command);
+			showMessage(MESSAGE_ADD_OPERATION, content);
+			taskList.add(new Task(content,date,deadLine,venue));
+			saveFile();
+			undo.add(taskList);
+		}catch (Exception e){
+			throw e;
+		}
 	}
 	
 	/*
 	 * delete content in arraylist, but do not actully store to file
 	 */
-	private static void delete(String command) {
+	private void delete(String command) {
 		String content = "";
 		if (command.indexOf(' ') != -1) {
 			content = command.substring(command.indexOf(' ') + 1);
@@ -188,7 +199,7 @@ public class TaskList {
 	/*
 	 * display the content in arraylist, which is the real-time file content
 	 */
-	private static void display() {
+	private void display() {
 		mode = 0;
 		if (taskList.size() == 0) {
 			showMessage(MESSAGE_EMPTY_FILE, null);
@@ -204,32 +215,36 @@ public class TaskList {
 	/*
 	 * modify the content in arraylist, which is the real-time file content
 	 */
-	private static void modify(String command) throws NullPointerException, IOException {
+	private void modify(String command) throws Exception{
 		assert(bp.isValid(command));
 		String content = bp.getNewTitle(command);
-		int index = bp.getIndex(command) - 1;
-		Date newDate = bp.getDate(command);
-		Date deadLine = bp.getDeadline(command);
-		String newVenue = bp.getVenue(command);
-		if ((index < 0)||(index > taskList.size())){
-			showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
-			return;
+		try{
+			int index = bp.getIndex(command) - 1;
+			Date newDate = bp.getDate(command);
+			Date deadLine = bp.getDeadline(command);
+			String newVenue = bp.getVenue(command);
+			if ((index < 0)||(index > taskList.size())){
+				showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
+				return;
+			}
+			if (content == null) content = taskList.get(index).getContent();
+			if (newVenue == null) newVenue = taskList.get(index).getVenue();
+			if (deadLine == null) deadLine = taskList.get(index).getDeadline();
+			if (newDate == null) newDate = taskList.get(index).getDate();
+			Task newTask = new Task(content,newDate,deadLine,newVenue);
+			taskList.remove(index);
+			taskList.add(index, newTask);
+			showMessage(MESSAGE_MODIFY_OPERATION, content);
+			saveFile();
+			undo.add(taskList);
+		}catch (Exception e){
+			throw e;
 		}
-		if (content == null) content = taskList.get(index).getContent();
-		if (newVenue == null) newVenue = taskList.get(index).getVenue();
-		if (deadLine == null) deadLine = taskList.get(index).getDeadline();
-		if (newDate == null) newDate = taskList.get(index).getDate();
-		Task newTask = new Task(content,newDate,deadLine,newVenue);
-		taskList.remove(index);
-		taskList.add(index, newTask);
-		showMessage(MESSAGE_MODIFY_OPERATION, content);
-		saveFile();
-		undo.add(taskList);
 	}	
 	/*
 	 * rodo, return the arrayList before last operation.
 	 */
-	private static void redo() {
+	private void redo() {
 		if (undo.canRedo()){
 			taskList = (ArrayList<Task>) undo.redo();
 			showMessage("redo operation successfully");
@@ -241,7 +256,7 @@ public class TaskList {
 	/*
 	 * undo, return the arrayList before last undo operation.
 	 */
-	private static void undo() {
+	private void undo() {
 		if (undo.canUndo()){
 			taskList = (ArrayList<Task>) undo.undo();
 			showMessage("undo operation successfully");
@@ -252,7 +267,7 @@ public class TaskList {
 	/*
 	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
 	 */
-	private static void sort() {
+	private void sort() {
 		Collections.sort(taskList);
 		undo.add(taskList);
 		showMessage("sort finished");
@@ -262,7 +277,7 @@ public class TaskList {
 	/*
 	 * search operation would return all the tasks which conform to the sort requirements.
 	 */
-	private static void search(String command) {
+	private void search(String command) {
 		mode = 1;
 		searchResult.clear();
 		String keyWord = bp.getTitle(command);
@@ -277,7 +292,7 @@ public class TaskList {
 	/*
 	 * clear all data in arraylist, but do not actully store to file
 	 */
-	private static void clear() {
+	private void clear() {
 		showMessage(MESSAGE_CLEAR_OPERATION, null);
 		taskList.clear();
 		saveFile();
@@ -288,14 +303,14 @@ public class TaskList {
 	 * exit the program
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
-	private static void exit() {
+	private void exit() {
 		saveFile();
 		ui.BasicUI.exit(NORMAL_EXIT);
 		sc.close();
 		System.exit(NORMAL_EXIT);
 	}
 	
-	private static void saveFile(){
+	private void saveFile(){
 		try{
 			fo.saveToFile(taskList);
 		}catch(Exception e){
@@ -303,7 +318,7 @@ public class TaskList {
 		}
 	}
 	
-	public static ArrayList<String> getFileContent(){
+	public ArrayList<String> getFileContent(){
 		ArrayList<String> content = new ArrayList<String>(); 
 		for (Task task: taskList){
 			content.add(task.getContent());
@@ -311,22 +326,24 @@ public class TaskList {
 		return content;
 	}
 
-	public static ArrayList<Task> getTasks(){
+	@SuppressWarnings("unchecked")
+	public ArrayList<Task> getTasks(){
 		if (mode == 0)
 			return (ArrayList<Task>) taskList.clone();
 		else
 			return (ArrayList<Task>) searchResult.clone();
 	}
 	
-	public static ArrayList<String> getFeedBacks(){
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getFeedBacks(){
 		return (ArrayList<String>) feedBack.clone();
 	}
 	
-	public static String getLastFeedBack(){
+	public String getLastFeedBack(){
 		return feedBack.get(feedBack.size()-1);
 	}
 	
-	public static String getAllTitles(){
+	public String getAllTitles(){
 		String answer = new String("");
 		if (mode == 0){
 			for (int i = 0; i < taskList.size(); i++){
@@ -344,7 +361,7 @@ public class TaskList {
 		}
 	}
 	
-	public static ArrayList<String> getTaskList(){
+	public ArrayList<String> getTaskList(){
 		ArrayList<String> answers = new ArrayList<String>();
 		for (int i = 0; i < taskList.size(); i++){
 			answers.add(taskList.get(i).getContent());

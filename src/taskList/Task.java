@@ -1,15 +1,13 @@
 package taskList;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import parser.DateParser;
 
 
-public class Task implements Comparable{
+public class Task implements Comparable<Task>{
 	private String content;
-	private int index;
 	private String venue;
 	private Date date;
 	private Date deadline;
@@ -122,8 +120,7 @@ public class Task implements Comparable{
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		Task arg = (Task) arg0;
-		return -(arg.getContent().compareTo(this.getContent()));
+	public int compareTo(Task o) {
+		return -(o.getContent().compareTo(this.getContent()));
 	}
 }
