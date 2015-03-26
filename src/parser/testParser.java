@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class testParser {
-
+	
 	private static final int OPERATION_UNKNOWN = 0;
 	private static final int OPERATION_ADD = 1;
 	private static final int OPERATION_DELETE = 2;
