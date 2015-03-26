@@ -61,12 +61,19 @@ public class DateParser {
 		hour = getTimeElement(0, dateString);
 		min = getTimeElement(1, dateString);
 		sec = getTimeElement(2, dateString);
-		if (min != null && Integer.parseInt(min) > 59 
-		 || min != null && Integer.parseInt(min) < 0
-		 || sec != null && Integer.parseInt(sec) > 59
-		 || sec != null && Integer.parseInt(sec) < 0) {
+		if (isTimeIllegal(hour, min, sec)) {
 			throw new IOException("the date format you entered is incorrect");
 		}
+	}
+
+	private boolean isTimeIllegal(String hor, String min, String sec) {
+		boolean horIllegal = hor != null && Integer.parseInt(hor) > 23 ||
+							 hor !=null && Integer.parseInt(hor) < 0;
+		boolean minIllegal = min != null && Integer.parseInt(min) > 59 || 
+							 min != null && Integer.parseInt(min) < 0;
+		boolean secIllegal = sec != null && Integer.parseInt(sec) > 59 ||
+							 sec != null && Integer.parseInt(sec) < 0;
+		return horIllegal || minIllegal || secIllegal;
 	}
 	
 	private String getDateElement(int intendedPotion, String dateString) {

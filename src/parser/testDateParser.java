@@ -7,18 +7,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class testDateParser {
-
+	
+	private Date output;
+	private DateParser dp;
+	private SimpleDateFormat sdf;
+	private String dateString;
+	
+	@Before
+	public void initDateParser(){
+		dp = new DateParser();
+	}
+	
 	@Test
-	public void test() {
-		
-		Date output;
-		DateParser dp = new DateParser();
-		SimpleDateFormat sdf;
-		String dateString;
-		//test null input
+	public void testNullInput() {
 		try{
 			output = dp.getDate(null);
 			fail("No exception thrown.");
@@ -26,8 +32,10 @@ public class testDateParser {
 			assertTrue(ex instanceof NullPointerException);
 			assertTrue(ex.getMessage().contains("the command cannot be null"));
 		}
-		
-		//test empty input
+	}
+	
+	@Test
+	public void testEmptyInput() {
 		try {
 			output = dp.getDate("");
 			assertEquals(null, output);
@@ -36,8 +44,10 @@ public class testDateParser {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
-		//test date string with illegal date flat/leap
+	}
+	
+	@Test
+	public void testFlatYear() {
 		try {
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
 			dateString = "2015-2-29";
@@ -61,8 +71,10 @@ public class testDateParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//test date string with illegal date, month illegal
+	}
+	
+	@Test
+	public void testMonthIllegal() {
 		try {
 			dateString = "2018-13-29";
 			output = dp.getDate(dateString);
@@ -71,8 +83,10 @@ public class testDateParser {
 			assertTrue(ex instanceof IOException);
 			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
 		}
-		
-		//test date string with illegal date, day illegal
+	}
+	
+	@Test
+	public void testDayIllegal() {
 		try {
 			dateString = "2018-5-32";
 			output = dp.getDate(dateString);
@@ -81,7 +95,10 @@ public class testDateParser {
 			assertTrue(ex instanceof IOException);
 			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
 		}
-		
+	}
+	
+	@Test
+	public void testDateOnly() {
 		//test date only string yyyy-MM-dd
 		try {
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -117,8 +134,10 @@ public class testDateParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//test string with both time and date
+	}
+	
+	@Test
+	public void testDateAndTime() {
 		try {
 			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			dateString = "2015-4-25 13:00";
@@ -129,8 +148,10 @@ public class testDateParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//test date string with illegal time, minute illegal
+	}
+	
+	@Test
+	public void testMinuteIllegal() {
 		try {
 			dateString = "2015-4-25 13:60";
 			output = dp.getDate(dateString);
@@ -139,5 +160,10 @@ public class testDateParser {
 			assertTrue(e instanceof IOException);
 			assertTrue(e.getMessage().contains("the date format you entered is incorrect"));
 		}
+	}
+	
+	@After
+	public void cleanUp() {
+		dp = null;
 	}
 }
