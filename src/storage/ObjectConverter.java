@@ -81,7 +81,7 @@ public class ObjectConverter {
 		return getTaskListFromJsonObject(jsonObject);
 	}
 	
-	public ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject){
+	private ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject){
 		
 		Task tempTask;
 		ArrayList<Task> taskList = new ArrayList<Task>();

@@ -79,7 +79,14 @@
    </type>
    <relationship>
       <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<parser{Parser.java[Parser"/>
+      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
+      <targetType="=./src<parser{Parser.java[Parser"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
+      <sourceType="=./src<taskList{Task.java[Task"/>
       <targetType="=./src<parser{DateParser.java[DateParser"/>
       <bendpoints>
       </bendpoints>
@@ -92,23 +99,9 @@
       </bendpoints>
    </relationship>
    <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
-      <sourceType="=./src<taskList{Task.java[Task"/>
+      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
+      <sourceType="=./src<parser{Parser.java[Parser"/>
       <targetType="=./src<parser{DateParser.java[DateParser"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyPPart"/>
-      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <targetType="=./src<taskList{Task.java[Task"/>
-      <bendpoints>
-      </bendpoints>
-   </relationship>
-   <relationship>
-      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
-      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
-      <targetType="=./src<taskList{Task.java[Task"/>
       <bendpoints>
       </bendpoints>
    </relationship>
@@ -120,9 +113,9 @@
       </bendpoints>
    </relationship>
    <relationship>
-      <class="edu.buffalo.cse.green.relationship.composition.CompositionPart"/>
-      <sourceType="=./src<taskList{TaskList.java[TaskList"/>
-      <targetType="=./src<parser{Parser.java[Parser"/>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyLPart"/>
+      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <targetType="=./src<taskList{Task.java[Task"/>
       <bendpoints>
       </bendpoints>
    </relationship>
@@ -131,18 +124,13 @@
       <sourceType="=./src<taskList{Undo.java[Undo"/>
       <targetType="=./src<taskList{Undo.java[Undo"/>
       <bendpoints>
-         <bendpoint>
-            <x="40"/>
-            <y="0"/>
-         </bendpoint>
-         <bendpoint>
-            <x="40"/>
-            <y="-40"/>
-         </bendpoint>
-         <bendpoint>
-            <x="0"/>
-            <y="-40"/>
-         </bendpoint>
+      </bendpoints>
+   </relationship>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyPPart"/>
+      <sourceType="=./src<storage{ObjectConverter.java[ObjectConverter"/>
+      <targetType="=./src<taskList{Task.java[Task"/>
+      <bendpoints>
       </bendpoints>
    </relationship>
 </uml>
