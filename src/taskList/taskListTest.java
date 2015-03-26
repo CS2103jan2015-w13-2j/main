@@ -74,6 +74,15 @@ public class taskListTest {
 		//test delete
 		testOneCommand("simple delete 1",EXCEPTED_ANSWER_DELETE_1, DELETE_COMMAND_1,taskList);
 		
+		//test delete negative 
+		testOneCommand("simple delete 2",EXCEPTED_ANSWER_DELETE_1, "delete -10",taskList);
+		
+		//test delete zero 
+		testOneCommand("simple delete 3",EXCEPTED_ANSWER_DELETE_1, "delete 0",taskList);
+				
+		//test delete large index 
+		testOneCommand("simple delete 4",EXCEPTED_ANSWER_DELETE_1, "delete 100",taskList);
+		
 		//test display
 		testOneCommand("simple display",EXCEPTED_ANSWER_DISPLAY, DISPLAY_COMMAND,taskList);
 		
@@ -174,6 +183,9 @@ public class taskListTest {
 	}
 	private void testOneCommand(String description, String expected, String command, TaskList taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
+		System.out.println("Debug");
+		System.out.println(expected);
+		System.out.println(taskList.getAllTitles());
 		assertEquals(description, expected, taskList.getAllTitles()); 
 	}
 
