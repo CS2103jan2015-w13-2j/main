@@ -1,10 +1,7 @@
 package taskList;
 
 
-import java.lang.reflect.Method;  
-import java.util.ArrayList;
-import java.util.LinkedList;  
-import java.util.List;  
+import java.util.ArrayList;  
   
 public class Undo<T> {  
       
@@ -12,10 +9,11 @@ public class Undo<T> {
 	private int pointer;
 	
 	
+	@SuppressWarnings("unchecked")
 	public Undo(T initElement){
 		ArrayList<Task> newStatusClone = (ArrayList<Task>) initElement;
 		ArrayList<Task> newStatusClone2 = (ArrayList<Task>) newStatusClone.clone();
-		stack.add((T) newStatusClone2);
+		stack.add(((T) newStatusClone2));
 		pointer = 0;
 	}
 	
@@ -31,7 +29,6 @@ public class Undo<T> {
 	}
 	
 	public void reset(){
-		T initObject = stack.get(0);
 		for (int i=1; i< stack.size(); i++){
 			stack.remove(i);
 		}
@@ -45,6 +42,7 @@ public class Undo<T> {
 		return stack.get(pointer);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void add(T newStatus){
 		for (int i = pointer+1; i < stack.size();i++){
 			stack.remove(i);

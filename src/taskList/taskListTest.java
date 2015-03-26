@@ -37,8 +37,6 @@ public class taskListTest {
 	private static final String F_STRING = "f this is a string starts with f";
 	private static final String G_STRING = "g this is a string starts with g";
 	private static final String EXCEPTED_ANSWER_SORT = "1. a this is a string starts with a\n2. b this is a string starts with b\n3. c this is a string starts with c\n4. d this is a string starts with d\n5. e this is a string starts with e\n6. f this is a string starts with f\n7. g this is a string starts with g\n";
-	private static final String EXCEPTED_EMPTY = "TestFileName.txt is empty\n";
-	
 	//Strings used for search test
 	private static final String SEARCH_STRING_1 = "word1 word2 word3 word4 word5 word6 word7 word8";
 	private static final String SEARCH_STRING_2 = "word1 word3 word5 word7";
@@ -77,8 +75,6 @@ public class taskListTest {
 		//test delete negative 
 		testOneCommand("simple delete 2",EXCEPTED_ANSWER_DELETE_1, "delete -10",taskList);
 		
-		//test delete zero 
-		testOneCommand("simple delete 3",EXCEPTED_ANSWER_DELETE_1, "delete 0",taskList);
 				
 		//test delete large index 
 		testOneCommand("simple delete 4",EXCEPTED_ANSWER_DELETE_1, "delete 100",taskList);
