@@ -22,9 +22,25 @@ public class DisplaySetting {
 		String taskName = task.getContent();
 		String date = task.getDateString();
 		String venue = task.getVenue();
+		String endDate = task.getDeadlineString();
+		
+		if (date == null) {
+			date = "---";
+		}
+		
+		if (venue == null) {
+			venue = "---";
+		}
 				
 		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
-		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE + HTML_BREAK);
+		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
+		
+		if (endDate != null) {
+			data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
+		}
+		
+		data.append(HTML_BREAK);
+		
 		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
 		
 //		if (date != null) {
