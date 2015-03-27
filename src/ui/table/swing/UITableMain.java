@@ -30,7 +30,7 @@ public class UITableMain extends JPanel{
 	public static final InteractiveForm interactiveForm = new InteractiveForm();
 	ArrayList<Task> taskList;
 	public static JTextField textField;
-	private static TaskList BTL;
+	private static TaskList TL;
 	private static JLabel statusFeedback = new JLabel("");	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add to create a task";
 	public static JLabel commandGuideLabel = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
@@ -54,8 +54,8 @@ public class UITableMain extends JPanel{
 	 * Create the application.
 	 */
 	public UITableMain() {
-		BTL = new TaskList("Test.txt");
-		taskList = TaskList.getTasks();
+		TL = new TaskList("Test.txt");
+		taskList = TL.getTasks();
 		initialize();
 	}
 
@@ -93,7 +93,7 @@ public class UITableMain extends JPanel{
 							e1.printStackTrace();
 						}
 						commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
-						generateStatusMessage(TaskList.getLastFeedBack());
+						generateStatusMessage(TL.getLastFeedBack());
 				}
 		});
 		textField.setBounds(22, 382, 616, 33);
@@ -111,7 +111,7 @@ public class UITableMain extends JPanel{
 					e1.printStackTrace();
 				}
 				commandGuideLabel.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
-				generateStatusMessage(TaskList.getLastFeedBack());
+				generateStatusMessage(TL.getLastFeedBack());
 			}
 		});
 		btnEnter.setBounds(655, 382, 117, 33);
@@ -136,8 +136,8 @@ public class UITableMain extends JPanel{
 	
 	public void processTextField() throws NullPointerException, IOException {
 		String input = textField.getText();
-		BTL.executeCommand(input);
-		interactiveForm.updateTable(TaskList.getTasks());
+		TL.executeCommand(input);
+		interactiveForm.updateTable(TL.getTasks());
 		textField.setText(null);
 	}
 }
