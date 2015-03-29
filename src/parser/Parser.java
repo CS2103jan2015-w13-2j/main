@@ -43,6 +43,20 @@ public class Parser {
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
+	private static final String REGEX_VENUE = "[at|in]?.*";
+	private static final String REGEX_TIME = "[at|on]?.*";
+	private static final String REGEX_DEADLINE = "[by|due on|due at]?.*";
+	private static final String REGEX_ADD = "\".+\"\\s*.*";
+	private static final String REGEX_DELETE = "[delete|rm|remove]\\s*[0..9]*";
+	private static final String REGEX_CLEAR = "[clear|clean]";
+	private static final String REGEX_DISPLAY = "[display|ls|show]";
+	private static final String REGEX_EXIT = "[exit|quit]";
+	private static final String REGEX_MODIFY = "[update|modify]\\s*[0..9]+\\s+.+\\s+"+
+												REGEX_VENUE+"\\s+"+REGEX_TIME;
+	private static final String REGEX_UNDO = "[undo]";
+	private static final String REGEX_REDO = "[redo]";
+	private static final String REGEX_SEARCH = "[search]\\s+.*";
+
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
 	private static final int OPERATION_UNKNOWN = 0;
@@ -65,14 +79,22 @@ public class Parser {
 	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
 	private static final String[] KEYWORD_UNDO = {"undo"};
 	private static final String[] KEYWORD_REDO = {"redo"};
-	private static final String[] KEYWORD_DATE = {"at", "by", "on", "during", "before", "after", "from"};
-	private static final String[] KEYWORD_VENUE = {"at", "in", "on"};
 	private static final String[] KEYWORD_SORT = {"sort"};
 	private static final String[] KEYWORD_SEARCH = {"find","search"};
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
 	private static final Pattern NUMBERS = Pattern.compile(".*[^0-9].*");
+	private static final Pattern COMMAND_ADD_TIME = Pattern.compile(REGEX_ADD+REGEX_VENUE+REGEX_TIME);
+	private static final Pattern COMMAND_ADD_DEAD = Pattern.compile(REGEX_ADD+REGEX_VENUE+REGEX_DEADLINE);
+	private static final Pattern COMMAND_DELETE = Pattern.compile(REGEX_DELETE);
+	private static final Pattern COMMAND_CLEAR = Pattern.compile(REGEX_CLEAR);
+	private static final Pattern COMMAND_DISPLAY = Pattern.compile(REGEX_DISPLAY);
+	private static final Pattern COMMAND_MODIFY = Pattern.compile(REGEX_MODIFY);
+	private static final Pattern COMMAND_SEARCH = Pattern.compile(REGEX_SEARCH);
+	private static final Pattern COMMAND_UNDO = Pattern.compile(REGEX_UNDO);
+	private static final Pattern COMMAND_REDO = Pattern.compile(REGEX_REDO);
+	private static final Pattern COMMAND_EXIT = Pattern.compile(REGEX_EXIT);
 	
 	private static Hashtable<String, Integer> featureList = null; 
 	private static DateParser dateParser = null;
