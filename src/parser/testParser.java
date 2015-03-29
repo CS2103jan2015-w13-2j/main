@@ -98,12 +98,12 @@ public class testParser {
 	@Test
 	public void testGetNewTitle() {
 		//test getNewTitle null
-				try {
-					testString = p.getNewTitle(null);
-				} catch (Exception e) {
-					assertTrue(e instanceof NullPointerException);
-					assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
-				}
+		try {
+			testString = p.getNewTitle(null);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
 		//test getNewTitle normal
 		try {
 			testString = p.getNewTitle("modify 8 go to school -d tomorrow");
@@ -116,6 +116,14 @@ public class testParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testRegexAdd(){
+		testBoolean = p.check("\"hahahahha\"at school on Monday");
+		assertEquals(true, testBoolean);
+		testBoolean = p.check("\"hahahah");
+		assertEquals(false, testBoolean);
 	}
 	
 	@After

@@ -107,6 +107,11 @@ public class Parser {
 		dateParser = new DateParser();
 	}
 	
+	public boolean check(String str) {
+		Matcher m = COMMAND_ADD_TIME.matcher(str);
+		return m.matches();
+	}
+	
 	public int getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
