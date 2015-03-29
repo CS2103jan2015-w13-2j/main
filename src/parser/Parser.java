@@ -1,6 +1,7 @@
 package parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.logging.Level;
@@ -43,19 +44,21 @@ public class Parser {
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
-	private static final String REGEX_VENUE = "[at|in]?.*";
-	private static final String REGEX_TIME = "[at|on]?.*";
-	private static final String REGEX_DEADLINE = "[by|due on|due at]?.*";
+	private static final String REGEX_VENUE = "[ at | in ]?.*";
+	private static final String REGEX_TIME = "[ at | on ]?.*";
+	private static final String REGEX_DEADLINE = "[ by | due on | due at ]?.*";
 	private static final String REGEX_ADD = "\".+\"\\s*.*";
 	private static final String REGEX_DELETE = "[delete|rm|remove]\\s*[0..9]*";
 	private static final String REGEX_CLEAR = "[clear|clean]";
 	private static final String REGEX_DISPLAY = "[display|ls|show]";
 	private static final String REGEX_EXIT = "[exit|quit]";
-	private static final String REGEX_MODIFY = "[update|modify]\\s*[0..9]+\\s+.+\\s+"+
+	private static final String REGEX_MODIFY = "(update|modify)\\s*[0..9]+\\s+.+\\s+"+
 												REGEX_VENUE+"\\s+"+REGEX_TIME;
 	private static final String REGEX_UNDO = "[undo]";
 	private static final String REGEX_REDO = "[redo]";
 	private static final String REGEX_SEARCH = "[search]\\s+.*";
+	private static final String REGEX_COLON = "\"";
+	private static final String REGEX_INDICATOR = "( on | at | in )";
 
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
@@ -95,6 +98,8 @@ public class Parser {
 	private static final Pattern COMMAND_UNDO = Pattern.compile(REGEX_UNDO);
 	private static final Pattern COMMAND_REDO = Pattern.compile(REGEX_REDO);
 	private static final Pattern COMMAND_EXIT = Pattern.compile(REGEX_EXIT);
+	private static final Pattern SPLIT_COLON = Pattern.compile(REGEX_COLON);
+	private static final Pattern SPLIT_INDICATOR = Pattern.compile(REGEX_INDICATOR);
 	
 	private static Hashtable<String, Integer> featureList = null; 
 	private static DateParser dateParser = null;
@@ -107,9 +112,24 @@ public class Parser {
 		dateParser = new DateParser();
 	}
 	
-	public boolean check(String str) {
+	public ArrayList<String> check(String str) {
 		Matcher m = COMMAND_ADD_TIME.matcher(str);
-		return m.matches();
+		ArrayList<String> temp = new ArrayList<String>();
+		if (m.matches()) {
+			String[] strings = SPLIT_COLON.split(str);
+			temp.add(strings[1]);
+			strings = SPLIT_INDICATOR.split(str);
+			if (strings.length>1) {
+				int index = 1;
+				while (index<strings.length) {
+					temp.add(strings[index]);
+					index++;
+				}
+			}
+			return temp;
+		} else {
+			return null;
+		}
 	}
 	
 	public int getOperation(String operation) throws NullPointerException {

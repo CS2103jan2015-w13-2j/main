@@ -3,7 +3,9 @@ package parser;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +32,7 @@ public class testParser {
 	private boolean testBoolean;
 	private int testNumber;
 	private String testString;
+	private ArrayList<String> testArrayList;
 	private Parser p;
 	
 	@Before
@@ -120,10 +123,21 @@ public class testParser {
 	
 	@Test
 	public void testRegexAdd(){
-		testBoolean = p.check("\"hahahahha\"at school on Monday");
-		assertEquals(true, testBoolean);
-		testBoolean = p.check("\"hahahah");
-		assertEquals(false, testBoolean);
+		Scanner in = new Scanner(System.in);
+		String input = in.next();
+		testArrayList = p.check(input);
+				//"\"hahahahha\"at school on Monday");
+		printall(testArrayList);
+		//assertEquals(true, testBoolean);
+		testArrayList = p.check("\"hahahah");
+		assertEquals(null, testArrayList);
+	}
+	
+	private void printall(ArrayList<String> list) {
+		System.out.println("the components are:");
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(i+": "+list.get(i));
+		}
 	}
 	
 	@After
