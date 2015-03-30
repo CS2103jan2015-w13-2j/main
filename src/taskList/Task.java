@@ -13,6 +13,7 @@ public class Task implements Comparable<Task>{
 	private Date deadline;
 	private String dateString;
 	private String deadlineString;
+	private boolean hasFinished = false;
 	
 	public Task(String content){
 		this.content = content;
@@ -123,4 +124,13 @@ public class Task implements Comparable<Task>{
 	public int compareTo(Task o) {
 		return -(o.getContent().compareTo(this.getContent()));
 	}
+	
+	public boolean hasFinished(){
+		return this.hasFinished;
+	}
+	
+	public void finish(){
+		this.hasFinished = true;
+	}
+	
 }

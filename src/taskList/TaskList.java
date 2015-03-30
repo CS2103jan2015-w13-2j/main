@@ -132,7 +132,6 @@ public class TaskList {
 			try {
 				modify(command);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
@@ -146,7 +145,11 @@ public class TaskList {
 			sort();
 			break;
 		case OPERATION_SEARCH:
-			search(command);
+			try{
+				search(command);
+			} catch (Exception e){
+				e.printStackTrace();
+			}
 			break;
 		case OPERATION_EXIT:
 			exit();
@@ -277,7 +280,7 @@ public class TaskList {
 	/*
 	 * search operation would return all the tasks which conform to the sort requirements.
 	 */
-	private void search(String command) {
+	private void search(String command) throws NullPointerException, IOException {
 		mode = 1;
 		searchResult.clear();
 		String keyWord = bp.getTitle(command);
@@ -305,7 +308,6 @@ public class TaskList {
 	 */
 	private void exit() {
 		saveFile();
-		ui.BasicUI.exit(NORMAL_EXIT);
 		sc.close();
 		System.exit(NORMAL_EXIT);
 	}
@@ -328,9 +330,14 @@ public class TaskList {
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Task> getTasks(){
-		if (mode == 0)
-			return (ArrayList<Task>) taskList.clone();
-		else
+		if (mode == 0){
+			ArrayList<Task> answers = new ArrayList<Task>();
+			for (int i = 0; i < taskList.size(); i++){
+				if (!taskList.get(i).hasFinished())
+					answers.add(taskList.get(i));
+			}
+			return answers;
+		}else
 			return (ArrayList<Task>) searchResult.clone();
 	}
 	
