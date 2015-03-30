@@ -11,7 +11,6 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import parser.Parser;
-
 public class TaskList {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
@@ -22,17 +21,6 @@ public class TaskList {
 	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
 	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify from %s %s\n";
 	
-	private static final int OPERATION_ADD = 1;
-	private static final int OPERATION_DELETE = 2;
-	private static final int OPERATION_CLEAR = 3;
-	private static final int OPERATION_DISPLAY = 4;
-	private static final int OPERATION_EXIT = 5;
-	private static final int OPERATION_MODIFY = 6;
-	private static final int OPERATION_UNDO = 7;
-	private static final int OPERATION_REDO = 8;
-	private static final int OPERATION_SORT = 9;
-	private static final int OPERATION_SEARCH = 10;
-	private static final int NORMAL_EXIT = 0;
 
 	private Scanner sc;
 	private String fileName;
@@ -111,7 +99,7 @@ public class TaskList {
 	
 	public void executeCommand(String command) {
 		switch (bp.getOperation(command)) {
-		case OPERATION_ADD:
+		case ADD:
 			try {
 				add(command);
 			} catch (Exception e) {
@@ -119,39 +107,39 @@ public class TaskList {
 				e.printStackTrace();
 			}
 			break;
-		case OPERATION_DELETE:
+		case DELETE:
 			delete(command);
 			break;
-		case OPERATION_DISPLAY:
+		case DISPLAY:
 			display();
 			break;
-		case OPERATION_CLEAR:
+		case CLEAR:
 			clear();
 			break;
-		case OPERATION_MODIFY:
+		case MODIFY:
 			try {
 				modify(command);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			break;
-		case OPERATION_UNDO:
+		case UNDO:
 			undo();
 			break;
-		case OPERATION_REDO:
+		case REDO:
 			redo();
 			break;
-		case OPERATION_SORT:
+		case SORT:
 			sort();
 			break;
-		case OPERATION_SEARCH:
+		case SEARCH:
 			try{
 				search(command);
 			} catch (Exception e){
 				e.printStackTrace();
 			}
 			break;
-		case OPERATION_EXIT:
+		case EXIT:
 			exit();
 			break;
 		default:
@@ -309,7 +297,7 @@ public class TaskList {
 	private void exit() {
 		saveFile();
 		sc.close();
-		System.exit(NORMAL_EXIT);
+		System.exit(0);
 	}
 	
 	private void saveFile(){
