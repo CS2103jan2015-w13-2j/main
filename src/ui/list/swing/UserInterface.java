@@ -42,6 +42,7 @@ public class UserInterface {
 	public static int currentPage = 0;
 	private static double printPerPage = 5.0;
 	public static int lastPage = 0;
+	public static int isComplete = -1;
 
 
 	/**
@@ -206,16 +207,6 @@ public class UserInterface {
 			return false;
 		}
 		
-
-
-		
-//		for (int i=start; i<taskList.size(); i++) {
-//			if (i < end) {
-//				printTask(taskList.get(i),i);
-//			}
-//			
-//			else break;
-//		}
 		
 		//not last page
 		if (end < taskList.size()) {
@@ -273,5 +264,7 @@ public class UserInterface {
 	public void exit() {
 		frame.dispose();
 	}
+	
+	
 	
 }

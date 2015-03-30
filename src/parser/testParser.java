@@ -121,25 +121,6 @@ public class testParser {
 		}
 	}
 	
-	@Test
-	public void testRegexAdd(){
-		Scanner in = new Scanner(System.in);
-		String input = in.next();
-		testArrayList = p.check(input);
-				//"\"hahahahha\"at school on Monday");
-		printall(testArrayList);
-		//assertEquals(true, testBoolean);
-		testArrayList = p.check("\"hahahah");
-		assertEquals(null, testArrayList);
-	}
-	
-	private void printall(ArrayList<String> list) {
-		System.out.println("the components are:");
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(i+": "+list.get(i));
-		}
-	}
-	
 	@After
 	public void cleanUp() {
 		p = null;
