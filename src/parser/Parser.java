@@ -46,18 +46,11 @@ public class Parser {
 	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
-	private static final int OPERATION_UNKNOWN = 0;
-	private static final int OPERATION_ADD = 1;
-	private static final int OPERATION_DELETE = 2;
-	private static final int OPERATION_CLEAR = 3;
-	private static final int OPERATION_DISPLAY = 4;
-	private static final int OPERATION_EXIT = 5;
-	private static final int OPERATION_MODIFY = 6;
-	private static final int OPERATION_UNDO = 7;
-	private static final int OPERATION_REDO = 8;
-	private static final int OPERATION_SORT = 9;
-	private static final int OPERATION_SEARCH = 10;
-	private static final int OPERATION_COMPLETE = 11;
+	
+	public enum Operation {
+		UNKNOW, ADD, DELETE, CLEAR, DISPLAY, EXIT,
+		MODIFY, UNDO, REDO, SORT, SEARCH, COMPLETE
+	}
 	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
 	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
@@ -75,7 +68,7 @@ public class Parser {
 	
 	private static final Pattern NUMBERS = Pattern.compile(".*[^0-9].*");
 	
-	private static Hashtable<String, Integer> featureList = null; 
+	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
 	
 	private static String name = Parser.class.getName(); 
@@ -86,7 +79,7 @@ public class Parser {
 		dateParser = new DateParser();
 	}
 
-	public int getOperation(String operation) throws NullPointerException {
+	public Operation getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
@@ -94,9 +87,9 @@ public class Parser {
 			operation = operation.substring(0, operation.indexOf(' '));
 		}
 		operation = operation.trim();
-		Integer operationIndex = getOperationIndex(operation);
+		Operation operationIndex = getOperationIndex(operation);
 		if (operationIndex == null) {
-			return OPERATION_UNKNOWN;
+			return Operation.UNKNOW;
 		} else {
 			return operationIndex;
 		}
@@ -122,8 +115,8 @@ public class Parser {
 	}
 
 	public int getIndex(String operation) throws IOException {
-		assert(getOperation(operation) == OPERATION_MODIFY ||
-				getOperation(operation) == OPERATION_DELETE);
+		assert(getOperation(operation) == Operation.MODIFY ||
+				getOperation(operation) == Operation.DELETE);
 		String temp = getTitle(operation);
 		if (temp == "" || temp == null) {
 			logIOException(EXCEPTION_NOINDEX);
@@ -138,7 +131,7 @@ public class Parser {
 	
 	public String getNewTitle(String operation) throws NullPointerException, 
 	IOException {
-		assert(getOperation(operation) == OPERATION_MODIFY);
+		assert(getOperation(operation) == Operation.MODIFY);
 		String temp = getTitle(operation);
 		String[] temps = temp.split(" ");
 		if (temps.length < 2) {
@@ -153,8 +146,8 @@ public class Parser {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		assert(getOperation(operation) == OPERATION_ADD ||
-				getOperation(operation) == OPERATION_SEARCH);
+		assert(getOperation(operation) == Operation.ADD ||
+				getOperation(operation) == Operation.SEARCH);
 		int start = operation.indexOf(' ') + 1;
 		if (start >= operation.length() || start == 0) {
 			logIOException(EXCEPTION_NOTITLE);
@@ -242,7 +235,7 @@ public class Parser {
 		return count;
 	}
 	
-	private Integer getOperationIndex(String operation) {
+	private Operation getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);
 	}
@@ -275,22 +268,22 @@ public class Parser {
 	}
 	
 	private void initFeatureList() {
-		featureList = new Hashtable<String, Integer>();
-		addSelectedFeature(KEYWORD_ADD, OPERATION_ADD);
-		addSelectedFeature(KEYWORD_DELETE, OPERATION_DELETE);
-		addSelectedFeature(KEYWORD_CLEAR, OPERATION_CLEAR);
-		addSelectedFeature(KEYWORD_DISPLAY, OPERATION_DISPLAY);
-		addSelectedFeature(KEYWORD_EXIT, OPERATION_EXIT);
-		addSelectedFeature(KEYWORD_MODIFY, OPERATION_MODIFY);
-		addSelectedFeature(KEYWORD_UNDO, OPERATION_UNDO);
-		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
-		addSelectedFeature(KEYWORD_REDO, OPERATION_REDO);
-		addSelectedFeature(KEYWORD_SORT, OPERATION_SORT);
-		addSelectedFeature(KEYWORD_SEARCH, OPERATION_SEARCH);
-		addSelectedFeature(KEYWORD_COMPLETE, OPERATION_COMPLETE);
+		featureList = new Hashtable<String, Operation>();
+		addSelectedFeature(KEYWORD_ADD, Operation.ADD);
+		addSelectedFeature(KEYWORD_DELETE, Operation.DELETE);
+		addSelectedFeature(KEYWORD_CLEAR, Operation.CLEAR);
+		addSelectedFeature(KEYWORD_DISPLAY, Operation.DISPLAY);
+		addSelectedFeature(KEYWORD_EXIT, Operation.EXIT);
+		addSelectedFeature(KEYWORD_MODIFY, Operation.MODIFY);
+		addSelectedFeature(KEYWORD_UNDO, Operation.UNDO);
+		addSelectedFeature(KEYWORD_REDO, Operation.REDO);
+		addSelectedFeature(KEYWORD_REDO, Operation.REDO);
+		addSelectedFeature(KEYWORD_SORT, Operation.SORT);
+		addSelectedFeature(KEYWORD_SEARCH, Operation.SEARCH);
+		addSelectedFeature(KEYWORD_COMPLETE, Operation.COMPLETE);
 	}
 	
-	private void addSelectedFeature(String[] keyword, Integer operation) {
+	private void addSelectedFeature(String[] keyword, Operation operation) {
 		assert(keyword != null);
 		assert(operation != null);
 		for (int i = 0; i < keyword.length; i++) {
