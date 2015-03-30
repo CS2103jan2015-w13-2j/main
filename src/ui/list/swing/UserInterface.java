@@ -26,6 +26,7 @@ import taskList.TaskList;
 
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
+import java.awt.Font;
 
 public class UserInterface {
 
@@ -43,7 +44,7 @@ public class UserInterface {
 	private static double printPerPage = 5.0;
 	public static int lastPage = 0;
 	public static int isComplete = -1;
-
+	public static JLabel lblPageNumber = new JLabel("");
 
 	/**
 	 * Launch the application.
@@ -77,6 +78,7 @@ public class UserInterface {
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		lblBackground.setForeground(new Color(0, 0, 0));
 		
 		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
 		lblBackground.setBounds(0, 0, 653, 562);
@@ -150,7 +152,13 @@ public class UserInterface {
 
 		lblStatusMessage.setBounds(76, 440, 520, 29);
 		frame.getContentPane().add(lblStatusMessage);
-		lblCommandGuide.setBounds(76, 505, 510, 29);
+		lblPageNumber.setForeground(Color.GRAY);
+		
+
+		lblPageNumber.setBounds(581, 504, 28, 23);
+		frame.getContentPane().add(lblPageNumber);
+		lblCommandGuide.setFont(new Font("SansSerif", Font.ITALIC, 12));
+		lblCommandGuide.setBounds(59, 498, 501, 29);
 		
 		frame.getContentPane().add(lblCommandGuide);
 		
@@ -200,6 +208,8 @@ public class UserInterface {
 		panel.removeAll();
 		panel.revalidate();
 		panel.repaint();
+		
+		lblPageNumber.setText(pageNumber+1 + "");
 		
 		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
 		
@@ -264,7 +274,4 @@ public class UserInterface {
 	public void exit() {
 		frame.dispose();
 	}
-	
-	
-	
 }
