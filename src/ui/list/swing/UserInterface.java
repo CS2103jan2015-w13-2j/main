@@ -135,6 +135,16 @@ public class UserInterface {
 					}
 					System.out.println("current page = " + currentPage);
 				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
+					System.out.println("F1 pressed");
+					printHelp();
+				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					System.out.println("ESC pressed");
+					display(currentPage);
+				}
 			}
 		});
 		textField.setBounds(59, 466, 445, 36);
@@ -280,5 +290,16 @@ public class UserInterface {
 	
 	public void exit() {
 		frame.dispose();
+	}
+	
+	public void printHelp() {
+		String helpInfo = "help info here";
+		
+		panel.removeAll();
+		panel.revalidate();
+		panel.repaint();
+		
+		JLabel help = new JLabel(helpInfo);
+		panel.add(help);
 	}
 }
