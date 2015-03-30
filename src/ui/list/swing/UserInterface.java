@@ -42,6 +42,7 @@ public class UserInterface {
 	private ArrayList<Task> taskList;
 	private static JLabel lblStatusMessage = new JLabel("");
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
+	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
 	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
 	private final JLabel lblBackground = new JLabel("");
 	public static boolean isAdd = false;
@@ -50,6 +51,7 @@ public class UserInterface {
 	public static int lastPage = 0;
 	public static int isComplete = -1;
 	public static JLabel lblPageNumber = new JLabel("");
+	public static boolean atHelpMenu = false;
 
 	/**
 	 * Launch the application.
@@ -105,21 +107,23 @@ public class UserInterface {
 			public void keyPressed(KeyEvent arg1) {
 				
 				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
-					try {
-						processTextField();
-					} catch (NullPointerException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (!atHelpMenu) {
+						try {
+							processTextField();
+						} catch (NullPointerException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
 					System.out.println("Left arrow pressed!");
-					if (currentPage > 0) {
-					if (display(currentPage - 1) == true && currentPage > 0) {
+					if (currentPage > 0 && !atHelpMenu) {
+						if (display(currentPage - 1) == true && currentPage > 0) {
 						currentPage -= 1;
-					}
+						}
 					}
 					
 					System.out.println("current page = " + currentPage);
@@ -128,7 +132,7 @@ public class UserInterface {
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
 					System.out.println("Right Arrow Pressed!");
-					if (currentPage < lastPage) {
+					if (currentPage < lastPage && !atHelpMenu) {
 					if (display(currentPage + 1) == true) {
 						currentPage += 1;
 					}
@@ -139,11 +143,15 @@ public class UserInterface {
 				else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
 					System.out.println("F1 pressed");
 					printHelp();
+					atHelpMenu = true;
+					lblCommandGuide.setText(COMMAND_GUIDE_HELP_MESSAGE);
 				}
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.out.println("ESC pressed");
+					atHelpMenu = false;
 					display(currentPage);
+					lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 				}
 			}
 		});
@@ -164,6 +172,7 @@ public class UserInterface {
 		});
 		btnEnter.setBounds(509, 468, 92, 34);
 		frame.getContentPane().add(btnEnter);
+		lblStatusMessage.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
 		
 
 		lblStatusMessage.setBounds(59, 440, 537, 29);
@@ -173,7 +182,7 @@ public class UserInterface {
 
 		lblPageNumber.setBounds(581, 504, 28, 23);
 		frame.getContentPane().add(lblPageNumber);
-		lblCommandGuide.setFont(new Font("SansSerif", Font.ITALIC, 12));
+		lblCommandGuide.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
 		lblCommandGuide.setBounds(59, 498, 501, 29);
 		
 		frame.getContentPane().add(lblCommandGuide);
@@ -187,6 +196,7 @@ public class UserInterface {
 		String input = textField.getText();
 		textField.setText(null);
 		BTL.executeCommand(input);
+		printStatusMessage();
 		taskList = BTL.getTasks();
 		lastPage = (int) Math.ceil(taskList.size()/printPerPage) - 1;
 		if (lastPage < 0) {
@@ -266,6 +276,7 @@ public class UserInterface {
 			title.setTitleJustification(TitledBorder.CENTER);
 			addedRow.setBorder(BorderFactory.createTitledBorder(title));
 			panel.add(addedRow);
+			isAdd = false;
 		}
 		
 		else {
