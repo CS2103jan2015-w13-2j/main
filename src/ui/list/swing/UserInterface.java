@@ -28,6 +28,11 @@ import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
 import java.awt.Font;
 
+/**
+ * 
+ * @author author: A0117971Y
+ *
+ */
 public class UserInterface {
 
 	public static final JFrame frame = new JFrame("TaskBuddy!");
@@ -98,6 +103,7 @@ public class UserInterface {
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg1) {
+				
 				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
 					try {
 						processTextField();
@@ -150,7 +156,7 @@ public class UserInterface {
 		frame.getContentPane().add(btnEnter);
 		
 
-		lblStatusMessage.setBounds(76, 440, 520, 29);
+		lblStatusMessage.setBounds(59, 440, 537, 29);
 		frame.getContentPane().add(lblStatusMessage);
 		lblPageNumber.setForeground(Color.GRAY);
 		
@@ -240,6 +246,7 @@ public class UserInterface {
 	public void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
 //		System.out.println("adding label with: " + str);
+		
 		
 		// to highlight added row
 		if (i+1 == taskList.size() && isAdd) {

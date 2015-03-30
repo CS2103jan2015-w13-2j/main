@@ -1,13 +1,13 @@
 package ui.list.swing;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+/**
+ * 
+ * @author A0117971Y
+ *
+ */
 
 
 public class TextFieldListener implements DocumentListener {

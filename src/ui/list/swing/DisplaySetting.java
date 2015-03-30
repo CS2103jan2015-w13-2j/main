@@ -2,6 +2,12 @@ package ui.list.swing;
 
 import taskList.Task;
 
+/**
+ * 
+ * @author A0117971Y
+ *
+ */
+
 public class DisplaySetting {
 	
 	private static StringBuilder data = new StringBuilder();
