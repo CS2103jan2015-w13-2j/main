@@ -18,6 +18,7 @@ public class DisplaySetting {
 	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\">";
 	private static final String HTML_FONT_TASK_DETAILS = "<font color = #848482>";
 	private static final String HTML_FONT_CLOSE = "</font>";
+	private static final String HTML_FONT_HELP_HEADER = "<font size = \"10\" color = \"#9F000F\" font face = \"Impact\">";
 	
 	public DisplaySetting(Task task, int i) {
 		
@@ -61,6 +62,29 @@ public class DisplaySetting {
 	}
 	
 	public String getData() {
+		return data.toString();
+	}
+	
+	public static String getHelpScreenInfo() {
+		
+		data.setLength(0);
+		
+		data.append(HTML_OPEN);
+		data.append(HTML_FONT_HELP_HEADER);
+		data.append("How to use TaskBuddy?" + HTML_BREAK);
+		data.append(HTML_FONT_CLOSE);
+		data.append("1. To add a task, type: add (task name) or -d (date) or -dd (deadline) or -v (venue)" + HTML_BREAK + HTML_BREAK +
+				"2. To delete a task, type: delete (task index number shown beside the task name)" + HTML_BREAK + HTML_BREAK +
+				 "3. To modify a task, type: modify (task inde) new task name " + HTML_BREAK + 
+				 "or -d (new date) or -dd (new deadline) or -v (new venue)" + HTML_BREAK + HTML_BREAK + 
+				 "4. To undo last operation, type: undo" + HTML_BREAK + HTML_BREAK +
+				 "5. To redo, type: redo" + HTML_BREAK + HTML_BREAK + HTML_BREAK +
+				 "Tags:" + HTML_BREAK + HTML_BREAK +
+				 "-d for date" + HTML_BREAK + HTML_BREAK
+				 + "-v for venue" + HTML_BREAK + HTML_BREAK +
+				 "-dd for deadline" + HTML_BREAK + HTML_BREAK );
+		data.append(HTML_CLOSE);
+		
 		return data.toString();
 	}
 

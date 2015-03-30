@@ -293,7 +293,7 @@ public class UserInterface {
 	}
 	
 	public void printHelp() {
-		String helpInfo = "help info here";
+		String helpInfo = DisplaySetting.getHelpScreenInfo().toString();
 		
 		panel.removeAll();
 		panel.revalidate();
