@@ -79,9 +79,11 @@ public class LayoutSetting {
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
 					System.out.println("Left arrow pressed!");
-					if (UserInterface.currentPage > 0 && !UserInterface.atHelpMenu) {
-						if (UserInterface.display(UserInterface.currentPage - 1) == true && UserInterface.currentPage > 0) {
-							UserInterface.currentPage -= 1;
+					if (UserInterface.textField.getText().isEmpty()) {
+						if (UserInterface.currentPage > 0 && !UserInterface.atHelpMenu) {
+							if (UserInterface.displayAll(UserInterface.currentPage - 1) == true && UserInterface.currentPage > 0) {
+								UserInterface.currentPage -= 1;
+							}
 						}
 					}
 					
@@ -91,10 +93,12 @@ public class LayoutSetting {
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
 					System.out.println("Right Arrow Pressed!");
-					if (UserInterface.currentPage < UserInterface.lastPage && !UserInterface.atHelpMenu) {
-					if (UserInterface.display(UserInterface.currentPage + 1) == true) {
-						UserInterface.currentPage += 1;
-					}
+					if (UserInterface.textField.getText().isEmpty()) {
+						if (UserInterface.currentPage < UserInterface.lastPage && !UserInterface.atHelpMenu) {
+							if (UserInterface.displayAll(UserInterface.currentPage + 1) == true) {
+								UserInterface.currentPage += 1;
+							}
+						}
 					}
 					System.out.println("current page = " + UserInterface.currentPage);
 				}
@@ -109,7 +113,7 @@ public class LayoutSetting {
 				else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					System.out.println("ESC pressed");
 					UserInterface.atHelpMenu = false;
-					UserInterface.display(UserInterface.currentPage);
+					UserInterface.displayAll(UserInterface.currentPage);
 					UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 				}
 				

@@ -51,14 +51,6 @@ public class DisplaySetting {
 		
 		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
 		
-//		if (date != null) {
-//			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE + HTML_BREAK);
-//		}
-//		
-//		if (venue != null) {
-//			data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
-//		}
-		
 		data.append(HTML_CLOSE);
 		
 	}

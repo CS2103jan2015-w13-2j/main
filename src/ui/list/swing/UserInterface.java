@@ -91,7 +91,7 @@ public class UserInterface {
 	 */
 	private void initialize() {		
 		LayoutSetting.setAll();
-		display(0);		
+		displayAll(0);		
 	}
 	public static void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
@@ -129,12 +129,12 @@ public class UserInterface {
 		
 		if (isAdd) {
 			currentPage = lastPage;
-			display(lastPage);
+			displayAll(lastPage);
 			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
 		}
 		
 		else {
-			display(currentPage);
+			displayAll(currentPage);
 			System.out.println("last page = " + lastPage + " current page = " + currentPage);
 
 		}
@@ -142,14 +142,13 @@ public class UserInterface {
 		isAdd = false;
 	}
 	
-	public static boolean display(int pageNumber) {
+	public static boolean displayAll(int pageNumber) {
 		int start = pageNumber * 5;
 		int end = start + 5;
 		taskList = BTL.getTasks();
-		lastPage = (int) Math.ceil(taskList.size()/printPerPage) - 1;
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
+		lastPage = getLastPage();
+		
+		clearPanel();
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
@@ -181,16 +180,11 @@ public class UserInterface {
 	
 	public static void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
-//		System.out.println("adding label with: " + str);
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
-
 		
 		// to highlight added row
 		if (i+1 == taskList.size() && isAdd) {
-//			System.out.println("adding last row");
 			JLabel addedRow = new JLabel(labelText);
-			
-//			JLabel addedRow = new JLabel(str);
 			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
 			title.setTitleJustification(TitledBorder.CENTER);
 			addedRow.setBorder(BorderFactory.createTitledBorder(title));
@@ -199,13 +193,10 @@ public class UserInterface {
 		}
 		
 		else {
-//			System.out.println("printing non last row");
-//			panel.add(new JLabel(str));
 			panel.add(new JLabel(labelText));
 		}
 		
-		panel.revalidate();
-		panel.repaint();
+		refreshPanel();
 	}
 	
 	public static void printStatusMessage() {
@@ -225,12 +216,22 @@ public class UserInterface {
 	
 	public static void printHelp() {
 		String helpInfo = DisplaySetting.getHelpScreenInfo().toString();
-		
-		panel.removeAll();
-		panel.revalidate();
-		panel.repaint();
-		
+		clearPanel();		
 		JLabel help = new JLabel(helpInfo);
 		panel.add(help);
+	}
+	
+	private static int getLastPage() {
+		return (int) Math.ceil(taskList.size()/printPerPage) - 1;
+	}
+	
+	private static void refreshPanel() {
+		panel.revalidate();
+		panel.repaint();
+	}
+	
+	private static void clearPanel() {
+		panel.removeAll();
+		refreshPanel();
 	}
 }
