@@ -59,7 +59,8 @@ public class DisplaySetting {
 //			data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
 //		}
 		
-		data.append(HTML_CLOSE);	
+		data.append(HTML_CLOSE);
+		
 	}
 	
 	public String getData() {
