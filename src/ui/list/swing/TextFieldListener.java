@@ -36,7 +36,6 @@ public class TextFieldListener implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		if (inputStream.toLowerCase().contains("add")) {
 			System.out.println("add detected");
-			UserInterface.isAdd = true;
 			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
 		}
 		
@@ -52,6 +51,8 @@ public class TextFieldListener implements DocumentListener {
 		
 		else {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+			System.out.println("Is add is false!");
+
 		}
 	}
 
@@ -60,7 +61,6 @@ public class TextFieldListener implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		if (inputStream.toLowerCase().contains("add")) {
 			System.out.println("add detected");
-			UserInterface.isAdd = true;
 			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
 		}
 		
@@ -76,6 +76,8 @@ public class TextFieldListener implements DocumentListener {
 		
 		else {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+			System.out.println("Is add is false!");
+
 		}
 	}
 

@@ -215,6 +215,13 @@ public class UserInterface {
 	public void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
 		String input = textField.getText();
+		String[] tokens = input.split(" ");
+		
+		if (tokens.length > 0) {
+			if (tokens[0].equals("add")) {
+				isAdd = true;
+			}
+		}
 		
 		if (input != null) {
 			TextFieldHistory.updateHistory(input);
