@@ -150,15 +150,13 @@ public class LayoutSetting {
 	}
 	
 	public static void addToContentPane() {
-		
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
 		UserInterface.frame.getContentPane().add(UserInterface.btnEnter);
 		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
 		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
 		UserInterface.frame.getContentPane().add(UserInterface.lblCommandGuide);		
-		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
-		
+		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);	
 	}
 	
 	public static void setAll() {
