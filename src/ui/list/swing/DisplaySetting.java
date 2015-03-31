@@ -16,14 +16,15 @@ public class DisplaySetting {
 	private static final String HTML_BREAK = "<br>";
 	private static final String HTML_FONT_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">";
 	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\">";
-	private static final String HTML_FONT_TASK_DETAILS = "<font color = #848482>";
+	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232>";
 	private static final String HTML_FONT_CLOSE = "</font>";
 	private static final String HTML_FONT_HELP_HEADER = "<font size = \"6\" color = \"#9F000F\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_HELP_INFO = "<font size = \"5\" font face = \"HanziPen TC\">";
+	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
 	
 	public DisplaySetting(Task task, int i) {
 		
-		data.setLength(0);
+		clearData();
 		assert(data.length()==0);
 		
 		String index = Integer.toString(i+1);
@@ -61,7 +62,7 @@ public class DisplaySetting {
 	
 	public static String getHelpScreenInfo() {
 		
-		data.setLength(0);
+		clearData();
 		
 		data.append(HTML_OPEN);
 		data.append(HTML_FONT_HELP_INFO);
@@ -84,6 +85,22 @@ public class DisplaySetting {
 		data.append(HTML_CLOSE);
 		
 		return data.toString();
+	}
+	
+	public static String getViewTaskInfo() {
+		data.setLength(0);
+		
+		data.append(HTML_OPEN);
+		data.append(HTML_FONT_VIEW_TASK_INFO);
+		data.append("You are currently viewing all tasks");
+		data.append(HTML_FONT_CLOSE);
+		data.append(HTML_CLOSE);	
+		
+		return data.toString();
+	}
+	
+	public static void clearData() {
+		data.setLength(0);
 	}
 
 }
