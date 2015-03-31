@@ -112,7 +112,6 @@ public class UserInterface {
 			public void keyPressed(KeyEvent arg1) {
 				
 				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!atHelpMenu) {
 						try {
 							processTextField();
 						} catch (NullPointerException e) {
@@ -120,7 +119,6 @@ public class UserInterface {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-					}
 				}
 				
 				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -158,8 +156,25 @@ public class UserInterface {
 					display(currentPage);
 					lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
 				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
+					System.out.println("Up pressed");
+					String history = TextFieldHistory.getLastHistory();
+					if (!history.equals("invalid")) {
+						textField.setText(history);
+					}
+				}
+				
+				else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
+					System.out.println("Down Pressed");
+					String history = TextFieldHistory.getForwardHistory();
+					if (!history.equals("invalid")) {
+						textField.setText(history);
+					}
+				}
 			}
 		});
+		
 		textField.setBounds(59, 466, 445, 36);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
@@ -199,10 +214,17 @@ public class UserInterface {
 	public void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
 		String input = textField.getText();
+		
+		if (input != null) {
+			TextFieldHistory.updateHistory(input);
+		}
+		
+		
 		textField.setText(null);
 		BTL.executeCommand(input);
 		printStatusMessage();
 		taskList = BTL.getTasks();
+		
 		lastPage = (int) Math.ceil(taskList.size()/printPerPage) - 1;
 		if (lastPage < 0) {
 			lastPage = 0;
