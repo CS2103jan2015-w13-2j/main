@@ -152,6 +152,7 @@ public class Task implements Comparable<Task>{
 		}
 	}
 	
+	
 	public boolean isEqual(Task task2){
 
 		return (sameString(this.content,task2.content) && sameString(this.venue,(task2.venue)) && sameDate(this.date,(task2.date)));

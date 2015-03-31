@@ -134,7 +134,7 @@ public class TaskList {
 		case SORT:
 			try {
 				sort(command);
-			} catch (NullPointerException | IOException e1) {
+			} catch (Exception e1 ) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -323,9 +323,75 @@ public class TaskList {
 		}
 	}	
 	
-	private void sortTaskList(int type){
+	public boolean compareString(String string1, String string2){
+		if (string1 == null){
+			if (string2 == null) return true;
+			return true;
+		}else if (string2 == null){
+			return false;
+		}else{
+			return string1.compareTo(string2)>0;
+		}
+	}
+	
+	public boolean compareDate(Date date1, Date date2){
+		if (date1 == null){
+			if (date2 == null) return true;
+			return true;
+		}else if (date2 == null){
+			return false;
+		}else{
+			return date1.compareTo(date2)>0;
+		}
+	}
+	
+	private void sortTaskList(int type) throws Exception{
+		Task[] taskArray = new Task[taskList.size()];
+		taskList.toArray(taskArray);
 		switch (type){
-
+		case BY_TIME:
+			System.out.println("begin time");
+			for (int i = 0; i < taskList.size(); i++){
+				for (int j = 0; j< i; j++){
+				if (compareDate(taskArray[i].getDate(),taskArray[j].getDate())){
+						Task tmp = taskArray[i];
+						taskArray[i] = taskArray[j];
+						taskArray[j] = tmp;
+						System.out.println("change happens");
+					}
+				}
+			}
+			break;
+		case BY_VENUE:
+			for (int i = 0; i < taskList.size(); i++){
+				for (int j = 0; j< i; j++){
+				if (compareString(taskArray[i].getVenue(),taskArray[j].getVenue())){
+						Task tmp = taskArray[i];
+						taskArray[i] = taskArray[j];
+						taskArray[j] = tmp;
+					}
+				}
+			}
+			break;
+		case BY_TITLE:
+			for (int i = 0; i < taskList.size(); i++){
+				for (int j = 0; j< i; j++){
+				if (compareString(taskArray[i].getContent(),taskArray[j].getContent())){
+						Task tmp = taskArray[i];
+						taskArray[i] = taskArray[j];
+						taskArray[j] = tmp;
+					}
+				}
+			}
+			break;
+		default:
+			throw new Exception("Invalid Sort Operation");
+		}
+		taskList = new ArrayList<Task>();
+		for (int i = 0; i< taskArray.length ; i++){
+			taskList.add(taskArray[i]);
+		}
+		
 		
 	}
 	
@@ -333,12 +399,38 @@ public class TaskList {
 	/*
 	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
 	 */
-	private void sort(String command) throws NullPointerException, IOException {
+	private void sort(String command) throws Exception {
 		String content = bp.getTitle(command);
 		if (content == null){
-			
+			content = "Time";
 		}
-		Collections.sort(taskList);
+		
+		content.toLowerCase();
+		if (content.equals("time")){
+			try {
+				sortTaskList(BY_TIME);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if (content.equals("venue")){
+			try {
+				sortTaskList(BY_VENUE);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if (content.equals("title")){
+			try {
+				sortTaskList(BY_TITLE);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			throw new Exception("No such command");
+		}
+		
 		undo.add(taskList);
 		showMessage("sort finished");
 		saveFile();
