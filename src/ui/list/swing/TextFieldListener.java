@@ -42,19 +42,16 @@ public class TextFieldListener implements DocumentListener {
 		
 		else if (inputStream.toLowerCase().contains("delete")) {
 			System.out.println("delete detected");
-			UserInterface.isAdd = false;
 			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 		
 		else if (inputStream.toLowerCase().contains("modify")) {
 			System.out.println("modify detected");
-			UserInterface.isAdd = false;
 			UserInterface.lblCommandGuide.setText((COMMAND_GUIDE_MODIFY_MESSAGE));
 		}
 		
 		else {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
-			UserInterface.isAdd = false;
 		}
 	}
 
@@ -69,19 +66,16 @@ public class TextFieldListener implements DocumentListener {
 		
 		else if (inputStream.toLowerCase().contains("delete")) {
 			System.out.println("delete detected");
-			UserInterface.isAdd = false;
 			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
 		}
 		
 		else if (inputStream.toLowerCase().contains("modify")) {
 			System.out.println("modify detected");
-			UserInterface.isAdd = false;
 			UserInterface.lblCommandGuide.setText((COMMAND_GUIDE_MODIFY_MESSAGE));
 		}
 		
 		else {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
-			UserInterface.isAdd = false;
 		}
 	}
 

@@ -26,6 +26,7 @@ import taskList.TaskList;
 
 import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
+
 import java.awt.Font;
 
 /**
@@ -293,12 +294,15 @@ public class UserInterface {
 	public void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
 //		System.out.println("adding label with: " + str);
-		
+		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
+
 		
 		// to highlight added row
 		if (i+1 == taskList.size() && isAdd) {
 //			System.out.println("adding last row");
-			JLabel addedRow = new JLabel(str);
+			JLabel addedRow = new JLabel(labelText);
+			
+//			JLabel addedRow = new JLabel(str);
 			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
 			title.setTitleJustification(TitledBorder.CENTER);
 			addedRow.setBorder(BorderFactory.createTitledBorder(title));
@@ -308,7 +312,8 @@ public class UserInterface {
 		
 		else {
 //			System.out.println("printing non last row");
-			panel.add(new JLabel(str));
+//			panel.add(new JLabel(str));
+			panel.add(new JLabel(labelText));
 		}
 		
 		panel.revalidate();
