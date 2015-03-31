@@ -112,6 +112,9 @@ public class TaskList {
 		case DELETE:
 			delete(command);
 			break;
+		case COMPLETE:
+			delete(command);
+			break;
 		case DISPLAY:
 			display();
 			break;
