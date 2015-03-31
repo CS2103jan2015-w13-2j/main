@@ -1,6 +1,7 @@
 package taskList;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import parser.DateParser;
@@ -132,5 +133,41 @@ public class Task implements Comparable<Task>{
 	public void finish(){
 		this.hasFinished = true;
 	}
+	
+	public boolean sameString(String string1, String string2){
+		if (string1 == null){
+			if (string2 == null) return true;
+			return false;
+		}else{
+			return string1.equals(string2);
+		}
+	}
+	
+	public boolean sameDate(Date date1, Date date2){
+		if (date1 == null){
+			if (date2 == null) return true;
+			return false;
+		}else{
+			return date1.equals(date2);
+		}
+	}
+	
+	public boolean isEqual(Task task2){
+
+		return (sameString(this.content,task2.content) && sameString(this.venue,(task2.venue)) && sameDate(this.date,(task2.date)));
+	}
+	
+	public boolean containKeyWord(String keyWord){
+		boolean answer = false;
+		if (this.content != null)
+			answer |= this.content.contains(keyWord);
+		if (this.venue != null)
+			answer |= this.venue.contains(keyWord);
+		System.out.println("debug time "+ new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date));
+		if (this.content != null)
+			answer |= new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date).contains(keyWord);
+		return answer;
+	}
+	
 	
 }

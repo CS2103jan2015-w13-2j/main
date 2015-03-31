@@ -20,7 +20,9 @@ public class TaskList {
 	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
 	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
 	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify from %s %s\n";
-	
+	private static final int BY_TIME = 0;
+	private static final int BY_VENUE = 1;
+	private static final int BY_TITLE = 2;
 
 	private Scanner sc;
 	private String fileName;
@@ -130,7 +132,12 @@ public class TaskList {
 			redo();
 			break;
 		case SORT:
-			sort();
+			try {
+				sort(command);
+			} catch (NullPointerException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 		case SEARCH:
 			try{
@@ -172,19 +179,43 @@ public class TaskList {
 	 * delete content in arraylist, but do not actully store to file
 	 */
 	private void delete(String command) {
-		String content = "";
-		if (command.indexOf(' ') != -1) {
-			content = command.substring(command.indexOf(' ') + 1);
+		if (mode == 0){
+			String content = "";
+			if (command.indexOf(' ') != -1) {
+				content = command.substring(command.indexOf(' ') + 1);
+			}
+			int removeIndex = Integer.valueOf(content);
+			if (removeIndex < 0 || removeIndex > taskList.size()) {
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				return;
+			}
+			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
+			taskList.remove(removeIndex - 1);
+			saveFile();
+			undo.add(taskList);
+		}else{
+			String content = "";
+			if (command.indexOf(' ') != -1) {
+				content = command.substring(command.indexOf(' ') + 1);
+			}
+			int removeIndex = Integer.valueOf(content);
+			if (removeIndex < 0 || removeIndex > searchResult.size()) {
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				return;
+			}
+			int indexinTaskList = 0;
+			for (int i = 0; i < taskList.size(); i++){
+				if (taskList.get(i).isEqual(searchResult.get(removeIndex))){
+					indexinTaskList = i;
+					break;
+				}
+			}
+			taskList.remove(indexinTaskList);
+			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
+			searchResult.remove(removeIndex - 1);
+			saveFile();
+			undo.add(taskList);
 		}
-		int removeIndex = Integer.valueOf(content);
-		if (removeIndex < 0 || removeIndex > taskList.size()) {
-			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
-			return;
-		}
-		showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
-		taskList.remove(removeIndex - 1);
-		saveFile();
-		undo.add(taskList);
 	}
 
 	/*
@@ -207,36 +238,72 @@ public class TaskList {
 	 * modify the content in arraylist, which is the real-time file content
 	 */
 	private void modify(String command) throws Exception{
-		assert(bp.isValid(command));
-		String content = bp.getNewTitle(command);
-		try{
-			int index = bp.getIndex(command) - 1;
-			Date newDate = bp.getDate(command);
-			Date deadLine = bp.getDeadline(command);
-			String newVenue = bp.getVenue(command);
-			if ((index < 0)||(index > taskList.size())){
-				showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
-				return;
+		if (mode == 0){
+			assert(bp.isValid(command));
+			String content = bp.getNewTitle(command);
+			try{
+				int index = bp.getIndex(command) - 1;
+				Date newDate = bp.getDate(command);
+				Date deadLine = bp.getDeadline(command);
+				String newVenue = bp.getVenue(command);
+				if ((index < 0)||(index > taskList.size())){
+					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
+					return;
+				}
+				if (content == null) content = taskList.get(index).getContent();
+				if (newVenue == null) newVenue = taskList.get(index).getVenue();
+				if (deadLine == null) deadLine = taskList.get(index).getDeadline();
+				if (newDate == null) newDate = taskList.get(index).getDate();
+				Task newTask = new Task(content,newDate,deadLine,newVenue);
+				taskList.remove(index);
+				taskList.add(index, newTask);
+				showMessage(MESSAGE_MODIFY_OPERATION, content);
+				saveFile();
+				undo.add(taskList);
+			}catch (Exception e){
+				throw e;
 			}
-			if (content == null) content = taskList.get(index).getContent();
-			if (newVenue == null) newVenue = taskList.get(index).getVenue();
-			if (deadLine == null) deadLine = taskList.get(index).getDeadline();
-			if (newDate == null) newDate = taskList.get(index).getDate();
-			Task newTask = new Task(content,newDate,deadLine,newVenue);
-			taskList.remove(index);
-			taskList.add(index, newTask);
-			showMessage(MESSAGE_MODIFY_OPERATION, content);
-			saveFile();
-			undo.add(taskList);
-		}catch (Exception e){
-			throw e;
+		}else{
+			assert(bp.isValid(command));
+			String content = bp.getNewTitle(command);
+			try{
+				int index = bp.getIndex(command) - 1;
+				Date newDate = bp.getDate(command);
+				Date deadLine = bp.getDeadline(command);
+				String newVenue = bp.getVenue(command);
+				if ((index < 0)||(index > searchResult.size())){
+					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
+					return;
+				}
+				if (content == null) content = searchResult.get(index).getContent();
+				if (newVenue == null) newVenue = searchResult.get(index).getVenue();
+				if (deadLine == null) deadLine = searchResult.get(index).getDeadline();
+				if (newDate == null) newDate = searchResult.get(index).getDate();
+				Task newTask = new Task(content,newDate,deadLine,newVenue);
+				int indexinTaskList = 0;
+				for (int i = 0; i < taskList.size(); i++){
+					if (taskList.get(i).isEqual(searchResult.get(index))){
+						indexinTaskList = i;
+						break;
+					}
+				}
+				taskList.remove(indexinTaskList);
+				taskList.add(index, newTask);
+				searchResult.remove(index);
+				searchResult.add(newTask);
+				showMessage(MESSAGE_MODIFY_OPERATION, content);
+				saveFile();
+				undo.add(taskList);
+			}catch (Exception e){
+				throw e;
+			}
 		}
 	}	
 	/*
 	 * rodo, return the arrayList before last operation.
 	 */
 	private void redo() {
-		if (undo.canRedo()){
+		if (undo.canRedo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.redo();
 			showMessage("redo operation successfully");
 		}else{
@@ -248,17 +315,29 @@ public class TaskList {
 	 * undo, return the arrayList before last undo operation.
 	 */
 	private void undo() {
-		if (undo.canUndo()){
+		if (undo.canUndo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.undo();
 			showMessage("undo operation successfully");
 		}else{
 			showMessage("no undo operation avaiable");
 		}
 	}	
+	
+	private void sortTaskList(int type){
+		switch (type){
+
+		
+	}
+	
+	
 	/*
 	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
 	 */
-	private void sort() {
+	private void sort(String command) throws NullPointerException, IOException {
+		String content = bp.getTitle(command);
+		if (content == null){
+			
+		}
 		Collections.sort(taskList);
 		undo.add(taskList);
 		showMessage("sort finished");
@@ -273,7 +352,7 @@ public class TaskList {
 		searchResult.clear();
 		String keyWord = bp.getTitle(command);
 		for (int i = 0; i < taskList.size(); i++){
-			if (taskList.get(i).getContent().contains(keyWord)){
+			if (taskList.get(i).containKeyWord(keyWord)){
 				searchResult.add(taskList.get(i));
 			}
 		}
@@ -362,6 +441,24 @@ public class TaskList {
 			answers.add(taskList.get(i).getContent());
 		}
 		return answers;
+	}
+	
+	public boolean isEqual(TaskList taskList2){
+		if (this.taskList.size() != taskList2.taskList.size()) return false;
+		@SuppressWarnings("unchecked")
+		ArrayList<Task> taskListCopy1 = (ArrayList<Task>) this.taskList.clone();
+		@SuppressWarnings("unchecked")
+		ArrayList<Task> taskListCopy2 = (ArrayList<Task>) taskList2.taskList.clone();
+		Collections.sort(taskListCopy1);
+		Collections.sort(taskListCopy2);
+		for (int i = 0; i< taskListCopy1.size(); i++){
+			if (!taskListCopy1.get(i).isEqual(taskListCopy2.get(i))){
+				System.out.println("failure at i "+ i);
+				return false;
+			}
+		}
+		return true;
+		
 	}
 	
 }
