@@ -89,6 +89,11 @@ public class UserInterface {
 		
 		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
 		lblBackground.setBounds(0, 0, 653, 562);
+		
+		JLabel lblHelp = new JLabel("F1 - Help");
+		lblHelp.setFont(new Font("HanziPen TC", Font.BOLD, 15));
+		lblHelp.setBounds(537, 34, 72, 16);
+		frame.getContentPane().add(lblHelp);
 
 
 		JScrollPane scrollPane = new JScrollPane();
