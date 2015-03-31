@@ -1,7 +1,6 @@
 package ui.list.swing;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.Stack;
 
 public class TextFieldHistory {

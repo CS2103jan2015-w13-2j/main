@@ -35,24 +35,32 @@ import java.awt.Font;
  *
  */
 public class UserInterface {
-
-	public static final JFrame frame = new JFrame("TaskBuddy!");
-	public static JTextField textField;
-	private static TaskList BTL;
-	private static JPanel panel = new JPanel();
-	private ArrayList<Task> taskList;
-	private static JLabel lblStatusMessage = new JLabel("");
+	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
-	public static final JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
-	private final JLabel lblBackground = new JLabel("");
 	public static boolean isAdd = false;
 	public static int currentPage = 0;
-	private static double printPerPage = 5.0;
 	public static int lastPage = 0;
 	public static int isComplete = -1;
-	public static JLabel lblPageNumber = new JLabel("");
 	public static boolean atHelpMenu = false;
+	private static TaskList BTL;
+	private static ArrayList<Task> taskList;
+	public static double printPerPage = 5.0;
+
+	
+	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
+	public static JLabel lblBackground = new JLabel("");
+	public static JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
+	public static JPanel panel = new JPanel();
+	public static JLabel lblStatusMessage = new JLabel("");
+	public static JLabel lblPageNumber = new JLabel("");
+	public static JLabel lblHelp = new JLabel("F1 - Help");
+	public static JScrollPane scrollPane = new JScrollPane();
+	public static JTextField textField = new JTextField();
+	public static JButton btnEnter = new JButton("Enter");
+
+
+
 
 	/**
 	 * Launch the application.
@@ -81,138 +89,11 @@ public class UserInterface {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
-		frame.setBounds(100, 100, 653, 562);
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		lblBackground.setForeground(new Color(0, 0, 0));
-		
-		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
-		lblBackground.setBounds(0, 0, 653, 562);
-		
-		JLabel lblHelp = new JLabel("F1 - Help");
-		lblHelp.setFont(new Font("HanziPen TC", Font.BOLD, 15));
-		lblHelp.setBounds(537, 34, 72, 16);
-		frame.getContentPane().add(lblHelp);
-
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		scrollPane.setBounds(76, 62, 525, 381);
-		frame.getContentPane().add(scrollPane);
-		scrollPane.setViewportView(panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		display(0);
-		
-		
-		textField = new JTextField();
-		textField.getDocument().addDocumentListener(new TextFieldListener());
-		textField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg1) {
-				
-				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
-						try {
-							processTextField();
-						} catch (NullPointerException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
-					System.out.println("Left arrow pressed!");
-					if (currentPage > 0 && !atHelpMenu) {
-						if (display(currentPage - 1) == true && currentPage > 0) {
-						currentPage -= 1;
-						}
-					}
-					
-					System.out.println("current page = " + currentPage);
-				}
-					
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
-					System.out.println("Right Arrow Pressed!");
-					if (currentPage < lastPage && !atHelpMenu) {
-					if (display(currentPage + 1) == true) {
-						currentPage += 1;
-					}
-					}
-					System.out.println("current page = " + currentPage);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
-					System.out.println("F1 pressed");
-					printHelp();
-					atHelpMenu = true;
-					lblCommandGuide.setText(COMMAND_GUIDE_HELP_MESSAGE);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					System.out.println("ESC pressed");
-					atHelpMenu = false;
-					display(currentPage);
-					lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
-					System.out.println("Up pressed");
-					String history = TextFieldHistory.getLastHistory();
-					if (!history.equals("invalid")) {
-						textField.setText(history);
-					}
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
-					System.out.println("Down Pressed");
-					String history = TextFieldHistory.getForwardHistory();
-					if (!history.equals("invalid")) {
-						textField.setText(history);
-					}
-				}
-			}
-		});
-		
-		textField.setBounds(59, 466, 445, 36);
-		frame.getContentPane().add(textField);
-		textField.setColumns(10);
-		
-		JButton btnEnter = new JButton("Enter");
-		btnEnter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					processTextField();
-				} catch (NullPointerException | IOException e1) {
-					new Exception("NullPointerException");
-					e1.printStackTrace();
-				}
-			}
-		});
-		btnEnter.setBounds(509, 468, 92, 34);
-		frame.getContentPane().add(btnEnter);
-		lblStatusMessage.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
-		
-
-		lblStatusMessage.setBounds(59, 440, 537, 29);
-		frame.getContentPane().add(lblStatusMessage);
-		lblPageNumber.setForeground(Color.GRAY);
-		
-
-		lblPageNumber.setBounds(581, 504, 28, 23);
-		frame.getContentPane().add(lblPageNumber);
-		lblCommandGuide.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
-		lblCommandGuide.setBounds(59, 498, 501, 29);
-		
-		frame.getContentPane().add(lblCommandGuide);
-		
-		frame.getContentPane().add(lblBackground);
-
-		
+	private void initialize() {		
+		LayoutSetting.setAll();
+		display(0);		
 	}
-	public void processTextField() throws NullPointerException, IOException {
+	public static void processTextField() throws NullPointerException, IOException {
 		System.out.println("Enter pressed");
 		String input = textField.getText();
 		String[] tokens = input.split(" ");
@@ -261,7 +142,7 @@ public class UserInterface {
 		isAdd = false;
 	}
 	
-	public boolean display(int pageNumber) {
+	public static boolean display(int pageNumber) {
 		int start = pageNumber * 5;
 		int end = start + 5;
 		taskList = BTL.getTasks();
@@ -298,7 +179,7 @@ public class UserInterface {
 		return true;
 	}
 	
-	public void printTask (Task task, int i) {
+	public static void printTask (Task task, int i) {
 		String str = new DisplaySetting(task,i).getData();
 //		System.out.println("adding label with: " + str);
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
@@ -327,7 +208,7 @@ public class UserInterface {
 		panel.repaint();
 	}
 	
-	public void printStatusMessage() {
+	public static void printStatusMessage() {
 		String statusMessage = BTL.getLastFeedBack();
 		lblStatusMessage.setText(statusMessage);
 	}
@@ -342,7 +223,7 @@ public class UserInterface {
 		frame.dispose();
 	}
 	
-	public void printHelp() {
+	public static void printHelp() {
 		String helpInfo = DisplaySetting.getHelpScreenInfo().toString();
 		
 		panel.removeAll();
