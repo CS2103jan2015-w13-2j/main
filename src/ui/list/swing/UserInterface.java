@@ -38,6 +38,7 @@ public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
+	public static final String VIEW_TASK_INFO_MESSAGE = DisplaySetting.getViewTaskInfo();
 	public static boolean isAdd = false;
 	public static int currentPage = 0;
 	public static int lastPage = 0;
@@ -149,6 +150,7 @@ public class UserInterface {
 		lastPage = getLastPage();
 		
 		clearPanel();
+		panel.add(new JLabel(VIEW_TASK_INFO_MESSAGE));
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
