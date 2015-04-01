@@ -56,7 +56,7 @@ public class JsonStringFileOperation {
 		this.converter = new ObjectConverter();
 	}
 	
-	public ArrayList<Task> readFile() throws IOException {
+	public ArrayList<Task> getUnfinishedTaskListFromFile() throws IOException {
 		if (new File(fileName).isDirectory()) {
 			throw new IOException(MESSAGE_FOLDER_FILENAME);
 		}
@@ -73,7 +73,7 @@ public class JsonStringFileOperation {
 			}
 			br.close();
 			logger.info(MESSAGE_READ_FILE);
-			return converter.getTaskListFromJsonString(readContent);
+			return converter.getUnfinishedTaskListFromJsonString(readContent);
 		} catch (IOException e) {
 			throw new IOException(MESSAGE_CANNOT_READ);
 		} catch(Exception e){
@@ -82,10 +82,36 @@ public class JsonStringFileOperation {
 		}
 	}
 	
-	public void saveToFile(ArrayList<Task> taskList) throws IOException{
+	public ArrayList<Task> getFinishedTaskListFromFile() throws IOException {
+		if (new File(fileName).isDirectory()) {
+			throw new IOException(MESSAGE_FOLDER_FILENAME);
+		}
+		if (!(new File(fileName).exists())) {
+			System.err.println(MESSAGE_NEW_FILE);
+			return EMPTY_FILE;
+		}
+		try {
+			FileInputStream fileInput = new FileInputStream(fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
+			String readContent = br.readLine();
+			if(readContent == null){
+				readContent = EMPTY_STRING;
+			}
+			br.close();
+			logger.info(MESSAGE_READ_FILE);
+			return converter.getFinishedTaskListFromJsonString(readContent);
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_READ);
+		} catch(Exception e){
+			System.err.println(MESSAGE_CANNOT_PARSE);
+			return EMPTY_FILE;
+		}
+	}
+	
+	public void saveToFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		try {
 			FileOutputStream fileOutput = new FileOutputStream(fileName, false);
-			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
+			fileOutput.write(converter.getJsonStringFromTaskList(unfinishedTaskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
 			logger.info(MEAAGE_SAVE_TO_FILE);
@@ -94,10 +120,34 @@ public class JsonStringFileOperation {
 		}
 	}
 	
-	public void saveToTmpFile(ArrayList<Task> taskList) throws IOException{
+	public void saveToFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{
+		try {
+			FileOutputStream fileOutput = new FileOutputStream(fileName, false);
+			fileOutput.write(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList).getBytes());
+			fileOutput.write('\n');
+			fileOutput.close();
+			logger.info(MEAAGE_SAVE_TO_FILE);
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_WRITE);
+		}
+	}
+	
+	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		try {
 			FileOutputStream fileOutput = new FileOutputStream(tempFileName, false);
-			fileOutput.write(converter.getJsonStringFromTaskList(taskList).getBytes());
+			fileOutput.write(converter.getJsonStringFromTaskList(unfinishedTaskList).getBytes());
+			fileOutput.write('\n');
+			fileOutput.close();
+			logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_WRITE);
+		}
+	}
+	
+	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{
+		try {
+			FileOutputStream fileOutput = new FileOutputStream(tempFileName, false);
+			fileOutput.write(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList).getBytes());
 			fileOutput.write('\n');
 			fileOutput.close();
 			logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
