@@ -103,6 +103,7 @@ public class testParser {
 		//test getNewTitle null
 		try {
 			testString = p.getNewTitle(null);
+			fail("no exception throw");
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -119,6 +120,28 @@ public class testParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testAutoFill() {
+		try {
+			testString = p.autoFill(null);
+			fail("no exception throw");
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testString = p.autoFill("a");
+		assertEquals("add", testString);
+		testString = p.autoFill("z");
+		assertEquals(null, testString);
+		testString = p.autoFill("s");
+		assertEquals(null, testString);
+	}
+	
+	@Test
+	public void testFeedback() {
+		
 	}
 	
 	@After

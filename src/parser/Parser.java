@@ -202,7 +202,10 @@ public class Parser {
 		}
 	}
 	
-	public String autoFill(String str) {
+	public String autoFill(String str) throws NullPointerException {
+		if (str == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
 		ArrayList<String> matchResult = searchAllKeyword(str);
 		if (matchResult.size() != 1) {
 			return null;
