@@ -41,9 +41,15 @@ public class TaskList {
 	public TaskList(String inputFileName){
 		mode = 0;
 		fileName = inputFileName;
-		fo = new JsonStringFileOperation(fileName);
+		try{
+			fo = new JsonStringFileOperation(fileName);
+		}catch(Exception e){
+			log.info("There is a file reading error");
+			feedBack.add("Cannot open the file correctly");
+		}
 		feedBack.clear();
 		try{
+			fo = new JsonStringFileOperation(fileName);
 			taskList = fo.getUnfinishedTaskListFromFile();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);

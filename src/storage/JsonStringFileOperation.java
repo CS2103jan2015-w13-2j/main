@@ -48,7 +48,10 @@ public class JsonStringFileOperation {
 	private String fileName;
 	private String tempFileName;
 	
-	public JsonStringFileOperation(String fileName) {
+	/*
+	 * If the file name is invalid, will throw IOException
+	 */
+	public JsonStringFileOperation(String fileName) throws IOException{
 		if(isValidFileName(fileName)){
 			this.fileName = fileName;
 			this.tempFileName = generateTempFileName(fileName);
@@ -166,13 +169,13 @@ public class JsonStringFileOperation {
 		logger.info(MEAAGE_SAVE_TO_FILE);
 	}
 	
-	private boolean isValidFileName(String fileName){
+	private boolean isValidFileName(String fileName) throws IOException{
 		if(fileName == null)
-			throw new NullPointerException(MESSAGE_NULL_FILENAME);
+			throw new IOException(MESSAGE_NULL_FILENAME);
 		char lastChar = fileName.charAt(fileName.length()-1);
 		for(char invalid: invalidChar){
 			if(lastChar == invalid)
-				throw new NullPointerException(MESSAGE_INVALID_FILENAME);
+				throw new IOException(MESSAGE_INVALID_FILENAME);
 		}
 		return true;
 	}
