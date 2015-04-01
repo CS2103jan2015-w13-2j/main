@@ -193,6 +193,45 @@ public class Parser {
 		}
 	}
 	
+	public String autoFill(String str) {
+		ArrayList<String> matchResult = searchAllKeyword(str);
+		if (matchResult.size() != 1) {
+			return null;
+		} else { 
+			return matchResult.get(0);
+		}
+	}
+	
+	private ArrayList<String> searchAllKeyword(String str) {
+		ArrayList<String> tempList = new ArrayList<String>();
+		ArrayList<String> resultList = new ArrayList<String>();
+		tempList.add(searchKeyword(str, KEYWORD_ADD));
+		tempList.add(searchKeyword(str, KEYWORD_DELETE));
+		tempList.add(searchKeyword(str, KEYWORD_CLEAR));
+		tempList.add(searchKeyword(str, KEYWORD_DISPLAY));
+		tempList.add(searchKeyword(str, KEYWORD_EXIT));
+		tempList.add(searchKeyword(str, KEYWORD_MODIFY));
+		tempList.add(searchKeyword(str, KEYWORD_UNDO));
+		tempList.add(searchKeyword(str, KEYWORD_REDO));
+		tempList.add(searchKeyword(str, KEYWORD_SORT));
+		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
+		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
+		for (int i = 0; i < tempList.size(); i++) {
+			if (tempList.get(i) != null) {
+				resultList.add(tempList.get(i));
+			}
+		}
+		return resultList;
+	}
+	private String searchKeyword(String str, String[] keyword) {
+		for (String temp:keyword) {
+			if (temp.startsWith(str)) {
+				return temp;
+			}
+		}
+		return null;
+	}
+
 	private boolean isArgumentsTypeCorrect(String operation) {
 		assert(operation != null);
 		String temp = null;
