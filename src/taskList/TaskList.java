@@ -44,7 +44,7 @@ public class TaskList {
 		fo = new JsonStringFileOperation(fileName);
 		feedBack.clear();
 		try{
-			taskList = fo.readFile();
+			taskList = fo.getUnfinishedTaskListFromFile();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
 		}catch(Exception e){

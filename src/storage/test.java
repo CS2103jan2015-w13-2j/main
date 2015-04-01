@@ -33,7 +33,7 @@ public class test {
 			System.out.println(i.getContent()+" | "+i.getDateString()+" | "+i.getDeadlineString()+" | "+i.getVenue());
 		}
 		jsto.saveToFile(taskList);
-		taskList = jsto.readFile();
+		taskList = jsto.getUnfinishedTaskListFromFile();
 		for(Task i:taskList){
 			System.out.println(i.getContent()+" | "+i.getDateString()+" | "+i.getDeadlineString()+" | "+i.getVenue());
 		}
