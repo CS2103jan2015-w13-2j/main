@@ -18,6 +18,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JTextField;
 
@@ -44,7 +46,7 @@ public class UserInterface {
 	public static int lastPage = 0;
 	public static int isComplete = -1;
 	public static boolean atHelpMenu = false;
-	private static TaskList BTL;
+	public static TaskList BTL;
 	private static ArrayList<Task> taskList;
 	public static double printPerPage = 5.0;
 
@@ -83,7 +85,7 @@ public class UserInterface {
 	 * Create the application.
 	 */
 	public UserInterface() {
-		BTL = new TaskList("Weilong.txt");
+		BTL = new TaskList("sharmaine.txt");
 		initialize();
 	}
 
@@ -202,8 +204,8 @@ public class UserInterface {
 	}
 	
 	public static void printStatusMessage() {
-		String statusMessage = BTL.getLastFeedBack();
-		lblStatusMessage.setText(statusMessage);
+		lblCommandGuide.setText(DisplaySetting.getFeedbackGuideInfo());
+		resetGuide();
 	}
 	
 	public void setBackground(JLabel lblBackground) {
@@ -236,4 +238,14 @@ public class UserInterface {
 		panel.removeAll();
 		refreshPanel();
 	}
+	
+	public static void resetGuide() {
+	     Timer timer = new Timer();
+	     timer.schedule(new TimerTask() {
+	         @Override
+	         public void run() {
+	             UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
+	         }
+	     }, 3000);
+	 }
 }

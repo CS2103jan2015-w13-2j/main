@@ -1,5 +1,8 @@
 package ui.list.swing;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -86,6 +89,5 @@ public class TextFieldListener implements DocumentListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
 	
 }

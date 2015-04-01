@@ -21,6 +21,7 @@ public class DisplaySetting {
 	private static final String HTML_FONT_HELP_HEADER = "<font size = \"6\" color = \"#9F000F\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_HELP_INFO = "<font size = \"5\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
+	private static final String HTML_FONT_FEEDBACKGUIDE = "<font color = red>";
 	
 	public DisplaySetting(Task task, int i) {
 		
@@ -88,13 +89,25 @@ public class DisplaySetting {
 	}
 	
 	public static String getViewTaskInfo() {
-		data.setLength(0);
+		clearData();
 		
 		data.append(HTML_OPEN);
 		data.append(HTML_FONT_VIEW_TASK_INFO);
 		data.append("You are currently viewing all tasks");
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);	
+		
+		return data.toString();
+	}
+	
+	public static String getFeedbackGuideInfo() {
+		clearData();
+		
+		data.append(HTML_OPEN);
+		data.append(HTML_FONT_FEEDBACKGUIDE);
+		data.append(UserInterface.BTL.getLastFeedBack());	
+		data.append(HTML_FONT_CLOSE);
+		data.append(HTML_CLOSE);
 		
 		return data.toString();
 	}
