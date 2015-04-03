@@ -9,13 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -26,10 +21,7 @@ import javax.swing.JTextField;
 import taskList.Task;
 import taskList.TaskList;
 
-import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
-
-import java.awt.Font;
 
 /**
  * 
@@ -52,15 +44,14 @@ public class UserInterface {
 
 	
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
+	public static JPanel panel = new JPanel();
 	public static JLabel lblBackground = new JLabel("");
 	public static JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
-	public static JPanel panel = new JPanel();
 	public static JLabel lblStatusMessage = new JLabel("");
 	public static JLabel lblPageNumber = new JLabel("");
 	public static JLabel lblHelp = new JLabel("F1 - Help");
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
-	public static JButton btnEnter = new JButton("Enter");
 
 
 
@@ -70,10 +61,11 @@ public class UserInterface {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@SuppressWarnings("unused")
 			public void run() {
 				try {
 					UserInterface window = new UserInterface();
-					window.frame.setVisible(true);
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -219,10 +211,9 @@ public class UserInterface {
 	}
 	
 	public static void printHelp() {
-		String helpInfo = DisplaySetting.getHelpScreenInfo().toString();
-		clearPanel();		
-		JLabel help = new JLabel(helpInfo);
-		panel.add(help);
+		frame.getContentPane().removeAll();
+		LayoutSetting.setHelpInfoLabel();
+		refreshFrame();
 	}
 	
 	private static int getLastPage() {
@@ -232,6 +223,11 @@ public class UserInterface {
 	private static void refreshPanel() {
 		panel.revalidate();
 		panel.repaint();
+	}
+	
+	private static void refreshFrame() {
+		frame.revalidate();
+		frame.repaint();
 	}
 	
 	private static void clearPanel() {
