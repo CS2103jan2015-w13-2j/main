@@ -15,7 +15,8 @@ public class testObjectConverter {
 	private static final int TEST_SIZE = 200;
 	private static final int BIG_PRIME_NUMBER = 107;
 	final static String NAME_TEST_STRING = "%05d";
-	private static final String KEY_FOR_TASKLIST = "taskList";
+	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
+	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
 	
 	private static final String KEY_FOR_CONTENT = "content";
 	private static final String KEY_FOR_DATE = "date";
@@ -47,8 +48,8 @@ public class testObjectConverter {
 		JSONObject jsObj = new JSONObject(converter.getJsonStringFromTaskList(taskList));
 		
 		for(int i = 0; i < TEST_SIZE; i++){
-			System.out.println(((JSONObject) jsObj.getJSONArray(KEY_FOR_TASKLIST).get(i)).get("content"));
-			Assert.assertEquals("Testing for tasklist to JSONObject",String.format(NAME_TEST_STRING, i),((JSONObject) jsObj.getJSONArray(KEY_FOR_TASKLIST).get(i)).get(KEY_FOR_CONTENT));
+			System.out.println(((JSONObject) jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).get(i)).get("content"));
+			Assert.assertEquals("Testing for tasklist to JSONObject",String.format(NAME_TEST_STRING, i),((JSONObject) jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).get(i)).get(KEY_FOR_CONTENT));
 		}
 	}
 	
@@ -57,7 +58,7 @@ public class testObjectConverter {
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		
 		JSONObject jsObj = new JSONObject(converter.getJsonStringFromTaskList(taskList));
-		Assert.assertEquals("Testing for empty tasklist to JSONObject","[]",jsObj.getJSONArray(KEY_FOR_TASKLIST).toString());
+		Assert.assertEquals("Testing for empty tasklist to JSONObject","[]",jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).toString());
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class testObjectConverter {
 		}
 		String jsonString = converter.getJsonStringFromTaskList(taskList);
 		for(int i = 0; i < TEST_SIZE; i++){
-			Assert.assertEquals("Testing for converting back",taskList.get(i).getContent(),converter.getTaskListFromJsonString(jsonString).get(i).getContent());
+			Assert.assertEquals("Testing for converting back",taskList.get(i).getContent(),converter.getUnfinishedTaskListFromJsonString(jsonString).get(i).getContent());
 		}
 	}
 	
@@ -78,7 +79,7 @@ public class testObjectConverter {
 		
 		String jsonString = converter.getJsonStringFromTaskList(taskList);
 		for(int i = 0; i < TEST_SIZE; i++){
-			Assert.assertEquals("Testing for converting back",0,converter.getTaskListFromJsonString(jsonString).size());
+			Assert.assertEquals("Testing for converting back",0,converter.getUnfinishedTaskListFromJsonString(jsonString).size());
 		}
 	}
 	

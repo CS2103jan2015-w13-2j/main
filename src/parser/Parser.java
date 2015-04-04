@@ -44,6 +44,15 @@ public class Parser {
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
+	private static final String FEEDBACK_ADD = 
+			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
+	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
+	private static final String FEEDBACK_MODIFY = 
+			"Tip: modify<index> <new title> -d<new time> -v<new venue> to modify task";
+	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
+	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
+	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
+	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
 	
@@ -193,6 +202,80 @@ public class Parser {
 		}
 	}
 	
+	public String autoFill(String str) throws NullPointerException {
+		if (str == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		ArrayList<String> matchResult = searchAllKeyword(str);
+		if (matchResult.size() != 1) {
+			return null;
+		} else { 
+			return matchResult.get(0);
+		}
+	}
+	
+	public String privideFeedback(String operation) throws NullPointerException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		Operation temp = getOperation(operation);
+		String feedback;
+		switch (temp) {
+		case ADD:
+			feedback = FEEDBACK_ADD;
+			break;
+		case DELETE:
+			feedback = FEEDBACK_DELETE;
+			break;
+		case MODIFY:
+			feedback = FEEDBACK_MODIFY;
+			break;
+		case SORT:
+			feedback = FEEDBACK_SORT;
+			break;
+		case SEARCH:
+			feedback = FEEDBACK_SEARCH;
+			break;
+		case COMPLETE:
+			feedback = FEEDBACK_COMPLETE;
+			break;
+		default:
+			feedback = null;
+			break;
+		}
+		return feedback;
+	}
+	
+	private ArrayList<String> searchAllKeyword(String str) {
+		ArrayList<String> tempList = new ArrayList<String>();
+		ArrayList<String> resultList = new ArrayList<String>();
+		tempList.add(searchKeyword(str, KEYWORD_ADD));
+		tempList.add(searchKeyword(str, KEYWORD_DELETE));
+		tempList.add(searchKeyword(str, KEYWORD_CLEAR));
+		tempList.add(searchKeyword(str, KEYWORD_DISPLAY));
+		tempList.add(searchKeyword(str, KEYWORD_EXIT));
+		tempList.add(searchKeyword(str, KEYWORD_MODIFY));
+		tempList.add(searchKeyword(str, KEYWORD_UNDO));
+		tempList.add(searchKeyword(str, KEYWORD_REDO));
+		tempList.add(searchKeyword(str, KEYWORD_SORT));
+		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
+		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
+		for (int i = 0; i < tempList.size(); i++) {
+			if (tempList.get(i) != null) {
+				resultList.add(tempList.get(i));
+			}
+		}
+		return resultList;
+	}
+	private String searchKeyword(String str, String[] keyword) {
+		for (String temp:keyword) {
+			if (temp.startsWith(str)) {
+				return temp;
+			}
+		}
+		return null;
+	}
+
 	private boolean isArgumentsTypeCorrect(String operation) {
 		assert(operation != null);
 		String temp = null;

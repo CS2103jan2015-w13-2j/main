@@ -17,7 +17,8 @@ public class ObjectConverter {
 	
 	private static final String MESSAGE_NOT_FOUND = "%s is not found in the JSON Object.\n";
 
-	private static final String KEY_FOR_TASKLIST = "taskList";
+	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
+	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
 	
 	private static final String KEY_FOR_CONTENT = "content";
 	private static final String KEY_FOR_DATE = "date";
@@ -32,18 +33,43 @@ public class ObjectConverter {
 		dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
 	}
 	
-	public String getJsonStringFromTaskList(ArrayList<Task> taskList){
+	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList){
 		JSONObject jsonObject = new JSONObject();
 		JSONArray taskArray = new JSONArray();
 		
-		for (int i = 0; i < taskList.size(); i++) {
-			Task tempTask = taskList.get(i);
+		for (int i = 0; i < unfinishedTaskList.size(); i++) {
+			Task tempTask = unfinishedTaskList.get(i);
 			
 			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
 			
 			taskArray.put(i,tempJsonTask);
 		}
-		jsonObject.put(KEY_FOR_TASKLIST, taskArray);
+		jsonObject.put(KEY_FOR_UNFINISHED_TASKLIST, taskArray);
+		return jsonObject.toString();
+	}
+	
+	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList){
+		JSONObject jsonObject = new JSONObject();
+		JSONArray taskArray = new JSONArray();
+		
+		for (int i = 0; i < unfinishedTaskList.size(); i++) {
+			Task tempTask = unfinishedTaskList.get(i);
+			
+			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
+			
+			taskArray.put(i,tempJsonTask);
+		}
+		jsonObject.put(KEY_FOR_UNFINISHED_TASKLIST, taskArray);
+		taskArray = new JSONArray();
+		
+		for (int i = 0; i < finishedTaskList.size(); i++) {
+			Task tempTask = finishedTaskList.get(i);
+			
+			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
+			
+			taskArray.put(i,tempJsonTask);
+		}
+		jsonObject.put(KEY_FOR_FINISHED_TASKLIST, taskArray);
 		return jsonObject.toString();
 	}
 
@@ -76,19 +102,24 @@ public class ObjectConverter {
 		return tempJsonTask;
 	}
 	
-	public ArrayList<Task> getTaskListFromJsonString(String jsonString){
+	public ArrayList<Task> getUnfinishedTaskListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
-		return getTaskListFromJsonObject(jsonObject);
+		return getTaskListFromJsonObject(jsonObject, KEY_FOR_UNFINISHED_TASKLIST);
 	}
 	
-	private ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject){
+	public ArrayList<Task> getFinishedTaskListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getTaskListFromJsonObject(jsonObject, KEY_FOR_FINISHED_TASKLIST);
+	}
+	
+	private ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject, String keyForTaskList){
 		
 		Task tempTask;
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		
-		JSONArray jsonTaskArray = jsonObject.getJSONArray(KEY_FOR_TASKLIST);
+		JSONArray jsonTaskArray = jsonObject.getJSONArray(keyForTaskList);
 		if(jsonTaskArray == null){
-			showMessageNotFound(KEY_FOR_TASKLIST);
+			showMessageNotFound(keyForTaskList);
 			return taskList;
 		}
 		
@@ -108,6 +139,7 @@ public class ObjectConverter {
 		
 		return taskList;
 	}
+	
 
 	private String getContent(JSONObject jsonTask) {
 		try{

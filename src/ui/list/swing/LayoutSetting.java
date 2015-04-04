@@ -2,177 +2,156 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import net.java.balloontip.BalloonTip;
 
 
 public class LayoutSetting {
 	
+	private static HotKeyListener hotKeyListener = new HotKeyListener();
+	private static 	BalloonTip suggestion = new BalloonTip(UserInterface.textField, "");
+	
+	public static void setFrameListener() {
+		UserInterface.frame.addKeyListener(hotKeyListener);
+	}
+	
+	public static void setTextFieldListener() {
+		UserInterface.textField.addKeyListener(hotKeyListener);
+	}
+	
 	public static void setFrame() {
-		
 		UserInterface.frame.setBounds(100, 100, 653, 562);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface.frame.getContentPane().setLayout(null);
-		
 	}
 	
-	public static void setPanels() {
-		
+	public static void setPanels() {	
 		UserInterface.panel.setLayout(new BoxLayout(UserInterface.panel, BoxLayout.Y_AXIS));
-
-		
 	}
 	
-	public static void setLabels() {
-		
+	public static void setBackgroundLabel() {	
 		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
 		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
 		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
-		
+	}
+	
+	public static void setHelpInfoLabel() {
+		UserInterface.frame.requestFocus();
+		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
+		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_Help.png")));
+		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
+	}
+	
+	public static void setHelpLabel() {
 		UserInterface.lblHelp.setFont(new Font("HanziPen TC", Font.BOLD, 15));
 		UserInterface.lblHelp.setBounds(537, 34, 72, 16);
-		
+	}
+	
+	public static void setStatusMessageLabel() {
 		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
 		UserInterface.lblStatusMessage.setBounds(59, 440, 537, 29);
-		
+	}
+	
+	public static void setPageLabel() {
 		UserInterface.lblPageNumber.setForeground(Color.GRAY);
 		UserInterface.lblPageNumber.setBounds(581, 504, 28, 23);
-		
+	}
+	
+	public static void setCommandGuideLabel() {
 		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
 		UserInterface.lblCommandGuide.setBounds(59, 498, 501, 29);
-		
+	}
+	
+	public static void setLabels() {
+		setBackgroundLabel();
+		setCommandGuideLabel();
+		setPageLabel();
+		setStatusMessageLabel();
+		setHelpLabel();
 	}
 	
 	public static void setScrollPane() {
-		
 		UserInterface.scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		UserInterface.scrollPane.setBounds(76, 62, 525, 381);
 		UserInterface.frame.getContentPane().add(UserInterface.scrollPane);
-		UserInterface.scrollPane.setViewportView(UserInterface.panel);
-
-		
+		UserInterface.scrollPane.setViewportView(UserInterface.panel);		
 	}
 	
 	public static void setTextField() {
 		UserInterface.textField.getDocument().addDocumentListener(new TextFieldListener());
-		UserInterface.textField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg1) {
-				
-				if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
-						try {
-							UserInterface.processTextField();
-						} catch (NullPointerException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
-					System.out.println("Left arrow pressed!");
-					if (UserInterface.textField.getText().isEmpty()) {
-						if (UserInterface.currentPage > 0 && !UserInterface.atHelpMenu) {
-							if (UserInterface.displayAll(UserInterface.currentPage - 1) == true && UserInterface.currentPage > 0) {
-								UserInterface.currentPage -= 1;
-							}
-						}
-					}
-					
-					System.out.println("current page = " + UserInterface.currentPage);
-				}
-					
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
-					System.out.println("Right Arrow Pressed!");
-					if (UserInterface.textField.getText().isEmpty()) {
-						if (UserInterface.currentPage < UserInterface.lastPage && !UserInterface.atHelpMenu) {
-							if (UserInterface.displayAll(UserInterface.currentPage + 1) == true) {
-								UserInterface.currentPage += 1;
-							}
-						}
-					}
-					System.out.println("current page = " + UserInterface.currentPage);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
-					System.out.println("F1 pressed");
-					UserInterface.printHelp();
-					UserInterface.atHelpMenu = true;
-					UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_HELP_MESSAGE);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					System.out.println("ESC pressed");
-					UserInterface.atHelpMenu = false;
-					UserInterface.displayAll(UserInterface.currentPage);
-					UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
-					System.out.println("Up pressed");
-					String history = TextFieldHistory.getLastHistory();
-					if (!history.equals("invalid")) {
-						UserInterface.textField.setText(history);
-					}
-				}
-				
-				else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
-					System.out.println("Down Pressed");
-					String history = TextFieldHistory.getForwardHistory();
-					if (!history.equals("invalid")) {
-						UserInterface.textField.setText(history);
-					}
-				}
-			}
-		});
-		
-		UserInterface.textField.setBounds(59, 466, 445, 36);
+		UserInterface.textField.requestFocusInWindow();		
+		UserInterface.textField.setBounds(59, 466, 520, 36);
 		UserInterface.textField.setColumns(10);
+		UserInterface.textField.setFocusTraversalKeysEnabled(false);
+		TextFieldListener.setPossibility();
 	}
 	
-	public static void setButton() {
-		UserInterface.btnEnter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					UserInterface.processTextField();
-				} catch (NullPointerException | IOException e1) {
-					new Exception("NullPointerException");
-					e1.printStackTrace();
-				}
-			}
-		});
-		UserInterface.btnEnter.setBounds(509, 468, 92, 34);
+//	public static void highlightGuess(String guess) {
+//		int position = UserInterface.textField.getCaretPosition();
+//		System.out.println("caret position at " + position);
+//		
+//		Runnable doSetText = new Runnable() {
+//			public void run() {
+//				System.out.println("seting text");
+//				UserInterface.textField.setText(guess);
+//				System.out.println("textSet, setting highlight..");
+//				//UserInterface.textField.setSelectionStart(position);
+//				if (HotKeyListener.isBackSpace) {
+//					System.out.println("is back space...setting highlight from position " + (position-1) + " to position " + UserInterface.textField.getText().length());
+//					UserInterface.textField.select((position-1), UserInterface.textField.getText().length());
+//				}
+//				else {
+//					System.out.println("non back space...setting highlight from position " + (position+1) + " to position " + UserInterface.textField.getText().length());
+//				UserInterface.textField.setSelectionStart(position+1);//(position+1, UserInterface.textField.getText().length());
+//				}
+//			}
+//		};
+//		
+//		SwingUtilities.invokeLater(doSetText);
+//
+//	}
+	
+	public static void showBalloonTipSuggestion(String guess) {
+		suggestion.setTextContents(guess);
+		suggestion.setVisible(true);
+	}
+	
+	public static void closeBalloonTip() {
+		suggestion.setVisible(false);
 	}
 	
 	public static void addToContentPane() {
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
-		UserInterface.frame.getContentPane().add(UserInterface.btnEnter);
 		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
 		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
 		UserInterface.frame.getContentPane().add(UserInterface.lblCommandGuide);		
 		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);	
 	}
 	
-	public static void setAll() {
-
+	public static void setShowTaskInfo() {
+		suggestion.setVisible(false);
 		setFrame();
 		setPanels();
 		setScrollPane();
 		setLabels();
-		setTextField();
-		setButton();
 		addToContentPane();
+		setTextField();
 
+	}
+
+	public static void setAll() {
+		suggestion.setVisible(false);
+		setFrameListener();
+		setTextFieldListener();
+		setShowTaskInfo();
 	}
 
 }

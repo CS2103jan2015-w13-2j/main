@@ -9,25 +9,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JTextField;
 
 import taskList.Task;
 import taskList.TaskList;
 
-import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
-
-import java.awt.Font;
 
 /**
  * 
@@ -44,21 +38,20 @@ public class UserInterface {
 	public static int lastPage = 0;
 	public static int isComplete = -1;
 	public static boolean atHelpMenu = false;
-	private static TaskList BTL;
+	public static TaskList BTL;
 	private static ArrayList<Task> taskList;
 	public static double printPerPage = 5.0;
 
 	
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
+	public static JPanel panel = new JPanel();
 	public static JLabel lblBackground = new JLabel("");
 	public static JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
-	public static JPanel panel = new JPanel();
 	public static JLabel lblStatusMessage = new JLabel("");
 	public static JLabel lblPageNumber = new JLabel("");
 	public static JLabel lblHelp = new JLabel("F1 - Help");
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
-	public static JButton btnEnter = new JButton("Enter");
 
 
 
@@ -68,10 +61,11 @@ public class UserInterface {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@SuppressWarnings("unused")
 			public void run() {
 				try {
 					UserInterface window = new UserInterface();
-					window.frame.setVisible(true);
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,7 +77,7 @@ public class UserInterface {
 	 * Create the application.
 	 */
 	public UserInterface() {
-		BTL = new TaskList("Test.txt");
+		BTL = new TaskList("sharmaine.txt");
 		initialize();
 	}
 
@@ -95,7 +89,7 @@ public class UserInterface {
 		displayAll(0);		
 	}
 	public static void processTextField() throws NullPointerException, IOException {
-		System.out.println("Enter pressed");
+//		System.out.println("Enter pressed");
 		String input = textField.getText();
 		String[] tokens = input.split(" ");
 		
@@ -120,23 +114,23 @@ public class UserInterface {
 			lastPage = 0;
 			currentPage = 0;
 		}
-		System.out.println("tasklist size = " + taskList.size());
+//		System.out.println("tasklist size = " + taskList.size());
 		
 		System.out.println("added to tasklist! lastPage now is: " + lastPage);
 		if (lastPage < currentPage) {
 			currentPage = lastPage;
-			System.out.println("last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
 		}
 		
 		if (isAdd) {
 			currentPage = lastPage;
 			displayAll(lastPage);
-			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
 		}
 		
 		else {
 			displayAll(currentPage);
-			System.out.println("last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
 
 		}
 		
@@ -154,7 +148,7 @@ public class UserInterface {
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
-		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
+//		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
 		
 		if (start >= taskList.size() || pageNumber < 0) {
 			return false;
@@ -202,8 +196,8 @@ public class UserInterface {
 	}
 	
 	public static void printStatusMessage() {
-		String statusMessage = BTL.getLastFeedBack();
-		lblStatusMessage.setText(statusMessage);
+		lblCommandGuide.setText(DisplaySetting.getFeedbackGuideInfo());
+		resetGuide();
 	}
 	
 	public void setBackground(JLabel lblBackground) {
@@ -217,10 +211,9 @@ public class UserInterface {
 	}
 	
 	public static void printHelp() {
-		String helpInfo = DisplaySetting.getHelpScreenInfo().toString();
-		clearPanel();		
-		JLabel help = new JLabel(helpInfo);
-		panel.add(help);
+		frame.getContentPane().removeAll();
+		LayoutSetting.setHelpInfoLabel();
+		refreshFrame();
 	}
 	
 	private static int getLastPage() {
@@ -232,8 +225,23 @@ public class UserInterface {
 		panel.repaint();
 	}
 	
+	private static void refreshFrame() {
+		frame.revalidate();
+		frame.repaint();
+	}
+	
 	private static void clearPanel() {
 		panel.removeAll();
 		refreshPanel();
 	}
+	
+	public static void resetGuide() {
+	     Timer timer = new Timer();
+	     timer.schedule(new TimerTask() {
+	         @Override
+	         public void run() {
+	             UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
+	         }
+	     }, 3000);
+	 }
 }
