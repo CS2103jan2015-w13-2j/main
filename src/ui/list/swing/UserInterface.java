@@ -89,7 +89,7 @@ public class UserInterface {
 		displayAll(0);		
 	}
 	public static void processTextField() throws NullPointerException, IOException {
-		System.out.println("Enter pressed");
+//		System.out.println("Enter pressed");
 		String input = textField.getText();
 		String[] tokens = input.split(" ");
 		
@@ -114,23 +114,23 @@ public class UserInterface {
 			lastPage = 0;
 			currentPage = 0;
 		}
-		System.out.println("tasklist size = " + taskList.size());
+//		System.out.println("tasklist size = " + taskList.size());
 		
 		System.out.println("added to tasklist! lastPage now is: " + lastPage);
 		if (lastPage < currentPage) {
 			currentPage = lastPage;
-			System.out.println("last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
 		}
 		
 		if (isAdd) {
 			currentPage = lastPage;
 			displayAll(lastPage);
-			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
 		}
 		
 		else {
 			displayAll(currentPage);
-			System.out.println("last page = " + lastPage + " current page = " + currentPage);
+//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
 
 		}
 		
@@ -148,7 +148,7 @@ public class UserInterface {
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
-		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
+//		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
 		
 		if (start >= taskList.size() || pageNumber < 0) {
 			return false;
