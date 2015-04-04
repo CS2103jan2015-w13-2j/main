@@ -17,7 +17,7 @@ public class IntegrationTest {
 	private static final String ADD_COMMAND_1 = "add jumped over the moon";
 	private static final String ADD_COMMAND_2 = "add little brown fox";
 	private static final String DELETE_COMMAND_1 = "delete 1";
-	private static final String SORT_COMMAND = "sort";
+	private static final String SORT_COMMAND = "sort title";
 	private static final String SEARCH_COMMAND_1 = "search word1";
 	private static final String SEARCH_COMMAND_2 = "search word2";
 	private static final String SEARCH_COMMAND_NOT_EXIST = "search word22222";
@@ -183,6 +183,12 @@ public class IntegrationTest {
 
 
 	}
+	@Test
+	public void testFeedback() throws NullPointerException, IOException{
+
+
+	}
+	
 	private void testOneCommand(String description, String expected, String command, TaskList taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
 		System.out.println("Debug");

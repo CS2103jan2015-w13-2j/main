@@ -208,7 +208,7 @@ public class TaskList {
 			}
 			int indexinTaskList = 0;
 			for (int i = 0; i < taskList.size(); i++){
-				if (taskList.get(i).isEqual(searchResult.get(removeIndex))){
+				if (taskList.get(i).isEqual(searchResult.get(removeIndex - 1 ))){
 					indexinTaskList = i;
 					break;
 				}
@@ -328,23 +328,23 @@ public class TaskList {
 	
 	public boolean compareString(String string1, String string2){
 		if (string1 == null){
-			if (string2 == null) return true;
-			return true;
-		}else if (string2 == null){
+			if (string2 == null) return false;
 			return false;
+		}else if (string2 == null){
+			return true;
 		}else{
-			return string1.compareTo(string2)>0;
+			return string1.compareTo(string2)<0;
 		}
 	}
 	
 	public boolean compareDate(Date date1, Date date2){
 		if (date1 == null){
-			if (date2 == null) return true;
-			return true;
-		}else if (date2 == null){
+			if (date2 == null) return false;
 			return false;
+		}else if (date2 == null){
+			return true;
 		}else{
-			return date1.compareTo(date2)>0;
+			return date1.compareTo(date2)<0;
 		}
 	}
 	
@@ -403,9 +403,11 @@ public class TaskList {
 	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
 	 */
 	private void sort(String command) throws Exception {
-		String content = bp.getTitle(command);
-		if (content == null){
-			content = "Time";
+		String content;
+		try{
+			content = bp.getTitle(command);
+		}catch(Exception e){
+			content = "time";
 		}
 		
 		content.toLowerCase();

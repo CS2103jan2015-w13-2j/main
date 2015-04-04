@@ -164,8 +164,9 @@ public class Task implements Comparable<Task>{
 			answer |= this.content.contains(keyWord);
 		if (this.venue != null)
 			answer |= this.venue.contains(keyWord);
-		System.out.println("debug time "+ new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date));
-		if (this.content != null)
+		if (this.date != null)
+			System.out.println("debug time "+ new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date));
+		if (this.date != null)
 			answer |= new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date).contains(keyWord);
 		return answer;
 	}
