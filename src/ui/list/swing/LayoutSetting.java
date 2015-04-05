@@ -8,8 +8,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
@@ -95,33 +93,8 @@ public class LayoutSetting {
 		UserInterface.textField.setBounds(59, 466, 520, 36);
 		UserInterface.textField.setColumns(10);
 		UserInterface.textField.setFocusTraversalKeysEnabled(false);
-		TextFieldListener.setPossibility();
+		BalloonTipSuggestion.setPossibility();
 	}
-	
-//	public static void highlightGuess(String guess) {
-//		int position = UserInterface.textField.getCaretPosition();
-//		System.out.println("caret position at " + position);
-//		
-//		Runnable doSetText = new Runnable() {
-//			public void run() {
-//				System.out.println("seting text");
-//				UserInterface.textField.setText(guess);
-//				System.out.println("textSet, setting highlight..");
-//				//UserInterface.textField.setSelectionStart(position);
-//				if (HotKeyListener.isBackSpace) {
-//					System.out.println("is back space...setting highlight from position " + (position-1) + " to position " + UserInterface.textField.getText().length());
-//					UserInterface.textField.select((position-1), UserInterface.textField.getText().length());
-//				}
-//				else {
-//					System.out.println("non back space...setting highlight from position " + (position+1) + " to position " + UserInterface.textField.getText().length());
-//				UserInterface.textField.setSelectionStart(position+1);//(position+1, UserInterface.textField.getText().length());
-//				}
-//			}
-//		};
-//		
-//		SwingUtilities.invokeLater(doSetText);
-//
-//	}
 	
 	public static void setBalloonTipStyle() {
 		BalloonTipStyle style = new EdgedBalloonStyle(Color.GREEN, Color.BLUE);

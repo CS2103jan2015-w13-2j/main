@@ -22,10 +22,10 @@ public class HotKeyListener extends KeyAdapter{
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_TAB) {
-			System.out.println("tab pressed");
-			if (TextFieldListener.areGuessing) {
-                UserInterface.textField.setText(TextFieldListener.getCurrentGuess());
-                TextFieldListener.areGuessing = false;
+//			System.out.println("tab pressed");
+			
+			if (BalloonTipSuggestion.areGuessing) {
+                BalloonTipSuggestion.setText(BalloonTipSuggestion.getCurrentGuess() + " ");
                 arg1.consume();
             }
 		}
@@ -40,7 +40,7 @@ public class HotKeyListener extends KeyAdapter{
 				}
 			}
 			
-			System.out.println("current page = " + UserInterface.currentPage);
+//			System.out.println("current page = " + UserInterface.currentPage);
 		}
 			
 		
