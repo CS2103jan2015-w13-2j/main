@@ -125,13 +125,12 @@ public class LayoutSetting {
 	
 	public static void setBalloonTipStyle() {
 		BalloonTipStyle style = new EdgedBalloonStyle(Color.GREEN, Color.BLUE);
-		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 10, 5, false);
-	//	 suggestion.remove(suggestion.getCloseButton());
+		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 15, 7, false);
 	}
 	
 	public static void showBalloonTipSuggestion(String guess) {
 		
-		suggestion.setTextContents(guess);
+		suggestion.setTextContents("press tab to \""+ guess + "\"");
 		suggestion.setVisible(true);
 	}
 	

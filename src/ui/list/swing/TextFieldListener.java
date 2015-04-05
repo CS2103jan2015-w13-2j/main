@@ -52,6 +52,8 @@ public class TextFieldListener extends JTextField implements DocumentListener {
     	possibilities.add("delete");
     	possibilities.add("search");
     	possibilities.add("sort");
+    	possibilities.add("redo");
+    	possibilities.add("undo");
     	Collections.sort(possibilities);
     }
     
