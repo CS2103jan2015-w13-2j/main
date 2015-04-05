@@ -69,7 +69,7 @@ public class Task implements Comparable<Task>{
 			dateString = new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date);
 		
 		if(deadline != null)
-			deadlineString = deadline.toString();
+			deadlineString = new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.deadline);
 		
 		this.venue = venue;
 	}
