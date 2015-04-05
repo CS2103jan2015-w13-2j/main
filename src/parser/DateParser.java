@@ -1,12 +1,15 @@
 package parser;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import com.joestelmach.natty.*;
 
 public class DateParser {
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
 	private com.joestelmach.natty.Parser dateParser = null;
 	private String[] dateIndicators = {"/", "-"};
 	private String[] timeIndicators = {".", ":"};
@@ -16,7 +19,7 @@ public class DateParser {
 	
 	public Date getDate(String dateString) throws NullPointerException, IOException {
 		if (dateString == null) {
-			throw new NullPointerException("the command cannot be null");
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
 		checkDateFormat(dateString);
 		checkTimeFormat(dateString);
@@ -26,6 +29,14 @@ public class DateParser {
 		} else {
 			return groups.get(0).getDates().get(0);
 		}
+	}
+	
+	public String formatDefault(Date date) {
+		if (date == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return dateFormat.format(date);
 	}
 	
 	private void checkDateFormat(String dateString) throws IOException {
