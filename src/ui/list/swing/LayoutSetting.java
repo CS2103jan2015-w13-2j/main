@@ -2,12 +2,17 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import com.apple.eawt.Application;
+
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
@@ -32,6 +37,7 @@ public class LayoutSetting {
 		UserInterface.frame.setBounds(100, 100, 653, 562);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface.frame.getContentPane().setLayout(null);
+		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
 	}
 	
 	public static void setPanels() {	
