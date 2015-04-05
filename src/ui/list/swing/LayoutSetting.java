@@ -9,13 +9,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import net.java.balloontip.BalloonTip;
+//import net.java.balloontip.BalloonTip;
 
 
 public class LayoutSetting {
 	
 	private static HotKeyListener hotKeyListener = new HotKeyListener();
-	private static 	BalloonTip suggestion = new BalloonTip(UserInterface.textField, "");
+	//private static 	BalloonTip suggestion = new BalloonTip(UserInterface.textField, "");
 	
 	public static void setFrameListener() {
 		UserInterface.frame.addKeyListener(hotKeyListener);
@@ -119,12 +119,12 @@ public class LayoutSetting {
 //	}
 	
 	public static void showBalloonTipSuggestion(String guess) {
-		suggestion.setTextContents(guess);
-		suggestion.setVisible(true);
+		//suggestion.setTextContents(guess);
+		//suggestion.setVisible(true);
 	}
 	
 	public static void closeBalloonTip() {
-		suggestion.setVisible(false);
+		//suggestion.setVisible(false);
 	}
 	
 	public static void addToContentPane() {
@@ -137,7 +137,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setShowTaskInfo() {
-		suggestion.setVisible(false);
+		//suggestion.setVisible(false);
 		setFrame();
 		setPanels();
 		setScrollPane();
@@ -148,7 +148,7 @@ public class LayoutSetting {
 	}
 
 	public static void setAll() {
-		suggestion.setVisible(false);
+		//suggestion.setVisible(false);
 		setFrameListener();
 		setTextFieldListener();
 		setShowTaskInfo();
