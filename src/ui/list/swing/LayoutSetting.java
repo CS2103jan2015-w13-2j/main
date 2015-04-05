@@ -7,15 +7,20 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import net.java.balloontip.BalloonTip;
+import net.java.balloontip.BalloonTip.AttachLocation;
+import net.java.balloontip.BalloonTip.Orientation;
+import net.java.balloontip.styles.BalloonTipStyle;
+import net.java.balloontip.styles.EdgedBalloonStyle;
 
 
 public class LayoutSetting {
 	
 	private static HotKeyListener hotKeyListener = new HotKeyListener();
-	private static 	BalloonTip suggestion = new BalloonTip(UserInterface.textField, "");
+	private static 	BalloonTip suggestion;
 	
 	public static void setFrameListener() {
 		UserInterface.frame.addKeyListener(hotKeyListener);
@@ -118,7 +123,14 @@ public class LayoutSetting {
 //
 //	}
 	
+	public static void setBalloonTipStyle() {
+		BalloonTipStyle style = new EdgedBalloonStyle(Color.GREEN, Color.BLUE);
+		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 10, 5, false);
+	//	 suggestion.remove(suggestion.getCloseButton());
+	}
+	
 	public static void showBalloonTipSuggestion(String guess) {
+		
 		suggestion.setTextContents(guess);
 		suggestion.setVisible(true);
 	}
@@ -137,6 +149,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setShowTaskInfo() {
+		setBalloonTipStyle();
 		suggestion.setVisible(false);
 		setFrame();
 		setPanels();
@@ -148,6 +161,7 @@ public class LayoutSetting {
 	}
 
 	public static void setAll() {
+		setBalloonTipStyle();
 		suggestion.setVisible(false);
 		setFrameListener();
 		setTextFieldListener();
