@@ -8,6 +8,9 @@ import java.util.List;
 import com.joestelmach.natty.*;
 
 public class DateParser {
+	private static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
+	private static final String FORMAT_DAY = "yyyy-MM-dd";
+
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
 	private com.joestelmach.natty.Parser dateParser = null;
@@ -27,16 +30,40 @@ public class DateParser {
 		if (groups.isEmpty()) {
 			return null;
 		} else {
+			dateString = appendTime(dateString);
+			groups =  dateParser.parse(dateString);
 			return groups.get(0).getDates().get(0);
 		}
 	}
 	
-	public String formatDefault(Date date) {
+	public String formatDefault(Date date) throws  NullPointerException {
 		if (date == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DEFAULT);
 		return dateFormat.format(date);
+	}
+	
+	public boolean isSameDay(Date d1, Date d2) throws NullPointerException {
+		if (d1 == null || d2 == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DAY);
+		String day1 = dateFormat.format(d1);
+		String day2 = dateFormat.format(d2);
+		return day1.equals(day2);
+	}
+	
+	private String appendTime(String dateString) {
+		String temp = dateString;
+		if (notContainsTime(dateString)) {
+			temp = dateString + " 00:00";
+		}
+		return temp;
+	}
+	
+	private boolean notContainsTime(String dateString) {
+		return !(dateString.contains(".")||dateString.contains(":"));
 	}
 	
 	private void checkDateFormat(String dateString) throws IOException {

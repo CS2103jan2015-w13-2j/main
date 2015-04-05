@@ -13,7 +13,10 @@ import org.junit.Test;
 
 public class testDateParser {
 	
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
 	private Date output;
+	private Boolean booleanOutput;
 	private DateParser dp;
 	private SimpleDateFormat sdf;
 	private String dateString;
@@ -30,7 +33,7 @@ public class testDateParser {
 			fail("No exception thrown.");
 		}catch(Exception ex){
 			assertTrue(ex instanceof NullPointerException);
-			assertTrue(ex.getMessage().contains("the command cannot be null"));
+			assertTrue(ex.getMessage().contains(EXCEPTION_NULLPOINTER));
 		}
 	}
 	
@@ -159,6 +162,22 @@ public class testDateParser {
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
 			assertTrue(e.getMessage().contains("the date format you entered is incorrect"));
+		}
+	}
+	
+	@Test
+	public void testIsSameDay() {
+		try {
+			Date d1 = dp.getDate("2015-4-25 13:40");
+			Date d2 = dp.getDate("2015-4-25 12:00");
+			booleanOutput = dp.isSameDay(d1, d2);
+			assertEquals(true, booleanOutput);
+			d1 = dp.getDate("2015-4-26 13:30");
+			d2 = dp.getDate("2015-4-25 12:00");
+			booleanOutput = dp.isSameDay(d1, d2);
+			assertEquals(false, booleanOutput);
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
