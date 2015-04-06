@@ -29,14 +29,19 @@ public class TaskList {
 	private String fileName;
 	private JsonStringFileOperation fo;
 	private ArrayList<Task> taskList;
+	private ArrayList<Task> completedTaskList;	
 	private ArrayList<Task> searchResult;
 	//mode == 0 means the result shown in screen is taskList,
 	//mode == 1 means the result shown in screen is searchResult
+	//mode == 2 means the result shown in screen is completedTaskList
+	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
 	private int mode;
 	private Parser bp;
 	private Undo<ArrayList<Task>> undo;
+	private Undo<ArrayList<Task>> undoForCompleted;
 	private ArrayList<String> feedBack = new ArrayList<String>();
 	private String name = TaskList.class.getName(); 
+	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
 	private static TaskList sharedInstance; 
 	public TaskList(String inputFileName){
@@ -52,6 +57,7 @@ public class TaskList {
 		try{
 			fo = new JsonStringFileOperation(fileName);
 			taskList = fo.getUnfinishedTaskListFromFile();
+			completedTaskList = fo.getFinishedTaskListFromFile();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
 		}catch(Exception e){
@@ -120,10 +126,14 @@ public class TaskList {
 			delete(command);
 			break;
 		case COMPLETE:
-			delete(command);
+			complete(command);
 			break;
 		case DISPLAY:
-			display();
+			try{
+				display(command);
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 			break;
 		case CLEAR:
 			clear();
@@ -145,7 +155,6 @@ public class TaskList {
 			try {
 				sort(command);
 			} catch (Exception e1 ) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			break;
@@ -180,6 +189,7 @@ public class TaskList {
 			taskList.add(new Task(content,date,deadLine,venue));
 			saveFile();
 			undo.add(taskList);
+			undoForCompleted.add(completedTaskList);
 		}catch (Exception e){
 			throw e;
 		}
@@ -227,20 +237,94 @@ public class TaskList {
 			undo.add(taskList);
 		}
 	}
-
+	/*
+	 * complete content in arraylist, save this task to finished list
+	 */
+	private void complete(String command) {
+		if (mode == 0){
+			String content = "";
+			if (command.indexOf(' ') != -1) {
+				content = command.substring(command.indexOf(' ') + 1);
+			}
+			int removeIndex = Integer.valueOf(content);
+			if (removeIndex < 0 || removeIndex > taskList.size()) {
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				return;
+			}
+			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
+			Task finishedOne = taskList.remove(removeIndex - 1);
+			completedTaskList.add(finishedOne);
+			saveFile();
+			undo.add(taskList);
+		}else{
+			String content = "";
+			if (command.indexOf(' ') != -1) {
+				content = command.substring(command.indexOf(' ') + 1);
+			}
+			int removeIndex = Integer.valueOf(content);
+			if (removeIndex < 0 || removeIndex > searchResult.size()) {
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				return;
+			}
+			int indexinTaskList = 0;
+			for (int i = 0; i < taskList.size(); i++){
+				if (taskList.get(i).isEqual(searchResult.get(removeIndex - 1 ))){
+					indexinTaskList = i;
+					break;
+				}
+			}
+			taskList.remove(indexinTaskList);
+			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
+			searchResult.remove(removeIndex - 1);
+			saveFile();
+			undo.add(taskList);
+		}
+	}
 	/*
 	 * display the content in arraylist, which is the real-time file content
 	 */
-	private void display() {
-		mode = 0;
-		if (taskList.size() == 0) {
-			showMessage(MESSAGE_EMPTY_FILE, null);
+	private void display(String command) throws NullPointerException, IOException {
+		if (command.equals("display")){
+			mode = 0;
+			if (taskList.size() == 0) {
+				showMessage(MESSAGE_EMPTY_FILE, null);
+				return;
+			}
+			int i = 1;
+			for (Task content : taskList) {
+				showFileContent(i, content.getContent());
+				i += 1;
+			}
+			showMessage("Display todo Task");
 			return;
 		}
-		int i = 1;
-		for (Task content : taskList) {
-			showFileContent(i, content.getContent());
-			i += 1;
+		String type = bp.getTitle(command);
+		if (type.equals("finished")){
+			mode = 2;
+			if (completedTaskList.size() == 0){
+				showMessage(MESSAGE_EMPTY_FILE,null);
+				return;
+			}
+			showMessage("Display finished Task");
+		}else if (type.equals("all")){
+			mode = 3;
+			if (completedTaskList.size() + taskList.size() == 0){
+				showMessage(MESSAGE_EMPTY_FILE,null);
+				return;
+			}
+			showMessage("Display all Tasks");
+		}else{
+			mode = 0;
+			if (taskList.size() == 0) {
+				showMessage(MESSAGE_EMPTY_FILE, null);
+				return;
+			}
+			int i = 1;
+			for (Task content : taskList) {
+				showFileContent(i, content.getContent());
+				i += 1;
+			}
+			showMessage("Display todo Task");
 		}
 	}
 	
@@ -253,6 +337,7 @@ public class TaskList {
 			String content = bp.getNewTitle(command);
 			try{
 				int index = bp.getIndex(command) - 1;
+				lastOperationIndex = index + 1;
 				Date newDate = bp.getDate(command);
 				Date deadLine = bp.getDeadline(command);
 				String newVenue = bp.getVenue(command);
@@ -278,6 +363,7 @@ public class TaskList {
 			String content = bp.getNewTitle(command);
 			try{
 				int index = bp.getIndex(command) - 1;
+				lastOperationIndex = index + 1;
 				Date newDate = bp.getDate(command);
 				Date deadLine = bp.getDeadline(command);
 				String newVenue = bp.getVenue(command);
@@ -315,10 +401,12 @@ public class TaskList {
 	private void redo() {
 		if (undo.canRedo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.redo();
+			if (undoForCompleted.canRedo()) completedTaskList = (ArrayList<Task>) undoForCompleted.redo();
 			showMessage("redo operation successfully");
+			
 		}else{
 			showMessage("no redo operation avaiable");
-		}
+		}			
 	}
 
 	/*
@@ -327,6 +415,7 @@ public class TaskList {
 	private void undo() {
 		if (undo.canUndo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.undo();
+			if (undoForCompleted.canUndo()) completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
 			showMessage("undo operation successfully");
 		}else{
 			showMessage("no undo operation avaiable");
@@ -422,21 +511,18 @@ public class TaskList {
 			try {
 				sortTaskList(BY_TIME);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else if (content.equals("venue")){
 			try {
 				sortTaskList(BY_VENUE);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else if (content.equals("title")){
 			try {
 				sortTaskList(BY_TITLE);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
@@ -487,7 +573,7 @@ public class TaskList {
 	
 	private void saveFile(){
 		try{
-			fo.saveToFile(taskList);
+			fo.saveToFile(taskList,completedTaskList);
 		}catch(Exception e){
 			feedBack.add("cannot save to file successfully");
 		}
@@ -510,9 +596,18 @@ public class TaskList {
 					answers.add(taskList.get(i));
 			}
 			return answers;
-		}else
+		}else if (mode == 1){
 			return (ArrayList<Task>) searchResult.clone();
+	
+		}else if (mode == 2){
+			return (ArrayList<Task>) completedTaskList.clone();
+		}else{
+			ArrayList<Task> bothTaskList = (ArrayList<Task>) taskList.clone();
+			bothTaskList.addAll((ArrayList<Task>)completedTaskList.clone());
+			return bothTaskList;
+		}
 	}
+		
 	
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getFeedBacks(){
@@ -566,5 +661,18 @@ public class TaskList {
 		return true;
 		
 	}
+	
+	public int getLastOperationIndex(){
+		return lastOperationIndex;
+	}
+	
+	public String getAutoFill(String command){
+		return bp.autoFill(command);
+	}
+	
+	public String getCommandTip(String command){
+		return bp.privideTips(command);
+	}
+	
 	
 }

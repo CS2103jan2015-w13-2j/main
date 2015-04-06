@@ -6,7 +6,6 @@ import java.util.Date;
 
 import parser.DateParser;
 
-
 public class Task implements Comparable<Task>{
 	private String content;
 	private String venue;
