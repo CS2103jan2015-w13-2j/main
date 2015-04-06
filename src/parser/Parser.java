@@ -214,7 +214,7 @@ public class Parser {
 		}
 	}
 	
-	public String privideFeedback(String operation) throws NullPointerException {
+	public String privideTips(String operation) throws NullPointerException {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
@@ -267,6 +267,7 @@ public class Parser {
 		}
 		return resultList;
 	}
+	
 	private String searchKeyword(String str, String[] keyword) {
 		for (String temp:keyword) {
 			if (temp.startsWith(str)) {

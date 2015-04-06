@@ -12,10 +12,12 @@ public class DateParser {
 	private static final String FORMAT_DAY = "yyyy-MM-dd";
 
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String EXCEPTION_DATEFORMAT = "the date format you entered is incorrect";
 	
 	private com.joestelmach.natty.Parser dateParser = null;
 	private String[] dateIndicators = {"/", "-"};
 	private String[] timeIndicators = {".", ":"};
+	
 	public DateParser(){
 		dateParser = new com.joestelmach.natty.Parser();
 	}
@@ -87,7 +89,7 @@ public class DateParser {
 		 || day != null && Integer.parseInt(day) < 1  
 		 || month != null && Integer.parseInt(month) > 12 
 		 || month != null && Integer.parseInt(month) < 1) {
-			throw new IOException("the date format you entered is incorrect");
+			throw new IOException(EXCEPTION_DATEFORMAT);
 		}
 	}
 	
@@ -100,7 +102,7 @@ public class DateParser {
 		min = getTimeElement(1, dateString);
 		sec = getTimeElement(2, dateString);
 		if (isTimeIllegal(hour, min, sec)) {
-			throw new IOException("the date format you entered is incorrect");
+			throw new IOException(EXCEPTION_DATEFORMAT);
 		}
 	}
 
