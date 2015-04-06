@@ -20,6 +20,7 @@ public class BalloonTipSuggestion {
     	possibilities.add("sort");
     	possibilities.add("redo");
     	possibilities.add("undo");
+    	possibilities.add("exit");
     	Collections.sort(possibilities);
     }
     
