@@ -674,5 +674,9 @@ public class TaskList {
 		return bp.privideTips(command);
 	}
 	
+	public int getCurrentMode(){
+		return mode;
+	}
+	
 	
 }
