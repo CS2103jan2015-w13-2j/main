@@ -144,7 +144,7 @@ public class UserInterface {
 		lastPage = getLastPage();
 		
 		clearPanel();
-		panel.add(new JLabel(VIEW_TASK_INFO_MESSAGE));
+		//panel.add(new JLabel(VIEW_TASK_INFO_MESSAGE));
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
@@ -206,7 +206,7 @@ public class UserInterface {
 		frame.getContentPane().add(lblBackground);
 	}
 	
-	public void exit() {
+	public static void exit() {
 		frame.dispose();
 	}
 	

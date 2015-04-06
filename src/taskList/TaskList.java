@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import edu.emory.mathcs.backport.java.util.Collections;
 import storage.JsonStringFileOperation;
 import taskList.Task;
+import ui.list.swing.UserInterface;
 import parser.Parser;
 public class TaskList {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
@@ -454,6 +455,8 @@ public class TaskList {
 		mode = 1;
 		searchResult.clear();
 		String keyWord = bp.getTitle(command);
+		if (keyWord.equals("today"))
+			keyWord = "2015-04-06";
 		for (int i = 0; i < taskList.size(); i++){
 			if (taskList.get(i).containKeyWord(keyWord)){
 				searchResult.add(taskList.get(i));
@@ -478,7 +481,7 @@ public class TaskList {
 	 */
 	private void exit() {
 		saveFile();
-		sc.close();
+		UserInterface.exit();
 		System.exit(0);
 	}
 	
