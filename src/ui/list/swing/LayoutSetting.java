@@ -2,7 +2,6 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -99,7 +98,6 @@ public class LayoutSetting {
 		UserInterface.textField.setBounds(59, 466, 520, 36);
 		UserInterface.textField.setColumns(10);
 		UserInterface.textField.setFocusTraversalKeysEnabled(false);
-		BalloonTipSuggestion.setPossibility();
 	}
 	
 	public static void setBalloonTipStyle() {

@@ -14,7 +14,7 @@ import javax.swing.event.DocumentListener;
 @SuppressWarnings("serial")
 public class TextFieldListener extends JTextField implements DocumentListener {
 	
-	private static String inputStream = "";
+	public static String inputStream = "";
 	private final String COMMAND_GUIDE_ADD_MESSAGE = "Tip: add <task> -d <date> -v <venue> to add task with date & venue";
 	private final String COMMAND_GUIDE_DELETE_MESSAGE = "Tip: delete <index number> to delete a task";
 	private final String COMMAND_GUIDE_MODIFY_MESSAGE = "Tip: modify <index> <new name> -d <new date> -v <new venue>";
