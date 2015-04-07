@@ -144,7 +144,7 @@ public class UserInterface {
 		lastPage = getLastPage();
 		
 		clearPanel();
-		//panel.add(new JLabel(VIEW_TASK_INFO_MESSAGE));
+		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));
 		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
@@ -175,6 +175,7 @@ public class UserInterface {
 	}
 	
 	public static void printTask (Task task, int i) {
+		
 		String str = new DisplaySetting(task,i).getData();
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
 		

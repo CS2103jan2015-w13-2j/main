@@ -10,6 +10,20 @@ import taskList.Task;
 
 public class DisplaySetting {
 	
+	//mode == 0 means the result shown in screen is taskList,
+		//mode == 1 means the result shown in screen is searchResult
+		//mode == 2 means the result shown in screen is completedTaskList
+		//mode == 3 means the result shown in screen is all task (both finished and unfinished)
+	
+	private static final int TASK_INFO_UNCOMPLETED = 0;
+	private static final int TASK_INFO_SEARCH_RESULT = 1;
+	private static final int TASK_INFO_COMPLETED = 2;
+	private static final int TASK_INFO_ALL_TASKS = 3;
+	private static final String TASK_INFO_UNCOMPLETED_MSG = "Things to do: ";
+	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
+	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
+	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
+	
 	private static StringBuilder data = new StringBuilder();
 	private static final String HTML_OPEN = "<html>";
 	private static final String HTML_CLOSE = "</html>";
@@ -18,8 +32,6 @@ public class DisplaySetting {
 	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\">";
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232>";
 	private static final String HTML_FONT_CLOSE = "</font>";
-	private static final String HTML_FONT_HELP_HEADER = "<font size = \"6\" color = \"#9F000F\" font face = \"HanziPen TC\">";
-	private static final String HTML_FONT_HELP_INFO = "<font size = \"5\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_FEEDBACKGUIDE = "<font color = red>";
 	
@@ -61,43 +73,39 @@ public class DisplaySetting {
 		return data.toString();
 	}
 	
-	public static String getHelpScreenInfo() {
-		
-		clearData();
-		
-		data.append(HTML_OPEN);
-		data.append(HTML_FONT_HELP_INFO);
-		data.append(HTML_FONT_HELP_HEADER);
-		data.append("1. How to add a task?" + HTML_BREAK);
-		data.append(HTML_FONT_CLOSE);
-		data.append("type: add (task name) or -d (date) or -dd (deadline) or -v (venue)" + HTML_BREAK + 
-				HTML_FONT_HELP_HEADER + "2. How to delete a task?"+ HTML_BREAK + HTML_FONT_CLOSE + 
-				"type: delete (task index number shown beside the task name)" + HTML_BREAK +
-				HTML_FONT_HELP_HEADER + "3. How to modify a task?" + HTML_BREAK + HTML_FONT_CLOSE +  
-				 "type: modify (task index) new task name or respective tags " + HTML_BREAK  +
-				 HTML_FONT_HELP_HEADER + "4. How to undo/redo an operation?"+ HTML_BREAK + HTML_FONT_CLOSE + 
-				 "type: undo/redo" + HTML_BREAK +
-
-				 HTML_FONT_HELP_HEADER + "6. Useful tags"+ HTML_BREAK + HTML_FONT_CLOSE + 
-				 "-d for date" + HTML_BREAK
-				 + "-v for venue" + HTML_BREAK +
-				 "-dd for deadline" + HTML_BREAK);
-		data.append(HTML_FONT_CLOSE);
-		data.append(HTML_CLOSE);
-		
-		return data.toString();
-	}
-	
 	public static String getViewTaskInfo() {
 		clearData();
 		
 		data.append(HTML_OPEN);
 		data.append(HTML_FONT_VIEW_TASK_INFO);
-		data.append("You are currently viewing all tasks");
+		data.append(getTaskInfoDetails());
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);	
 		
 		return data.toString();
+	}
+
+	@SuppressWarnings("finally")
+	private static String getTaskInfoDetails() {
+		int mode = 0;
+
+		try {
+			mode = UserInterface.BTL.getCurrentMode();
+		} catch (Exception e){
+			e.printStackTrace();
+		} finally {
+
+			System.out.println("Continue after catch mode = " + mode);
+			switch (mode) {
+
+			case TASK_INFO_UNCOMPLETED: return TASK_INFO_UNCOMPLETED_MSG;
+			case TASK_INFO_SEARCH_RESULT: return TASK_INFO_SEARCH_RESULT_MSG;
+			case TASK_INFO_COMPLETED: return TASK_INFO_COMPLETED_MSG;
+			case TASK_INFO_ALL_TASKS: return TASK_INFO_ALL_TASKS_MSG;
+			default: return "UNDEFINED MODE";
+			
+			}
+		}
 	}
 	
 	public static String getFeedbackGuideInfo() {
