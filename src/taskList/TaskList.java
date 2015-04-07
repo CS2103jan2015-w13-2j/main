@@ -35,7 +35,7 @@ public class TaskList {
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-	private int mode;
+	private int mode = 0;
 	private Parser bp;
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
@@ -58,8 +58,10 @@ public class TaskList {
 			fo = new JsonStringFileOperation(fileName);
 			taskList = fo.getUnfinishedTaskListFromFile();
 			completedTaskList = fo.getFinishedTaskListFromFile();
+			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
+			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
 			feedBack.add("Cannot open the file correctly");
@@ -189,7 +191,6 @@ public class TaskList {
 			taskList.add(new Task(content,date,deadLine,venue));
 			saveFile();
 			undo.add(taskList);
-			undoForCompleted.add(completedTaskList);
 		}catch (Exception e){
 			throw e;
 		}
@@ -415,7 +416,9 @@ public class TaskList {
 	private void undo() {
 		if (undo.canUndo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.undo();
-			if (undoForCompleted.canUndo()) completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
+			if (undoForCompleted.canUndo()) {
+				completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
+			}
 			showMessage("undo operation successfully");
 		}else{
 			showMessage("no undo operation avaiable");
