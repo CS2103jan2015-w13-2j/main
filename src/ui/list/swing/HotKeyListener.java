@@ -35,7 +35,12 @@ public class HotKeyListener extends KeyAdapter{
 					if (PageHandler.getCurrentPage() > 0) {
 						PageHandler.flipPrevPage();
 						System.out.println("flipped prev page");
-						UserInterface.displayAll(PageHandler.getCurrentPage());
+						try {
+							UserInterface.displayAll(PageHandler.getCurrentPage());
+						} catch (NullPointerException | IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -49,7 +54,12 @@ public class HotKeyListener extends KeyAdapter{
 			if (UserInterface.textField.getText().isEmpty() && !UserInterface.atHelpMenu && PageHandler.getCurrentPage() < PageHandler.getLastPage() ) {
 						PageHandler.flipNextPage();
 						System.out.println("flipped next page");
-						UserInterface.displayAll(PageHandler.getCurrentPage());
+						try {
+							UserInterface.displayAll(PageHandler.getCurrentPage());
+						} catch (NullPointerException | IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					
 			}
 //			System.out.println("current page = " + UserInterface.currentPage);
@@ -66,7 +76,12 @@ public class HotKeyListener extends KeyAdapter{
 //			System.out.println("ESC pressed");
 			UserInterface.atHelpMenu = false;
 			LayoutSetting.setShowTaskInfo();
-			UserInterface.displayAll(PageHandler.getCurrentPage());
+			try {
+				UserInterface.displayAll(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 		

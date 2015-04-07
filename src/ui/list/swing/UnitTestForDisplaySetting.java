@@ -2,6 +2,8 @@ package ui.list.swing;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import taskList.Task;
@@ -9,7 +11,7 @@ import taskList.Task;
 public class UnitTestForDisplaySetting {
 
 	@Test
-	public void test() {
+	public void test() throws NullPointerException, IOException {
 //		fail("Not yet implemented");
 		
 		Task test1 = new Task("task1","2015/03/24", "", "venue1");

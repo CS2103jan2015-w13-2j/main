@@ -1,5 +1,6 @@
 package ui.list.swing;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import taskList.Task;
@@ -35,9 +36,9 @@ public class DisplaySetting {
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232>";
 	private static final String HTML_FONT_CLOSE = "</font>";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
-	private static final String HTML_FONT_FEEDBACKGUIDE = "<font color = red>";
+	private static final String HTML_FONT_RED = "<font color = red>";
 	
-	public DisplaySetting(Task task, int i) {
+	public DisplaySetting(Task task, int i) throws NullPointerException, IOException {
 		
 		clearData();
 		assert(data.length()==0);
@@ -48,20 +49,41 @@ public class DisplaySetting {
 		String venue = task.getVenue();
 		String endDate = task.getDeadlineString();
 		
+		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
+		
 		if (date == null) {
 			date = "---";
+		}
+		
+		else {
+			if (task.isOutOfDate()) {
+				data.append(HTML_FONT_RED);
+				data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE);
+				
+				if (endDate != null) {
+					data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
+				}
+				
+				data.append(HTML_FONT_CLOSE);
+			}
+			
+			else {
+				data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
+				
+				if (endDate != null) {
+					data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
+				}
+			}
 		}
 		
 		if (venue == null) {
 			venue = "---";
 		}
 				
-		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
-		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
+
+//		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
 		
-		if (endDate != null) {
-			data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
-		}
+
 		
 		data.append(HTML_BREAK);
 		
@@ -113,7 +135,7 @@ public class DisplaySetting {
 		clearData();
 		
 		data.append(HTML_OPEN);
-		data.append(HTML_FONT_FEEDBACKGUIDE);
+		data.append(HTML_FONT_RED);
 		data.append(UserInterface.BTL.getLastFeedBack());	
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);
