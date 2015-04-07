@@ -36,7 +36,6 @@ public class UserInterface {
 	public static boolean isAdd = false;
 	public static int currentPage = 0;
 	public static int lastPage = 0;
-	public static int isComplete = -1;
 	public static boolean atHelpMenu = false;
 	public static TaskList BTL;
 	private static ArrayList<Task> taskList;

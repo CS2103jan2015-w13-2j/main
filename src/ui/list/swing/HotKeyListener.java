@@ -23,8 +23,9 @@ public class HotKeyListener extends KeyAdapter{
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_TAB) {
 //			System.out.println("tab pressed");
-            UserInterface.textField.setText(BalloonTipSuggestion.getAutoFill() + " ");
-
+			if (BalloonTipSuggestion.getAutoFill() != null) {
+				UserInterface.textField.setText(BalloonTipSuggestion.getAutoFill() + " ");
+			}
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
