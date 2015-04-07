@@ -199,30 +199,22 @@ public class TaskList {
 	 * delete content in arraylist, but do not actully store to file
 	 */
 	private void delete(String command) {
-		if (mode == 0){
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
-			if (removeIndex < 0 || removeIndex > taskList.size()) {
-				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
-				return;
-			}
+		int removeIndex = -1;
+		try {
+			removeIndex = bp.getIndex(command);
+		} catch (IOException e) {
+		
+		}	
+		if (removeIndex < 0 || removeIndex > taskList.size()) {
+			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+			return;
+		}
+		if (mode == 0) {
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			taskList.remove(removeIndex - 1);
 			saveFile();
-			undo.add(taskList);
-		}else{
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
-			if (removeIndex < 0 || removeIndex > searchResult.size()) {
-				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
-				return;
-			}
+			undo.add(taskList); 
+		} else {
 			int indexinTaskList = 0;
 			for (int i = 0; i < taskList.size(); i++){
 				if (taskList.get(i).isEqual(searchResult.get(removeIndex - 1 ))){
@@ -284,21 +276,12 @@ public class TaskList {
 	 * display the content in arraylist, which is the real-time file content
 	 */
 	private void display(String command) throws NullPointerException, IOException {
-		if (command.equals("display")){
-			mode = 0;
-			if (taskList.size() == 0) {
-				showMessage(MESSAGE_EMPTY_FILE, null);
-				return;
-			}
-			int i = 1;
-			for (Task content : taskList) {
-				showFileContent(i, content.getContent());
-				i += 1;
-			}
-			showMessage("Display todo Task");
-			return;
+		String type = "unfinished";
+		try {
+			type = bp.getTitle(command);
+		} catch (Exception e) {
+			
 		}
-		String type = bp.getTitle(command);
 		if (type.equals("finished")){
 			mode = 2;
 			if (completedTaskList.size() == 0){
