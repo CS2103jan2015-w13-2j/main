@@ -14,11 +14,7 @@ import javax.swing.event.DocumentListener;
 @SuppressWarnings("serial")
 public class TextFieldListener extends JTextField implements DocumentListener {
 	
-	public static String inputStream = "";
-	private final String COMMAND_GUIDE_ADD_MESSAGE = "Tip: add <task> -d <date> -v <venue> to add task with date & venue";
-	private final String COMMAND_GUIDE_DELETE_MESSAGE = "Tip: delete <index number> to delete a task";
-	private final String COMMAND_GUIDE_MODIFY_MESSAGE = "Tip: modify <index> <new name> -d <new date> -v <new venue>";
-    
+	private static String inputStream = "";
     
 	/*
 	 * Testing of GUI interface can be done by performing black-box testing. That is, just running the program without looking at any code.
@@ -36,58 +32,18 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
-
-		BalloonTipSuggestion.getBalloonTipTyped();
-
-		if (inputStream.toLowerCase().contains("add")) {
-//			System.out.println("add detected");
-			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
-		}
-		
-		else if (inputStream.toLowerCase().contains("delete")) {
-//			System.out.println("delete detected");
-			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
-		}
-		
-		else if (inputStream.toLowerCase().contains("modify")) {
-//			System.out.println("modify detected");
-			UserInterface.lblCommandGuide.setText((COMMAND_GUIDE_MODIFY_MESSAGE));
-		}
-		
-		else {
-			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
-//			System.out.println("Is add is false!");
-
-		}
+		BalloonTipSuggestion.getBalloonTip();		
+		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
+		setCommandGuideText(commandTip);
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
-		System.out.println("inputStream size = " + inputStream.length());
+		BalloonTipSuggestion.getBalloonTip();
+		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
+		setCommandGuideText(commandTip);
 
-		BalloonTipSuggestion.getBalloonTipBackspaced();
-        
-		if (inputStream.toLowerCase().contains("add")) {
-			System.out.println("add detected");
-			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_ADD_MESSAGE);
-		}
-		
-		else if (inputStream.toLowerCase().contains("delete")) {
-			System.out.println("delete detected");
-			UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DELETE_MESSAGE);
-		}
-		
-		else if (inputStream.toLowerCase().contains("modify")) {
-			System.out.println("modify detected");
-			UserInterface.lblCommandGuide.setText((COMMAND_GUIDE_MODIFY_MESSAGE));
-		}
-		
-		else {
-			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
-//		System.out.println("Is add is false!");
-
-		}
 	}
 
 	@Override
@@ -98,6 +54,16 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	
 	public static String getInputStream() {
 		return inputStream;
+	}
+	
+	private void setCommandGuideText( String commandTip) {
+		if (commandTip != null) {
+			UserInterface.lblCommandGuide.setText(commandTip);
+		}
+		
+		else {
+			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+		}
 	}
 	
 }

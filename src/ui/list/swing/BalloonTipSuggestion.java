@@ -10,13 +10,13 @@ public class BalloonTipSuggestion {
         LayoutSetting.showBalloonTipSuggestion(autoFill);
         
         } 
-    }
-    
-    public static String getAutoFill() {
-    	return UserInterface.BTL.getAutoFill(TextFieldListener.inputStream);
+        
+        else {
+        	LayoutSetting.closeBalloonTip();
+        }
     }
 
-    public static void getBalloonTipTyped() {
+    public static void getBalloonTip() {
     	String inputStream = TextFieldListener.getInputStream();
 
     	if (inputStream.length() == 0) {
@@ -28,18 +28,9 @@ public class BalloonTipSuggestion {
     	}
 
     }
-
-    public static void getBalloonTipBackspaced() {
-    	String inputStream = TextFieldListener.getInputStream();
-
-    	if (inputStream.length() == 0) {
-    		LayoutSetting.closeBalloonTip();
-    	}
-
-    	else{
-    		setBalloonTipSuggestion();
-    	}
-
+    
+    public static String getAutoFill() {
+    	return UserInterface.BTL.getAutoFill(TextFieldListener.getInputStream());
     }
 
 }

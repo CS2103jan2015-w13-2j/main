@@ -69,7 +69,7 @@ public class HotKeyListener extends KeyAdapter{
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
-//			System.out.println("Up pressed");
+			System.out.println("Up pressed");
 			String history = TextFieldHistory.getLastHistory();
 			if (!history.equals("invalid")) {
 				UserInterface.textField.setText(history);
@@ -77,7 +77,7 @@ public class HotKeyListener extends KeyAdapter{
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
-//			System.out.println("Down Pressed");
+			System.out.println("Down Pressed");
 			String history = TextFieldHistory.getForwardHistory();
 			if (!history.equals("invalid")) {
 				UserInterface.textField.setText(history);

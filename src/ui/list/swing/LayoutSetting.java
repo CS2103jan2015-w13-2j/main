@@ -106,7 +106,6 @@ public class LayoutSetting {
 	}
 	
 	public static void showBalloonTipSuggestion(String guess) {
-		
 		suggestion.setTextContents("press tab to \""+ guess + "\"");
 		suggestion.setVisible(true);
 	}
