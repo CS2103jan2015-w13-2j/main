@@ -1,5 +1,7 @@
 package ui.list.swing;
 
+import java.util.Calendar;
+
 import taskList.Task;
 
 /**
@@ -94,7 +96,6 @@ public class DisplaySetting {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-
 			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
@@ -118,6 +119,14 @@ public class DisplaySetting {
 		data.append(HTML_CLOSE);
 		
 		return data.toString();
+	}
+	
+	public static String getTodayDate() {
+		String currentDate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+		
+		System.out.println(currentDate);
+		
+		return currentDate;
 	}
 	
 	public static void clearData() {

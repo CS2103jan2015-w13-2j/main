@@ -49,6 +49,11 @@ public class LayoutSetting {
 		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
 	}
 	
+	public static void setDateLabel() {
+		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 15));
+		UserInterface.lblDate.setBounds(280, 34, 200, 16);
+	}
+	
 	public static void setHelpInfoLabel() {
 		UserInterface.frame.requestFocus();
 		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
@@ -79,6 +84,7 @@ public class LayoutSetting {
 	
 	public static void setLabels() {
 		setBackgroundLabel();
+		setDateLabel();
 		setCommandGuideLabel();
 		setPageLabel();
 		setStatusMessageLabel();
@@ -116,6 +122,7 @@ public class LayoutSetting {
 	
 	public static void addToContentPane() {
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
+		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
 		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
 		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
