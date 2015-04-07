@@ -175,12 +175,18 @@ public class Task implements Comparable<Task>{
 	public boolean isTodayTask() throws NullPointerException, IOException{
 		Date today = taskParser.getDate("today");
 		dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+		if (date == null) {
+			if (deadline == null)return false;else return (dateFormat.format(date).equals((dateFormat).format(today)));
+		}else
 		return (dateFormat.format(date).equals((dateFormat).format(today)));
 	}
 	
 	public boolean isOutOfDate() throws NullPointerException, IOException{
 		Date today = taskParser.getDate("today");
-		return (today.after(date));
+		if (deadline == null){
+			if (date == null) return false;else return (today.after(date));
+		}else
+		return (today.after(deadline));
 	}
 	
 }
