@@ -180,7 +180,7 @@ public class Task implements Comparable<Task>{
 	
 	public boolean isOutOfDate() throws NullPointerException, IOException{
 		Date today = taskParser.getDate("today");
-		return (today.before(date));
+		return (today.after(date));
 	}
 	
 }
