@@ -168,14 +168,15 @@ public class Parser {
 		if (start >= end) {
 			logIOException(EXCEPTION_NOTITLE);
 		}
-		return operation.substring(start, end);
+		String temp = operation.substring(start, end);
+		return eliminateSpace(temp);
 	}
 
 	public String getVenue(String operation) throws NullPointerException {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		return getContent("-v", operation);
+		return eliminateSpace(getContent("-v", operation));
 	}
 	
 	public Date getDate(String operation) throws NullPointerException, IOException {
@@ -244,6 +245,26 @@ public class Parser {
 			break;
 		}
 		return feedback;
+	}
+	
+	private String eliminateSpace(String str) {
+		assert(str != null);
+		if (str.equals("")) {
+			return str;
+		}
+		int start = 0;
+		while (str.charAt(start) == ' ') {
+			if (start < str.length()) {
+				start++;
+			}
+		}
+		int end = str.length() - 1;
+		while (str.charAt(end) == ' ') {
+			if (end > 0) {
+				end--;
+			}
+		}
+		return str.substring(start, end+1);
 	}
 	
 	private ArrayList<String> searchAllKeyword(String str) {
