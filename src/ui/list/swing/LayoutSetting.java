@@ -2,7 +2,6 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
@@ -50,6 +49,11 @@ public class LayoutSetting {
 		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
 	}
 	
+	public static void setDateLabel() {
+		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 15));
+		UserInterface.lblDate.setBounds(280, 34, 200, 16);
+	}
+	
 	public static void setHelpInfoLabel() {
 		UserInterface.frame.requestFocus();
 		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
@@ -80,6 +84,7 @@ public class LayoutSetting {
 	
 	public static void setLabels() {
 		setBackgroundLabel();
+		setDateLabel();
 		setCommandGuideLabel();
 		setPageLabel();
 		setStatusMessageLabel();
@@ -99,7 +104,6 @@ public class LayoutSetting {
 		UserInterface.textField.setBounds(59, 466, 520, 36);
 		UserInterface.textField.setColumns(10);
 		UserInterface.textField.setFocusTraversalKeysEnabled(false);
-		BalloonTipSuggestion.setPossibility();
 	}
 	
 	public static void setBalloonTipStyle() {
@@ -108,7 +112,6 @@ public class LayoutSetting {
 	}
 	
 	public static void showBalloonTipSuggestion(String guess) {
-		
 		suggestion.setTextContents("press tab to \""+ guess + "\"");
 		suggestion.setVisible(true);
 	}
@@ -119,6 +122,7 @@ public class LayoutSetting {
 	
 	public static void addToContentPane() {
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
+		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
 		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
 		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
