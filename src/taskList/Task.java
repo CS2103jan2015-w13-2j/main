@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import parser.DateParser;
+import parser.Parser;
 
 public class Task implements Comparable<Task>{
 	private String content;
@@ -14,7 +15,8 @@ public class Task implements Comparable<Task>{
 	private String dateString;
 	private String deadlineString;
 	private boolean hasFinished = false;
-	
+	static Parser taskParser = new Parser();
+	static SimpleDateFormat dateFormat; 
 	public Task(String content){
 		this.content = content;
 	}
@@ -170,5 +172,15 @@ public class Task implements Comparable<Task>{
 		return answer;
 	}
 	
+	public boolean isTodayTask() throws NullPointerException, IOException{
+		Date today = taskParser.getDate("today");
+		dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+		return (dateFormat.format(date).equals((dateFormat).format(today)));
+	}
+	
+	public boolean isOutOfDate() throws NullPointerException, IOException{
+		Date today = taskParser.getDate("today");
+		return (today.before(date));
+	}
 	
 }
