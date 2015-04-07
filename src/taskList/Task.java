@@ -173,7 +173,7 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public boolean isTodayTask() throws NullPointerException, IOException{
-		Date today = taskParser.getDate("today");
+		Date today = taskParser.getDate("add -d today");
 		dateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		if (date == null) {
 			if (deadline == null)return false;else return (dateFormat.format(date).equals((dateFormat).format(today)));
@@ -182,7 +182,8 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public boolean isOutOfDate() throws NullPointerException, IOException{
-		Date today = taskParser.getDate("today");
+		Date today = taskParser.getDate("add -d today");
+		System.out.println("today is " +today);
 		if (deadline == null){
 			if (date == null) return false;else return (today.after(date));
 		}else

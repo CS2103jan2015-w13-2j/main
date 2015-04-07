@@ -193,6 +193,7 @@ public class TaskList {
 			String venue = bp.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION, content);
 			taskList.add(new Task(content,date,deadLine,venue));
+			System.out.println(taskList.get(2).isOutOfDate());
 			saveFile();
 			undo.add(taskList);
 		}catch (Exception e){
