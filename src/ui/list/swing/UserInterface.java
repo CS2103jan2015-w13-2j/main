@@ -34,14 +34,10 @@ public class UserInterface {
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
 	public static final String VIEW_TASK_INFO_MESSAGE = DisplaySetting.getViewTaskInfo();
 	public static boolean isAdd = false;
-	public static int currentPage = 0;
-	public static int lastPage = 0;
 	public static boolean atHelpMenu = false;
 	public static TaskList BTL;
-	private static ArrayList<Task> taskList;
-	public static double printPerPage = 5.0;
+	public static ArrayList<Task> taskList;
 
-	
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
 	public static JPanel panel = new JPanel();
 	public static JLabel lblBackground = new JLabel("");
@@ -89,7 +85,6 @@ public class UserInterface {
 		displayAll(0);
 	}
 	public static void processTextField() throws NullPointerException, IOException {
-//		System.out.println("Enter pressed");
 		String input = textField.getText();
 		String[] tokens = input.split(" ");
 		
@@ -97,81 +92,48 @@ public class UserInterface {
 			if (tokens[0].equals("add")) {
 				isAdd = true;
 			}
-		}
-		
-		if (input != null) {
+			
 			TextFieldHistory.updateHistory(input);
 		}
-		
-		
+				
 		textField.setText(null);
 		BTL.executeCommand(input);
 		printStatusMessage();
 		taskList = BTL.getTasks();
 		
-		lastPage = (int) Math.ceil(taskList.size()/printPerPage) - 1;
-		if (lastPage < 0) {
-			lastPage = 0;
-			currentPage = 0;
-		}
-//		System.out.println("tasklist size = " + taskList.size());
-		
-		System.out.println("added to tasklist! lastPage now is: " + lastPage);
-		if (lastPage < currentPage) {
-			currentPage = lastPage;
-//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
-		}
-		
-		if (isAdd) {
-			currentPage = lastPage;
-			displayAll(lastPage);
-//			System.out.println(" added! last page = " + lastPage + " current page = " + currentPage);
-		}
-		
-		else {
-			displayAll(currentPage);
-//			System.out.println("last page = " + lastPage + " current page = " + currentPage);
-
-		}
+		PageHandler.updatePage();
+		displayAll(PageHandler.getCurrentPage());
 		
 		isAdd = false;
 	}
 	
-	public static boolean displayAll(int pageNumber) {
-		int start = pageNumber * 5;
-		int end = start + 5;
-		taskList = BTL.getTasks();
-		lastPage = getLastPage();
+	public static void displayAll(int pageNumber) {
 		
+		taskList = BTL.getTasks();	
 		clearPanel();
-		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));
-		
+		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
-//		System.out.println("start = " + start + "end = " + end + "listSize = " + taskList.size());
-		
-		if (start >= taskList.size() || pageNumber < 0) {
-			return false;
-		}
-		
-		
+		printPage(pageNumber);
+	}
+	
+	public static void printPage (int pageNumber) {
+		int start = pageNumber * 5;
+
 		//not last page
-		if (end < taskList.size()) {
-//			System.out.println("printing from index " + start);
-			for (int i=start; i < end; i++) {
+		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
+			for (int i=start; i < start+5; i++) {
 				printTask(taskList.get(i),i);
 			}
 		}
-		
+
 		//last page
 		else {
-			
+
 			for (int i=start; i<taskList.size(); i++) {
 				printTask(taskList.get(i),i);
 			}
 		}
-		
-		return true;
 	}
 	
 	public static void printTask (Task task, int i) {
@@ -217,9 +179,6 @@ public class UserInterface {
 		refreshFrame();
 	}
 	
-	private static int getLastPage() {
-		return (int) Math.ceil(taskList.size()/printPerPage) - 1;
-	}
 	
 	private static void refreshPanel() {
 		panel.revalidate();

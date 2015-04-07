@@ -96,7 +96,7 @@ public class DisplaySetting {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			System.out.println("Continue after catch mode = " + mode);
+//			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
 			case TASK_INFO_UNCOMPLETED: return TASK_INFO_UNCOMPLETED_MSG;

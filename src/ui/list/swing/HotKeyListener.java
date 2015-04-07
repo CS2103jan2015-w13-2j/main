@@ -31,9 +31,11 @@ public class HotKeyListener extends KeyAdapter{
 		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
 //			System.out.println("Left arrow pressed!");
 			if (UserInterface.textField.getText().isEmpty()) {
-				if (UserInterface.currentPage > 0 && !UserInterface.atHelpMenu) {
-					if (UserInterface.displayAll(UserInterface.currentPage - 1) == true && UserInterface.currentPage > 0) {
-						UserInterface.currentPage -= 1;
+				if (PageHandler.getCurrentPage() > 0 && !UserInterface.atHelpMenu) {
+					if (PageHandler.getCurrentPage() > 0) {
+						PageHandler.flipPrevPage();
+						System.out.println("flipped prev page");
+						UserInterface.displayAll(PageHandler.getCurrentPage());
 					}
 				}
 			}
@@ -44,14 +46,13 @@ public class HotKeyListener extends KeyAdapter{
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
 //			System.out.println("Right Arrow Pressed!");			
-			if (UserInterface.textField.getText().isEmpty()) {
-				if (UserInterface.currentPage < UserInterface.lastPage && !UserInterface.atHelpMenu) {
-					if (UserInterface.displayAll(UserInterface.currentPage + 1) == true) {
-						UserInterface.currentPage += 1;
-					}
-				}
+			if (UserInterface.textField.getText().isEmpty() && !UserInterface.atHelpMenu && PageHandler.getCurrentPage() < PageHandler.getLastPage() ) {
+						PageHandler.flipNextPage();
+						System.out.println("flipped next page");
+						UserInterface.displayAll(PageHandler.getCurrentPage());
+					
 			}
-			System.out.println("current page = " + UserInterface.currentPage);
+//			System.out.println("current page = " + UserInterface.currentPage);
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
@@ -65,7 +66,7 @@ public class HotKeyListener extends KeyAdapter{
 //			System.out.println("ESC pressed");
 			UserInterface.atHelpMenu = false;
 			LayoutSetting.setShowTaskInfo();
-			UserInterface.displayAll(UserInterface.currentPage);
+			UserInterface.displayAll(PageHandler.getCurrentPage());
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 		
