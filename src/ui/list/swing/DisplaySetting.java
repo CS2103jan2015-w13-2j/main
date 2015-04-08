@@ -37,6 +37,7 @@ public class DisplaySetting {
 	private static final String HTML_FONT_CLOSE = "</font>";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
 	private static final String HTML_FONT_RED = "<font color = red>";
+	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000>";
 	
 	public DisplaySetting(Task task, int i) throws NullPointerException, IOException {
 		
@@ -55,39 +56,34 @@ public class DisplaySetting {
 			date = "---";
 		}
 		
+		
+		if ((date != null || endDate !=null) && task.isOutOfDate()) {
+			System.out.println("is out of date");
+			data.append(HTML_FONT_OVERDUE + "Date:" + date + HTML_FONT_CLOSE);
+				if (endDate != null) {
+					data.append(HTML_FONT_OVERDUE + " BY: " + endDate + HTML_FONT_CLOSE );
+				}
+			data.append(HTML_FONT_CLOSE);
+		}
+		
 		else {
-			if (task.isOutOfDate()) {
-				data.append(HTML_FONT_RED);
-				data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE);
-				
-				if (endDate != null) {
-					data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
-				}
-				
-				data.append(HTML_FONT_CLOSE);
-			}
+			System.out.println("is on time");
+
+			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
 			
-			else {
-				data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
-				
-				if (endDate != null) {
-					data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
-				}
+			if (endDate != null) {
+				data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
 			}
 		}
-		
-		if (venue == null) {
-			venue = "---";
-		}
 				
-
-//		data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
-		
-
-		
 		data.append(HTML_BREAK);
 		
+		if (venue.equals("")) {
+			venue = "---";
+		}
+
 		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
+
 		
 		data.append(HTML_CLOSE);
 		
