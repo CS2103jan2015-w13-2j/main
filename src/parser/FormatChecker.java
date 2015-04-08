@@ -28,10 +28,12 @@ public class FormatChecker {
 		assert(operation != null);
 		int[] operationCount = new int[OPTIONS.length];
 		for (int i = 0; i < OPTIONS.length; i++) {
-			i = 0;
+			operationCount[i] = 0;
 		}
+		
 		String temp = null;
 		int start = operation.indexOf(" -");
+		
 		while (start != FAIL) {
 			int end = operation.indexOf(" ", start+1);
 			if (end == FAIL) {
