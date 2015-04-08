@@ -6,7 +6,7 @@ public class FormatChecker {
 	private static final int FAIL = -1;
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
-	public static boolean isValid(String operation) throws NullPointerException {
+	public boolean isValid(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		} 
@@ -17,14 +17,14 @@ public class FormatChecker {
 		}
 	}
 	
-	public static boolean isArgumentsCorrect(String operation) throws NullPointerException {
+	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
 		return isArgumentsAllCorrect(operation);
 	}
 	
-	private static boolean isArgumentsAllCorrect(String operation) {
+	private boolean isArgumentsAllCorrect(String operation) {
 		assert(operation != null);
 		int[] operationCount = new int[OPTIONS.length];
 		for (int i = 0; i < OPTIONS.length; i++) {
@@ -50,7 +50,7 @@ public class FormatChecker {
 		return isSmallerThanOne(operationCount);
 	}
 	
-	private static int indexInArray(String[] strs, String str) {
+	private int indexInArray(String[] strs, String str) {
 		assert(strs != null && str != null);
 		int i = 0;
 		while (i < strs.length) {
@@ -63,7 +63,7 @@ public class FormatChecker {
 		return FAIL;
 	}
 	
-	private static boolean isSmallerThanOne(int[] array) {
+	private boolean isSmallerThanOne(int[] array) {
 		for(int x: array) {
 			if (x > 1) {
 				return false;
@@ -72,7 +72,7 @@ public class FormatChecker {
 		return true;
 	}
 	
-	private static boolean isInOptions(String operationType) {
+	private boolean isInOptions(String operationType) {
 		assert(operationType != null);
 		for (String temp : OPTIONS) {
 			if (temp.equals(operationType)) {
