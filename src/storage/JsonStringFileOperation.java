@@ -44,7 +44,8 @@ public class JsonStringFileOperation {
 	
 	private ObjectConverter converter;
 	
-	private static final ArrayList<Task> EMPTY_FILE = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_UNFINISHED_TASKLIST = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_FINISHED_TASKLIST = new ArrayList<Task>();
 	private String fileName;
 	private String tempFileName;
 	
@@ -65,7 +66,7 @@ public class JsonStringFileOperation {
 		}
 		if (!(new File(fileName).exists())) {
 			System.err.println(MESSAGE_NEW_FILE);
-			return EMPTY_FILE;
+			return EMPTY_UNFINISHED_TASKLIST;
 		}
 		try {
 			FileInputStream fileInput = new FileInputStream(fileName);
@@ -81,7 +82,7 @@ public class JsonStringFileOperation {
 			throw new IOException(MESSAGE_CANNOT_READ);
 		} catch(Exception e){
 			System.err.println(MESSAGE_CANNOT_PARSE);
-			return EMPTY_FILE;
+			return EMPTY_UNFINISHED_TASKLIST;
 		}
 	}
 	
@@ -91,7 +92,7 @@ public class JsonStringFileOperation {
 		}
 		if (!(new File(fileName).exists())) {
 			System.err.println(MESSAGE_NEW_FILE);
-			return EMPTY_FILE;
+			return EMPTY_FINISHED_TASKLIST;
 		}
 		try {
 			FileInputStream fileInput = new FileInputStream(fileName);
@@ -107,7 +108,7 @@ public class JsonStringFileOperation {
 			throw new IOException(MESSAGE_CANNOT_READ);
 		} catch(Exception e){
 			System.err.println(MESSAGE_CANNOT_PARSE);
-			return EMPTY_FILE;
+			return EMPTY_FINISHED_TASKLIST;
 		}
 	}
 	

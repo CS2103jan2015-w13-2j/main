@@ -17,7 +17,8 @@ public class FileOperation {
 	private static final int ERROR_CANNOT_WRITE_FILE = 3;
 	private static final int ERROR_DIRRCTORY_NAME = 4;
 	
-	private static final ArrayList<Task> EMPTY_FILE = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_UNFINISHED_TASKLIST = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_FINISHED_TASKLIST = new ArrayList<Task>();
 	private String fileName;
 
 	public FileOperation(String fileName) {
@@ -30,7 +31,7 @@ public class FileOperation {
 			System.exit(ERROR_DIRRCTORY_NAME);
 		}
 		if (!(new File(fileName).exists())) {
-			return EMPTY_FILE;
+			return EMPTY_UNFINISHED_TASKLIST;
 		}
 		try {
 			ArrayList<Task> fileContent = new ArrayList<Task>();
@@ -52,7 +53,7 @@ public class FileOperation {
 			System.err.println("Cannot read the file.");
 			System.exit(ERROR_CANNOT_READ_FILE);
 		}
-		return EMPTY_FILE;
+		return EMPTY_UNFINISHED_TASKLIST;
 	}
 	
 	public void saveToFile(ArrayList<Task> taskList){
