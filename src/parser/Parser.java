@@ -1,7 +1,6 @@
 package parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.logging.Level;
@@ -23,16 +22,6 @@ import java.util.regex.Pattern;
  * 	String getVenue(String operation) throws NullPointerException
  *  Date getDate(String operation) throws NullPointerException, IOException
  *  Date getDeadline(String operation) throws NullPointerException, IOException
- *  
- * Make sure your operation index is up-to-date every time before calling parser.
- * The latest operation indexes are:
- * 	private static final int OPERATION_UNKNOWN = 0;
- *	private static final int OPERATION_ADD = 1;
- *	private static final int OPERATION_DELETE = 2;
- *	private static final int OPERATION_CLEAR = 3;
- *	private static final int OPERATION_DISPLAY = 4;
- *	private static final int OPERATION_EXIT = 5;
- *	private static final int OPERATION_MODIFY = 6;
  * @author Colonel
  *
  */
@@ -41,17 +30,6 @@ public class Parser {
 	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
-	
-	private static final String FEEDBACK_ADD = 
-			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
-	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
-	private static final String FEEDBACK_MODIFY = 
-			"Tip: modify<index> <new title> -d<new time> -v<new venue> to modify task";
-	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
-	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
-	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
-	private static final String FEEDBACK_IMPORT = "Tip: import<index/path> to import a schedule file";
-	private static final String FEEDBACK_EXPORT = "Tip: export<index/path> to save schedul to a file";
 	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
@@ -82,13 +60,14 @@ public class Parser {
 	
 	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
-	
+	private static FormatChecker checker = null;
 	private static String name = Parser.class.getName(); 
 	private static Logger logger = Logger.getLogger(name);
 	
 	public Parser() {
 		initFeatureList();
 		dateParser = new DateParser();
+		checker = new FormatChecker();
 	}
 
 	public Operation getOperation(String operation) throws NullPointerException {
@@ -108,22 +87,23 @@ public class Parser {
 	}
 	
 	public boolean isValid(String operation) throws NullPointerException {
-		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
-		} 
-		if (operation.indexOf(' ') != -1) {
-			return true;
-		} else {
-			return false;
+		boolean result = false;
+		try {
+			result = checker.isValid(operation);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
 		}
+		return result;
 	}
 	
 	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
-		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+		boolean result = false;
+		try {
+			result = checker.isArgumentsCorrect(operation);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
 		}
-		return isArgumentsNumberCorrect(operation) &&
-				isArgumentsTypeCorrect(operation);
+		return result;
 	}
 
 	public int getIndex(String operation) throws IOException {
@@ -207,53 +187,24 @@ public class Parser {
 	}
 	
 	public String autoFill(String str) throws NullPointerException {
-		if (str == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+		String result = null;
+		try {
+			result = UIFeedback.autoFill(str);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
 		}
-		ArrayList<String> matchResult = searchAllKeyword(str);
-		if (matchResult.size() != 1) {
-			return null;
-		} else { 
-			return matchResult.get(0);
-		}
+		return result;
 	}
 	
 	public String privideTips(String operation) throws NullPointerException {
-		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+		String result = null;
+		try {
+			Operation operationType = getOperation(operation);
+			result = UIFeedback.privideTips(operationType);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
 		}
-		Operation temp = getOperation(operation);
-		String feedback;
-		switch (temp) {
-		case ADD:
-			feedback = FEEDBACK_ADD;
-			break;
-		case DELETE:
-			feedback = FEEDBACK_DELETE;
-			break;
-		case MODIFY:
-			feedback = FEEDBACK_MODIFY;
-			break;
-		case SORT:
-			feedback = FEEDBACK_SORT;
-			break;
-		case SEARCH:
-			feedback = FEEDBACK_SEARCH;
-			break;
-		case COMPLETE:
-			feedback = FEEDBACK_COMPLETE;
-			break;
-		case IMPORT:
-			feedback = FEEDBACK_IMPORT;
-			break;
-		case EXPORT:
-			feedback = FEEDBACK_EXPORT;
-			break;
-		default:
-			feedback = null;
-			break;
-		}
-		return feedback;
+		return result;
 	}
 	
 	private String eliminateSpace(String str) {
@@ -275,41 +226,8 @@ public class Parser {
 			}
 		}
 		return str.substring(start, end+1);
-	}
-	
-	private ArrayList<String> searchAllKeyword(String str) {
-		ArrayList<String> tempList = new ArrayList<String>();
-		ArrayList<String> resultList = new ArrayList<String>();
-		tempList.add(searchKeyword(str, KEYWORD_ADD));
-		tempList.add(searchKeyword(str, KEYWORD_DELETE));
-		tempList.add(searchKeyword(str, KEYWORD_CLEAR));
-		tempList.add(searchKeyword(str, KEYWORD_DISPLAY));
-		tempList.add(searchKeyword(str, KEYWORD_EXIT));
-		tempList.add(searchKeyword(str, KEYWORD_MODIFY));
-		tempList.add(searchKeyword(str, KEYWORD_UNDO));
-		tempList.add(searchKeyword(str, KEYWORD_REDO));
-		tempList.add(searchKeyword(str, KEYWORD_SORT));
-		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
-		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
-		tempList.add(searchKeyword(str, KEYWORD_IMPORT));
-		tempList.add(searchKeyword(str, KEYWORD_EXPORT));
-		for (int i = 0; i < tempList.size(); i++) {
-			if (tempList.get(i) != null) {
-				resultList.add(tempList.get(i));
-			}
-		}
-		return resultList;
-	}
-	
-	private String searchKeyword(String str, String[] keyword) {
-		for (String temp:keyword) {
-			if (temp.startsWith(str)) {
-				return temp;
-			}
-		}
-		return null;
-	}
-
+	}	
+/*
 	private boolean isArgumentsTypeCorrect(String operation) {
 		assert(operation != null);
 		String temp = null;
@@ -337,7 +255,8 @@ public class Parser {
 		}
 		return true;
 	}
-	
+	*/
+	/*
 	private int countOptions(String operationType, String operation) {
 		assert(isInOptions(operationType));
 		assert(operation != null);
@@ -351,7 +270,7 @@ public class Parser {
 		}
 		return count;
 	}
-	
+	*/
 	private Operation getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);
