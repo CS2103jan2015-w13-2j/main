@@ -1,11 +1,8 @@
 package parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,17 +39,6 @@ public class Parser {
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
-	private static final String FEEDBACK_ADD = 
-			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
-	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
-	private static final String FEEDBACK_MODIFY = 
-			"Tip: modify<index> <new title> -d<new time> -v<new venue> to modify task";
-	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
-	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
-	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
-	private static final String FEEDBACK_IMPORT = "Tip: import<index/path> to import a schedule file";
-	private static final String FEEDBACK_EXPORT = "Tip: export<index/path> to save schedul to a file";
-	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
 	
@@ -81,19 +67,23 @@ public class Parser {
 	private static final Pattern NUMBERS = Pattern.compile(".*[^0-9].*");
 	
 	private static Hashtable<String, Operation> featureList = null; 
-	private static DateParser dateParser = null;
 	
-	private static String name = Parser.class.getName(); 
-	private static Logger logger = Logger.getLogger(name);
+	private static DateParser dateParser = null;
+	private static ParserLogger logger = null;
+	private static String className = null;
+	private static UIFeedback feedback = null;
 	
 	public Parser() {
 		initFeatureList();
 		dateParser = new DateParser();
+		className = this.getClass().getName();
+		logger = new ParserLogger(className);
+		feedback = new UIFeedback();
 	}
 
 	public Operation getOperation(String operation) throws NullPointerException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		if (operation.indexOf(' ') != -1) {
 			operation = operation.substring(0, operation.indexOf(' '));
@@ -109,7 +99,7 @@ public class Parser {
 	
 	public boolean isValid(String operation) throws NullPointerException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		} 
 		if (operation.indexOf(' ') != -1) {
 			return true;
@@ -120,7 +110,7 @@ public class Parser {
 	
 	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		return isArgumentsNumberCorrect(operation) &&
 				isArgumentsTypeCorrect(operation);
@@ -131,12 +121,12 @@ public class Parser {
 				getOperation(operation) == Operation.DELETE);
 		String temp = getTitle(operation);
 		if (temp == "" || temp == null) {
-			logIOException(EXCEPTION_NOINDEX);
+			logger.logIOException(EXCEPTION_NOINDEX);
 		}
 		String[] temps = temp.split(" ");
 		Matcher m = NUMBERS.matcher(temps[0]);
 		if (m.matches()) {
-			logIOException(EXCEPTION_INDEXILLEGAL);
+			logger.logIOException(EXCEPTION_INDEXILLEGAL);
 		} 
 		return Integer.valueOf(temps[0]);
 	}
@@ -156,20 +146,20 @@ public class Parser {
 	public String getTitle(String operation) throws NullPointerException, 
 	IOException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		assert(getOperation(operation) == Operation.ADD ||
 				getOperation(operation) == Operation.SEARCH);
 		int start = operation.indexOf(' ') + 1;
 		if (start >= operation.length() || start == 0) {
-			logIOException(EXCEPTION_NOTITLE);
+			logger.logIOException(EXCEPTION_NOTITLE);
 		}
 		int end = getFirstOptionIndex(operation);
 		if (end == -1) {
 			end = operation.length();
 		}
 		if (start >= end) {
-			logIOException(EXCEPTION_NOTITLE);
+			logger.logIOException(EXCEPTION_NOTITLE);
 		}
 		String temp = operation.substring(start, end);
 		return eliminateSpace(temp);
@@ -177,14 +167,14 @@ public class Parser {
 
 	public String getVenue(String operation) throws NullPointerException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		return getContent("-v", operation);
 	}
 	
 	public Date getDate(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		String dateString = getContent("-d", operation);
 		if (dateString == null) {
@@ -196,7 +186,7 @@ public class Parser {
 	
 	public Date getDeadline(String operation) throws NullPointerException, IOException {
 		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
+			logger.logNullPointer(EXCEPTION_NULLPOINTER);
 		}
 		String deadLineString = getContent("-dd", operation);
 		if (deadLineString == null) {
@@ -207,53 +197,11 @@ public class Parser {
 	}
 	
 	public String autoFill(String str) throws NullPointerException {
-		if (str == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
-		}
-		ArrayList<String> matchResult = searchAllKeyword(str);
-		if (matchResult.size() != 1) {
-			return null;
-		} else { 
-			return matchResult.get(0);
-		}
+		return feedback.autoFill(str);
 	}
 	
 	public String privideTips(String operation) throws NullPointerException {
-		if (operation == null) {
-			logNullPointer(EXCEPTION_NULLPOINTER);
-		}
-		Operation temp = getOperation(operation);
-		String feedback;
-		switch (temp) {
-		case ADD:
-			feedback = FEEDBACK_ADD;
-			break;
-		case DELETE:
-			feedback = FEEDBACK_DELETE;
-			break;
-		case MODIFY:
-			feedback = FEEDBACK_MODIFY;
-			break;
-		case SORT:
-			feedback = FEEDBACK_SORT;
-			break;
-		case SEARCH:
-			feedback = FEEDBACK_SEARCH;
-			break;
-		case COMPLETE:
-			feedback = FEEDBACK_COMPLETE;
-			break;
-		case IMPORT:
-			feedback = FEEDBACK_IMPORT;
-			break;
-		case EXPORT:
-			feedback = FEEDBACK_EXPORT;
-			break;
-		default:
-			feedback = null;
-			break;
-		}
-		return feedback;
+		return feedback.privideTips(operation);
 	}
 	
 	private String eliminateSpace(String str) {
@@ -275,39 +223,6 @@ public class Parser {
 			}
 		}
 		return str.substring(start, end+1);
-	}
-	
-	private ArrayList<String> searchAllKeyword(String str) {
-		ArrayList<String> tempList = new ArrayList<String>();
-		ArrayList<String> resultList = new ArrayList<String>();
-		tempList.add(searchKeyword(str, KEYWORD_ADD));
-		tempList.add(searchKeyword(str, KEYWORD_DELETE));
-		tempList.add(searchKeyword(str, KEYWORD_CLEAR));
-		tempList.add(searchKeyword(str, KEYWORD_DISPLAY));
-		tempList.add(searchKeyword(str, KEYWORD_EXIT));
-		tempList.add(searchKeyword(str, KEYWORD_MODIFY));
-		tempList.add(searchKeyword(str, KEYWORD_UNDO));
-		tempList.add(searchKeyword(str, KEYWORD_REDO));
-		tempList.add(searchKeyword(str, KEYWORD_SORT));
-		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
-		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
-		tempList.add(searchKeyword(str, KEYWORD_IMPORT));
-		tempList.add(searchKeyword(str, KEYWORD_EXPORT));
-		for (int i = 0; i < tempList.size(); i++) {
-			if (tempList.get(i) != null) {
-				resultList.add(tempList.get(i));
-			}
-		}
-		return resultList;
-	}
-	
-	private String searchKeyword(String str, String[] keyword) {
-		for (String temp:keyword) {
-			if (temp.startsWith(str)) {
-				return temp;
-			}
-		}
-		return null;
 	}
 
 	private boolean isArgumentsTypeCorrect(String operation) {
@@ -450,15 +365,5 @@ public class Parser {
 		} else {
 			return FAIL;
 		}
-	}
-	
-	private void logNullPointer(String msg) throws NullPointerException {
-		logger.log(Level.WARNING, msg);
-		throw new NullPointerException(msg);
-	}
-	
-	private void logIOException(String msg) throws IOException {
-		logger.log(Level.WARNING, msg);
-		throw new IOException(msg);
 	}
 }
