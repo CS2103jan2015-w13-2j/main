@@ -75,7 +75,7 @@ public class UserInterface {
 	 * @throws NullPointerException 
 	 */
 	public UserInterface() throws NullPointerException, IOException {
-		BTL = new TaskList("sharmaine.txt");
+		BTL = new TaskList("default.txt");
 		initialize();
 	}
 
