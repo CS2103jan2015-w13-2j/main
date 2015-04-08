@@ -2,6 +2,7 @@ package taskList;
 
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -35,7 +36,7 @@ public class TaskList {
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-	private int mode;
+	private int mode = 0;
 	private Parser bp;
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
@@ -44,6 +45,7 @@ public class TaskList {
 	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
 	private static TaskList sharedInstance; 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
 	public TaskList(String inputFileName){
 		mode = 0;
 		fileName = inputFileName;
@@ -58,8 +60,10 @@ public class TaskList {
 			fo = new JsonStringFileOperation(fileName);
 			taskList = fo.getUnfinishedTaskListFromFile();
 			completedTaskList = fo.getFinishedTaskListFromFile();
+			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
+			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
 			feedBack.add("Cannot open the file correctly");
@@ -178,6 +182,8 @@ public class TaskList {
 	 * add new content to arraylist, but do not actully store to file
 	 */
 	private void add(String command) throws Exception{
+		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		if (mode >= 1) mode = 0;
 		assert(bp.isValid(command));
 		String content = bp.getTitle(command);
 		try{
@@ -187,9 +193,9 @@ public class TaskList {
 			String venue = bp.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION, content);
 			taskList.add(new Task(content,date,deadLine,venue));
+			System.out.println(taskList.get(2).isOutOfDate());
 			saveFile();
 			undo.add(taskList);
-			undoForCompleted.add(completedTaskList);
 		}catch (Exception e){
 			throw e;
 		}
@@ -199,6 +205,8 @@ public class TaskList {
 	 * delete content in arraylist, but do not actully store to file
 	 */
 	private void delete(String command) {
+		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		if (mode > 1) mode = 0;
 		int removeIndex = -1;
 		try {
 			removeIndex = bp.getIndex(command);
@@ -233,6 +241,8 @@ public class TaskList {
 	 * complete content in arraylist, save this task to finished list
 	 */
 	private void complete(String command) {
+		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		if (mode > 1) mode = 0;
 		if (mode == 0){
 			String content = "";
 			if (command.indexOf(' ') != -1) {
@@ -315,6 +325,8 @@ public class TaskList {
 	 * modify the content in arraylist, which is the real-time file content
 	 */
 	private void modify(String command) throws Exception{
+		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		if (mode > 1) mode = 0;
 		if (mode == 0){
 			assert(bp.isValid(command));
 			String content = bp.getNewTitle(command);
@@ -398,7 +410,9 @@ public class TaskList {
 	private void undo() {
 		if (undo.canUndo() && mode == 0){
 			taskList = (ArrayList<Task>) undo.undo();
-			if (undoForCompleted.canUndo()) completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
+			if (undoForCompleted.canUndo()) {
+				completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
+			}
 			showMessage("undo operation successfully");
 		}else{
 			showMessage("no undo operation avaiable");
@@ -524,8 +538,11 @@ public class TaskList {
 		mode = 1;
 		searchResult.clear();
 		String keyWord = bp.getTitle(command);
-		if (keyWord.equals("today"))
-			keyWord = "2015-04-06";
+		if (keyWord.equals("today")){
+			dateFormat = new SimpleDateFormat ("YYYY-MM-dd");
+			keyWord = dateFormat.format(bp.getDate("add -d today"));
+			System.out.println("today is " + keyWord);
+		}
 		for (int i = 0; i < taskList.size(); i++){
 			if (taskList.get(i).containKeyWord(keyWord)){
 				searchResult.add(taskList.get(i));

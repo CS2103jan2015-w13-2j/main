@@ -248,6 +248,7 @@ public class Parser {
 	}
 	
 	private String eliminateSpace(String str) {
+		if (str == null) return "";
 		assert(str != null);
 		if (str.equals("")) {
 			return str;

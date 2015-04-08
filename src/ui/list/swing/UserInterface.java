@@ -71,16 +71,20 @@ public class UserInterface {
 
 	/**
 	 * Create the application.
+	 * @throws IOException 
+	 * @throws NullPointerException 
 	 */
-	public UserInterface() {
+	public UserInterface() throws NullPointerException, IOException {
 		BTL = new TaskList("sharmaine.txt");
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws IOException 
+	 * @throws NullPointerException 
 	 */
-	private void initialize() {		
+	private void initialize() throws NullPointerException, IOException {		
 		LayoutSetting.setAll();
 		displayAll(0);
 	}
@@ -107,7 +111,7 @@ public class UserInterface {
 		isAdd = false;
 	}
 	
-	public static void displayAll(int pageNumber) {
+	public static void displayAll(int pageNumber) throws NullPointerException, IOException {
 		
 		taskList = BTL.getTasks();	
 		clearPanel();
@@ -117,7 +121,7 @@ public class UserInterface {
 		printPage(pageNumber);
 	}
 	
-	public static void printPage (int pageNumber) {
+	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		int start = pageNumber * 5;
 
 		//not last page
@@ -136,7 +140,7 @@ public class UserInterface {
 		}
 	}
 	
-	public static void printTask (Task task, int i) {
+	public static void printTask (Task task, int i) throws NullPointerException, IOException {
 		
 		String str = new DisplaySetting(task,i).getData();
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
