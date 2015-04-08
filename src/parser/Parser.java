@@ -76,7 +76,7 @@ public class Parser {
 	public Parser() {
 		initFeatureList();
 		dateParser = new DateParser();
-		className = this.getClass().getName();
+		className = "Parser";
 		logger = new ParserLogger(className);
 		feedback = new UIFeedback();
 	}

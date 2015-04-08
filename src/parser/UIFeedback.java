@@ -38,7 +38,7 @@ public class UIFeedback {
 	
 	public UIFeedback() {
 		parser = new Parser();
-		className = this.getClass().getName();
+		className = "Parser";
 		logger = new ParserLogger(className);
 	}
 	
