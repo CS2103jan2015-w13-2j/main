@@ -60,14 +60,12 @@ public class Parser {
 	
 	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
-	private static FormatChecker checker = null;
 	private static String name = Parser.class.getName(); 
 	private static Logger logger = Logger.getLogger(name);
 	
 	public Parser() {
 		initFeatureList();
 		dateParser = new DateParser();
-		checker = new FormatChecker();
 	}
 
 	public Operation getOperation(String operation) throws NullPointerException {
@@ -89,7 +87,7 @@ public class Parser {
 	public boolean isValid(String operation) throws NullPointerException {
 		boolean result = false;
 		try {
-			result = checker.isValid(operation);
+			result = FormatChecker.isValid(operation);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -99,7 +97,7 @@ public class Parser {
 	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
 		boolean result = false;
 		try {
-			result = checker.isArgumentsCorrect(operation);
+			result = FormatChecker.isArgumentsCorrect(operation);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
