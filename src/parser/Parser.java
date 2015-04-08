@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import taskList.TaskList;
-
 /**
  * APIs:
  * 	int getOperation(String operation) throws NullPointerException
@@ -52,13 +50,16 @@ public class Parser {
 	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
 	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
 	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
+	private static final String FEEDBACK_IMPORT = "Tip: import<index/path> to import a schedule file";
+	private static final String FEEDBACK_EXPORT = "Tip: export<index/path> to save schedul to a file";
 	
 	private static final int LARGE_CONSTANT = 500;
 	private static final int FAIL = -1;
 	
 	public enum Operation {
 		UNKNOW, ADD, DELETE, CLEAR, DISPLAY, EXIT,
-		MODIFY, UNDO, REDO, SORT, SEARCH, COMPLETE
+		MODIFY, UNDO, REDO, SORT, SEARCH, COMPLETE,
+		IMPORT, EXPORT
 	}
 	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
@@ -72,6 +73,8 @@ public class Parser {
 	private static final String[] KEYWORD_SORT = {"sort"};
 	private static final String[] KEYWORD_SEARCH = {"find", "search"};
 	private static final String[] KEYWORD_COMPLETE = {"finish", "complete"};
+	private static final String[] KEYWORD_IMPORT = {"import", "load"};
+	private static final String[] KEYWORD_EXPORT = {"export", "save"};
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
@@ -240,6 +243,12 @@ public class Parser {
 		case COMPLETE:
 			feedback = FEEDBACK_COMPLETE;
 			break;
+		case IMPORT:
+			feedback = FEEDBACK_IMPORT;
+			break;
+		case EXPORT:
+			feedback = FEEDBACK_EXPORT;
+			break;
 		default:
 			feedback = null;
 			break;
@@ -282,6 +291,8 @@ public class Parser {
 		tempList.add(searchKeyword(str, KEYWORD_SORT));
 		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
 		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
+		tempList.add(searchKeyword(str, KEYWORD_IMPORT));
+		tempList.add(searchKeyword(str, KEYWORD_EXPORT));
 		for (int i = 0; i < tempList.size(); i++) {
 			if (tempList.get(i) != null) {
 				resultList.add(tempList.get(i));
@@ -387,6 +398,8 @@ public class Parser {
 		addSelectedFeature(KEYWORD_SORT, Operation.SORT);
 		addSelectedFeature(KEYWORD_SEARCH, Operation.SEARCH);
 		addSelectedFeature(KEYWORD_COMPLETE, Operation.COMPLETE);
+		addSelectedFeature(KEYWORD_IMPORT, Operation.IMPORT);
+		addSelectedFeature(KEYWORD_EXPORT, Operation.EXPORT);
 	}
 	
 	private void addSelectedFeature(String[] keyword, Operation operation) {
