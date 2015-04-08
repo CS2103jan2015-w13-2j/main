@@ -176,7 +176,7 @@ public class Parser {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		return eliminateSpace(getContent("-v", operation));
+		return getContent("-v", operation);
 	}
 	
 	public Date getDate(String operation) throws NullPointerException, IOException {
