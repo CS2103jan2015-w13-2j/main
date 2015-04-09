@@ -30,7 +30,7 @@ import javax.swing.border.TitledBorder;
  */
 public class UserInterface {
 	
-	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type \"add\"  \"delete\" \"modify\" to begin";
+	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
 	public static final String VIEW_TASK_INFO_MESSAGE = DisplaySetting.getViewTaskInfo();
 	public static boolean isAdd = false;

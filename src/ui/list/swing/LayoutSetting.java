@@ -73,7 +73,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setStatusMessageLabel() {
-		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
+		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.BOLD, 18));
 		UserInterface.lblStatusMessage.setBounds(59, 440, 537, 29);
 	}
 	
@@ -83,7 +83,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setCommandGuideLabel() {
-		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
+		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.BOLD, 18));
 		UserInterface.lblCommandGuide.setBounds(59, 498, 501, 29);
 	}
 	
