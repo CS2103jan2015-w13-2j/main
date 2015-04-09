@@ -32,7 +32,7 @@ public class UIFeedback {
 	private static final String[] KEYWORD_IMPORT = {"import", "load"};
 	private static final String[] KEYWORD_EXPORT = {"export", "save"};
 	
-	public String autoFill(String str) throws NullPointerException {
+	public String findMatch(String str) throws NullPointerException {
 		if (str == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
@@ -44,7 +44,7 @@ public class UIFeedback {
 		}
 	}
 	
-	public String privideTips(Operation operation) throws NullPointerException {
+	public String findTips(Operation operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}

@@ -191,7 +191,7 @@ public class Parser {
 	public String autoFill(String str) throws NullPointerException {
 		String result = null;
 		try {
-			result = feedback.autoFill(str);
+			result = feedback.findMatch(str);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -202,7 +202,7 @@ public class Parser {
 		String result = null;
 		try {
 			Operation operationType = getOperation(operation);
-			result = feedback.privideTips(operationType);
+			result = feedback.findTips(operationType);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
