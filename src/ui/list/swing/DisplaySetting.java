@@ -1,7 +1,12 @@
 package ui.list.swing;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.Timer;
 
 import taskList.Task;
 
@@ -137,14 +142,6 @@ public class DisplaySetting {
 		data.append(HTML_CLOSE);
 		
 		return data.toString();
-	}
-	
-	public static String getTodayDate() {
-		String currentDate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-		
-		System.out.println(currentDate);
-		
-		return currentDate;
 	}
 	
 	public static void clearData() {

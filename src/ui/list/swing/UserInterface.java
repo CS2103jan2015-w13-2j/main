@@ -45,7 +45,7 @@ public class UserInterface {
 	public static JLabel lblStatusMessage = new JLabel("");
 	public static JLabel lblPageNumber = new JLabel("");
 	public static JLabel lblHelp = new JLabel("F1 - Help");
-	public static JLabel lblDate = new JLabel(DisplaySetting.getTodayDate());
+	public static JLabel lblDate = new JLabel();
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
 

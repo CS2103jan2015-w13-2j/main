@@ -3,6 +3,9 @@ package ui.list.swing;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -11,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 
+
+import javax.swing.Timer;
 
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
@@ -33,7 +38,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setFrame() {
-		UserInterface.frame.setBounds(100, 100, 653, 562);
+		UserInterface.frame.setBounds(100, 100, 653, 582);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface.frame.getContentPane().setLayout(null);
 		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
@@ -50,8 +55,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setDateLabel() {
-		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 15));
-		UserInterface.lblDate.setBounds(280, 34, 200, 16);
+		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 14));
+		UserInterface.lblDate.setBounds(400, 540, 200, 16);
 	}
 	
 	public static void setHelpInfoLabel() {
@@ -120,6 +125,17 @@ public class LayoutSetting {
 		suggestion.setVisible(false);
 	}
 	
+	public static void getTodayDate() {	
+		Timer SimpleTimer = new Timer(1000, new ActionListener(){
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        UserInterface.lblDate.setText(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+		    }
+
+		});
+		SimpleTimer.start();
+	}
+	
 	public static void addToContentPane() {
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
@@ -136,8 +152,8 @@ public class LayoutSetting {
 		setFrame();
 		setPanels();
 		setScrollPane();
-		setLabels();
 		addToContentPane();
+		setLabels();
 		setTextField();
 
 	}
@@ -148,6 +164,7 @@ public class LayoutSetting {
 		setFrameListener();
 		setTextFieldListener();
 		setShowTaskInfo();
+		getTodayDate();
 	}
 
 }
