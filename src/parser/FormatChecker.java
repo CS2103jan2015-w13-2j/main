@@ -6,7 +6,7 @@ public class FormatChecker {
 	private static final int FAIL = -1;
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
-	public boolean isValid(String operation) throws NullPointerException {
+	public boolean isValidFormat(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		} 
@@ -17,7 +17,7 @@ public class FormatChecker {
 		}
 	}
 	
-	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
+	public boolean isArgumentsFormatCorrect(String operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}

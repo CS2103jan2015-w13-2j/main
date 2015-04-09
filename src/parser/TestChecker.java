@@ -10,22 +10,22 @@ public class TestChecker {
 	
 	@Test
 	public void test1() {
-		result = check.isArgumentsCorrect("");
+		result = check.isArgumentsFormatCorrect("");
 		assertEquals(true, result);
 	}
 	@Test
 	public void test2() {
-		result = check.isArgumentsCorrect("add -d -d");
+		result = check.isArgumentsFormatCorrect("add -d -d");
 		assertEquals(false, result);
 	}
 	@Test
 	public void test3() {
-		result = check.isArgumentsCorrect("add -d -vv");
+		result = check.isArgumentsFormatCorrect("add -d -vv");
 		assertEquals(false, result);
 	}
 	@Test
 	public void test4() {
-		result = check.isArgumentsCorrect("add -d -v -dd");
+		result = check.isArgumentsFormatCorrect("add -d -v -dd");
 		assertEquals(true, result);
 	}
 }

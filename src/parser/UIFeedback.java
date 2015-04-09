@@ -32,7 +32,7 @@ public class UIFeedback {
 	private static final String[] KEYWORD_IMPORT = {"import", "load"};
 	private static final String[] KEYWORD_EXPORT = {"export", "save"};
 	
-	public static String autoFill(String str) throws NullPointerException {
+	public String autoFill(String str) throws NullPointerException {
 		if (str == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
@@ -44,7 +44,7 @@ public class UIFeedback {
 		}
 	}
 	
-	public static String privideTips(Operation operation) throws NullPointerException {
+	public String privideTips(Operation operation) throws NullPointerException {
 		if (operation == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
@@ -82,7 +82,7 @@ public class UIFeedback {
 		return feedback;
 	}
 	
-	private static ArrayList<String> searchAllKeyword(String str) {
+	private ArrayList<String> searchAllKeyword(String str) {
 		ArrayList<String> tempList = new ArrayList<String>();
 		ArrayList<String> resultList = new ArrayList<String>();
 		tempList.add(searchKeyword(str, KEYWORD_ADD));
@@ -106,7 +106,7 @@ public class UIFeedback {
 		return resultList;
 	}
 	
-	private static String searchKeyword(String str, String[] keyword) {
+	private String searchKeyword(String str, String[] keyword) {
 		for (String temp:keyword) {
 			if (temp.startsWith(str)) {
 				return temp;

@@ -61,6 +61,7 @@ public class Parser {
 	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
 	private static FormatChecker checker = null;
+	private static UIFeedback feedback = null; 
 	private static String name = Parser.class.getName(); 
 	private static Logger logger = Logger.getLogger(name);
 	
@@ -68,6 +69,7 @@ public class Parser {
 		initFeatureList();
 		dateParser = new DateParser();
 		checker = new FormatChecker();
+		feedback = new UIFeedback();
 	}
 
 	public Operation getOperation(String operation) throws NullPointerException {
@@ -89,7 +91,7 @@ public class Parser {
 	public boolean isValid(String operation) throws NullPointerException {
 		boolean result = false;
 		try {
-			result = checker.isValid(operation);
+			result = checker.isValidFormat(operation);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -99,7 +101,7 @@ public class Parser {
 	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
 		boolean result = false;
 		try {
-			result = checker.isArgumentsCorrect(operation);
+			result = checker.isArgumentsFormatCorrect(operation);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -189,7 +191,7 @@ public class Parser {
 	public String autoFill(String str) throws NullPointerException {
 		String result = null;
 		try {
-			result = UIFeedback.autoFill(str);
+			result = feedback.autoFill(str);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -200,7 +202,7 @@ public class Parser {
 		String result = null;
 		try {
 			Operation operationType = getOperation(operation);
-			result = UIFeedback.privideTips(operationType);
+			result = feedback.privideTips(operationType);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
