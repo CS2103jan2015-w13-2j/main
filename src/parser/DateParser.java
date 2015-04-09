@@ -14,9 +14,10 @@ public class DateParser {
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	private static final String EXCEPTION_DATEFORMAT = "the date format you entered is incorrect";
 	
-	private com.joestelmach.natty.Parser dateParser = null;
 	private String[] dateIndicators = {"/", "-"};
 	private String[] timeIndicators = {".", ":"};
+	
+	private com.joestelmach.natty.Parser dateParser = null;
 	
 	public DateParser(){
 		dateParser = new com.joestelmach.natty.Parser();

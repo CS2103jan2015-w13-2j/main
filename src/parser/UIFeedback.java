@@ -1,7 +1,6 @@
 package parser;
 
 import java.util.ArrayList;
-
 import parser.Parser.Operation;
 
 public class UIFeedback {
