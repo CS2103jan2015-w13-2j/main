@@ -107,7 +107,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setBalloonTipStyle() {
-		BalloonTipStyle style = new EdgedBalloonStyle(Color.GREEN, Color.BLUE);
+		BalloonTipStyle style = new EdgedBalloonStyle(new Color(224,224,224), Color.BLACK);
 		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 15, 7, false);
 	}
 	
