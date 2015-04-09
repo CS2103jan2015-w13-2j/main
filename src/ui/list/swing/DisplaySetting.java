@@ -36,7 +36,7 @@ public class DisplaySetting {
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232>";
 	private static final String HTML_FONT_CLOSE = "</font>";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
-	private static final String HTML_FONT_RED = "<font color = red>";
+	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000>";
 	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000>";
 	
 	public DisplaySetting(Task task, int i) throws NullPointerException, IOException {
@@ -131,7 +131,7 @@ public class DisplaySetting {
 		clearData();
 		
 		data.append(HTML_OPEN);
-		data.append(HTML_FONT_RED);
+		data.append(HTML_FONT_FEEDBACK_GUIDE_INFO);
 		data.append(UserInterface.BTL.getLastFeedBack());	
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);
