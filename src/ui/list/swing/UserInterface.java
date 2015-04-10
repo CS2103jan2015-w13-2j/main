@@ -13,17 +13,15 @@ import javax.swing.JTextField;
 import taskList.Task;
 import taskList.TaskList;
 
-/**
- * 
- * @author author: A0117971Y
- *
- */
+//@author A0117971Y
+
 public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
 	public static final String VIEW_TASK_INFO_MESSAGE = DisplaySetting.getViewTaskInfo();
 	public static boolean isAdd = false;
+	public static boolean isModify = false;
 	public static boolean atHelpMenu = false;
 	public static TaskList BTL;
 	public static ArrayList<Task> taskList;

@@ -11,9 +11,21 @@ import javax.swing.border.TitledBorder;
 
 import taskList.Task;
 
+//@author A0117971Y
+
 public class PrintHandler {
 	
+	private static final int ADD_MODE = 1;
+	private static final int MODIFY_MODE = 2;
+	
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
+		
+		PageHandler.setCurrentPage(pageNumber);
+		
+		System.out.println("printing page number " + pageNumber);
+		
+		clearPanel();
+		
 		int start = pageNumber * 5;
 
 		//not last page
@@ -30,6 +42,8 @@ public class PrintHandler {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
+		
+		refreshPanel();
 	}
 	
 	public static void printTask (Task task, int i) throws NullPointerException, IOException {
@@ -38,7 +52,25 @@ public class PrintHandler {
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
 		
 		// to highlight added row
-		if (i+1 == UserInterface.taskList.size() && UserInterface.isAdd) {
+		if (i+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
+			printHighlightRow(labelText,ADD_MODE);
+		}
+		
+		else if (i+1 == TextFieldListener.isValidModify() && UserInterface.isModify) {
+			printHighlightRow(labelText, MODIFY_MODE);
+		}
+		
+		else {
+			UserInterface.panel.add(new JLabel(labelText));
+		}
+		
+		refreshPanel();
+	}
+	
+	private static void printHighlightRow(String labelText, int mode) {
+		
+		if (mode == ADD_MODE) {
+			
 			JLabel addedRow = new JLabel(labelText);
 			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
 			title.setTitleJustification(TitledBorder.CENTER);
@@ -47,11 +79,14 @@ public class PrintHandler {
 			UserInterface.isAdd = false;
 		}
 		
-		else {
-			UserInterface.panel.add(new JLabel(labelText));
+		else if (mode == MODIFY_MODE) {
+			JLabel modifyRow = new JLabel(labelText);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "modify");
+			title.setTitleJustification(TitledBorder.CENTER);
+			modifyRow.setBorder(BorderFactory.createTitledBorder(title));
+			UserInterface.panel.add(modifyRow);
+			UserInterface.isModify = false;
 		}
-		
-		refreshPanel();
 	}
 	
 	public static void printStatusMessage() {
