@@ -1,27 +1,17 @@
 package ui.list.swing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.swing.Timer;
 
 import taskList.Task;
 
-/**
- * 
- * @author A0117971Y
- *
- */
+//@author A0117971Y
 
 public class DisplaySetting {
 	
 	//mode == 0 means the result shown in screen is taskList,
-		//mode == 1 means the result shown in screen is searchResult
-		//mode == 2 means the result shown in screen is completedTaskList
-		//mode == 3 means the result shown in screen is all task (both finished and unfinished)
+	//mode == 1 means the result shown in screen is searchResult
+	//mode == 2 means the result shown in screen is completedTaskList
+	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
 	
 	private static final int TASK_INFO_UNCOMPLETED = 0;
 	private static final int TASK_INFO_SEARCH_RESULT = 1;

@@ -23,6 +23,7 @@ import net.java.balloontip.BalloonTip.Orientation;
 import net.java.balloontip.styles.BalloonTipStyle;
 import net.java.balloontip.styles.EdgedBalloonStyle;
 
+//@author A0117971Y
 
 public class LayoutSetting {
 	

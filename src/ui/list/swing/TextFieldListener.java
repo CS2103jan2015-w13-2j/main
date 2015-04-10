@@ -1,20 +1,21 @@
 package ui.list.swing;
 
+//@author A0117971Y
+
+import java.io.IOException;
+
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-/**
- * 
- * @author A0117971Y
- *
- */
 
+//@author A0117971Y
 
 @SuppressWarnings("serial")
 public class TextFieldListener extends JTextField implements DocumentListener {
 	
 	private static String inputStream = "";
+	private static final int INVALID_SYNTAX = -1;
     
 	/*
 	 * Testing of GUI interface can be done by performing black-box testing. That is, just running the program without looking at any code.
@@ -32,6 +33,26 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
+		
+		if (isValidModify() != INVALID_SYNTAX) {
+			UserInterface.isModify = true;
+			System.out.println("valid modify index = " + isValidModify());
+			int pageOfModify = PageHandler.getPageOfIndex(isValidModify()-1);
+			try {
+				PrintHandler.printPage(pageOfModify);
+			} catch (NullPointerException | IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		else {
+			try {
+				PrintHandler.printPage(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
 		BalloonTipSuggestion.getBalloonTip();		
 		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
@@ -40,6 +61,26 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	@Override
 	public void removeUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
+		
+		if (isValidModify() != INVALID_SYNTAX) {
+			UserInterface.isModify = true;
+			System.out.println("valid modify index = " + isValidModify());
+			int pageOfModify = PageHandler.getPageOfIndex(isValidModify()-1);
+			try {
+				PrintHandler.printPage(pageOfModify);
+			} catch (NullPointerException | IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		else {
+			try {
+				PrintHandler.printPage(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
 		BalloonTipSuggestion.getBalloonTip();
 		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
@@ -64,6 +105,27 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		else {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
+	}
+	
+	public static int isValidModify() {
+		String currentInput = inputStream;
+		
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+				if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
+					try {
+						int modifyIndex = Integer.parseInt(tokens[1]);
+						
+						if (modifyIndex <= UserInterface.taskList.size()) {
+							return modifyIndex;
+						}
+					} catch (Exception e) {
+						return -1;
+					}
+				}
+		}
+		
+		return -1;
 	}
 	
 }
