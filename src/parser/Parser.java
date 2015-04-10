@@ -229,50 +229,7 @@ public class Parser {
 		}
 		return str.substring(start, end+1);
 	}	
-/*
-	private boolean isArgumentsTypeCorrect(String operation) {
-		assert(operation != null);
-		String temp = null;
-		int start = operation.indexOf(" -");
-		while (start != FAIL) {
-			int end = operation.indexOf(" ", start+1);
-			if (end == FAIL) {
-				end = operation.length();
-			}
-			temp = operation.substring(start + 1, end);
-			if (!isInOptions(temp)) {
-				return false;
-			}
-			start = operation.indexOf(" -", end);
-		}
-		return true;
-	}
-	
-	private boolean isArgumentsNumberCorrect(String operation) {
-		assert(operation != null);
-		for (String temp : OPTIONS) {
-			if (countOptions(temp, operation) > 1) {
-				return false;
-			}
-		}
-		return true;
-	}
-	*/
-	/*
-	private int countOptions(String operationType, String operation) {
-		assert(isInOptions(operationType));
-		assert(operation != null);
-		String tempOperation = operation;
-		int count = 0;
-		int start = findType(operationType, tempOperation);
-		while (start != FAIL) {
-			count++;
-			tempOperation = tempOperation.substring(start + operationType.length(), tempOperation.length());
-			start = findType(operationType, tempOperation);
-		}
-		return count;
-	}
-	*/
+
 	private Operation getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);

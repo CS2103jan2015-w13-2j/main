@@ -78,6 +78,7 @@ public class UserInterface {
 		LayoutSetting.setAll();
 		displayAll(0);
 	}
+	
 	public static void processTextField() throws NullPointerException, IOException {
 		String input = textField.getText();
 		String[] tokens = input.split(" ");
