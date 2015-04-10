@@ -44,26 +44,30 @@ public class DisplaySetting {
 	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000>";
 	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000>";
 	
+	private static String index;
+	private static String taskName;
+	private static String date;
+	private static String venue;
+	private static String endDate;
+	
 	public DisplaySetting(Task task, int i) throws NullPointerException, IOException {
 		
 		clearData();
 		assert(data.length()==0);
 		
-		String index = Integer.toString(i+1);
-		String taskName = task.getContent();
-		String date = task.getDateString();
-		String venue = task.getVenue();
-		String endDate = task.getDeadlineString();
+		index = Integer.toString(i+1);
+		taskName = task.getContent();
+		date = task.getDateString();
+		venue = task.getVenue();
+		endDate = task.getDeadlineString();
+		
+		setVenueDate();
 		
 		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
 		
-		if (date == null) {
-			date = "---";
-		}
 		
-		
+		// date or end date isOutOfDate
 		if ((date != null || endDate !=null) && task.isOutOfDate()) {
-			System.out.println("is out of date");
 			data.append(HTML_FONT_OVERDUE + "Date:" + date + HTML_FONT_CLOSE);
 				if (endDate != null) {
 					data.append(HTML_FONT_OVERDUE + " BY: " + endDate + HTML_FONT_CLOSE );
@@ -72,8 +76,6 @@ public class DisplaySetting {
 		}
 		
 		else {
-			System.out.println("is on time");
-
 			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
 			
 			if (endDate != null) {
@@ -82,20 +84,24 @@ public class DisplaySetting {
 		}
 				
 		data.append(HTML_BREAK);
-		
-		if (venue == null || venue.equals("")) {
-			venue = "---";
-		}
-
 		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
-
-		
 		data.append(HTML_CLOSE);
 		
 	}
 	
 	public String getData() {
 		return data.toString();
+	}
+	
+	private static void setVenueDate() {
+		
+		if (venue == null || venue.equals("")) {
+			venue = "---";
+		}
+		
+		if (date == null || date.equals("")) {
+			date = "---";
+		}
 	}
 	
 	public static String getViewTaskInfo() {
