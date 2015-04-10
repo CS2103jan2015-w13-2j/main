@@ -15,8 +15,11 @@ import taskList.Task;
 
 public class PrintHandler {
 	
+
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
+
+
 	
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		
@@ -48,16 +51,26 @@ public class PrintHandler {
 	
 	public static void printTask (Task task, int i) throws NullPointerException, IOException {
 		
-		String str = new DisplaySetting(task,i).getData();
-		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
+		System.out.println("printing task number: " + i);
+		System.out.println("deleted index: " + UserInterface.deleteIndex);
+
+		
+		String labelText = DisplaySetting.getTaskInfoFormat(task, i);
+//		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
 		
 		// to highlight added row
 		if (i+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
 			printHighlightRow(labelText,ADD_MODE);
 		}
 		
-		else if (i+1 == TextFieldListener.isValidModify() && UserInterface.isModify) {
+		//highlight modify row
+		else if (i+1 == TextFieldListener.isValidModifyListener() && UserInterface.isModify) {
 			printHighlightRow(labelText, MODIFY_MODE);
+		}
+		
+		else if (UserInterface.deleteIndex != -1 && i+1==UserInterface.deleteIndex) {
+			System.out.println("printing deleted task with strike... index = " + i + " delete index = " + UserInterface.deleteIndex);
+			printDeletedRow(task,i);
 		}
 		
 		else {
@@ -91,6 +104,12 @@ public class PrintHandler {
 			UserInterface.panel.add(modifyRow);
 			UserInterface.isModify = false;
 		}
+	}
+	
+	private static void printDeletedRow(Task task, int i) throws NullPointerException, IOException {
+		String labelText = DisplaySetting.getDeletedRowFormat(task, i);
+		UserInterface.panel.add(new JLabel(labelText));
+		UserInterface.deleteIndex = -1;
 	}
 	
 	public static void printStatusMessage() {
@@ -128,6 +147,5 @@ public class PrintHandler {
 	         }
 	     }, 3000);
 	 }
-	
 
 }

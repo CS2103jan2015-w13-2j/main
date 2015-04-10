@@ -25,6 +25,7 @@ public class UserInterface {
 	public static boolean atHelpMenu = false;
 	public static TaskList BTL;
 	public static ArrayList<Task> taskList;
+	public static int deleteIndex = -1;
 
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
 	public static JPanel panel = new JPanel();
@@ -78,25 +79,36 @@ public class UserInterface {
 	}
 	
 	public static void processTextField() throws NullPointerException, IOException {
-		String input = textField.getText();
-		String[] tokens = input.split(" ");
 		
-		if (tokens.length > 0) {
-			if (tokens[0].equals("add")) {
+		System.out.println("PROCESSING TEXTFIELD -------------------------------------");
+		String input = textField.getText();
+		deleteIndex = TextFieldListener.isValidDeleteIndex(input);
+		System.out.println("deleteIndex = " + deleteIndex);
+//		String[] tokens = input.split(" ");
+		
+		if (TextFieldListener.isValidAdd(input)) {
+//			if (tokens[0].equals("add")) {
 				isAdd = true;
 			}
-			
-			TextFieldHistory.updateHistory(input);
+		
+		TextFieldHistory.updateHistory(input);
+		
+		//valid delete
+		if (deleteIndex != -1) {
+			System.out.println("is valid delete");
+			PrintHandler.printPage(PageHandler.getPageOfIndex(deleteIndex-1));
+			BTL.executeCommand(input);
 		}
-				
-		textField.setText(null);
-		BTL.executeCommand(input);
+		
+		else {
+			System.out.println("is NOT DELETE");
+			BTL.executeCommand(input);
+			taskList = BTL.getTasks();		
+			PageHandler.updatePage();
+			displayAll(PageHandler.getCurrentPage());
+		}
+		
 		PrintHandler.printStatusMessage();
-		taskList = BTL.getTasks();
-		
-		PageHandler.updatePage();
-		displayAll(PageHandler.getCurrentPage());
-		
 		isAdd = false;
 	}
 	

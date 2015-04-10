@@ -21,6 +21,9 @@ public class HotKeyListener extends KeyAdapter{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+				UserInterface.textField.setText(null);
+
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_TAB) {

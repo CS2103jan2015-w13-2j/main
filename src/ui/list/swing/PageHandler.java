@@ -36,7 +36,7 @@ public class PageHandler {
 		int totalPage = getTotalPage();
 		
 		if (totalPage > 0) {
-			System.out.println("last page = " + (totalPage-1));
+//			System.out.println("last page = " + (totalPage-1));
 			return totalPage - 1;
 		}
 		

@@ -34,10 +34,10 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
 		
-		if (isValidModify() != INVALID_SYNTAX) {
+		if (isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + isValidModify());
-			int pageOfModify = PageHandler.getPageOfIndex(isValidModify()-1);
+			System.out.println("valid modify index = " + isValidModifyListener());
+			int pageOfModify = PageHandler.getPageOfIndex(isValidModifyListener()-1);
 			try {
 				PrintHandler.printPage(pageOfModify);
 			} catch (NullPointerException | IOException e1) {
@@ -45,13 +45,13 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 			}
 		}
 		
-		else {
-			try {
-				PrintHandler.printPage(PageHandler.getCurrentPage());
-			} catch (NullPointerException | IOException e1) {
-				e1.printStackTrace();
-			}
-		}
+//		else {
+//			try {
+//				PrintHandler.printPage(PageHandler.getCurrentPage());
+//			} catch (NullPointerException | IOException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
 		
 		BalloonTipSuggestion.getBalloonTip();		
 		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
@@ -60,12 +60,13 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
+		
 		inputStream = UserInterface.textField.getText();
 		
-		if (isValidModify() != INVALID_SYNTAX) {
+		if (isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + isValidModify());
-			int pageOfModify = PageHandler.getPageOfIndex(isValidModify()-1);
+			System.out.println("valid modify index = " + isValidModifyListener());
+			int pageOfModify = PageHandler.getPageOfIndex(isValidModifyListener()-1);
 			try {
 				PrintHandler.printPage(pageOfModify);
 			} catch (NullPointerException | IOException e1) {
@@ -73,7 +74,8 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 			}
 		}
 		
-		else {
+		else if (!inputStream.isEmpty()){
+			System.out.println("input stream is empty");
 			try {
 				PrintHandler.printPage(PageHandler.getCurrentPage());
 			} catch (NullPointerException | IOException e1) {
@@ -89,8 +91,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 	
 	public static String getInputStream() {
@@ -107,7 +108,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		}
 	}
 	
-	public static int isValidModify() {
+	public static int isValidModifyListener() {
 		String currentInput = inputStream;
 		
 		if (currentInput != null && !currentInput.equals("")) {
@@ -128,4 +129,39 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		return -1;
 	}
 	
+	public static int isValidDeleteIndex(String input) {
+		
+		String currentInput = input;
+		
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("delete")) {
+				try {
+					int deleteIndex = Integer.parseInt(tokens[1]);
+
+					if (deleteIndex <= UserInterface.taskList.size()) {
+						UserInterface.deleteIndex = deleteIndex;
+						return deleteIndex;
+					}
+				} catch (Exception e) {
+					return -1;
+				}
+			}
+		}
+		
+		return -1;
+	}
+		
+	public static boolean isValidAdd(String currentInput) {
+
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("add")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }

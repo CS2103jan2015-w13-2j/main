@@ -26,13 +26,16 @@ public class DisplaySetting {
 	private static final String HTML_OPEN = "<html>";
 	private static final String HTML_CLOSE = "</html>";
 	private static final String HTML_BREAK = "<br>";
-	private static final String HTML_FONT_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">";
-	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\">";
-	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232>";
+	private static final String HTML_FONT_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"> %s </font>";
+	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\"> %s </font><br>";
+	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232> %s </font>";
 	private static final String HTML_FONT_CLOSE = "</font>";
-	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\">";
-	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000>";
-	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000>";
+	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\"> %s </font>";
+	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000> %s </font>";
+	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000> %s </font>";
+	private static final String HTML_FONT_FINISHED_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font>";
+	private static final String HTML_FONT_FINISHED_TASKNAME = "<font size = \"6\" font face = \"Arial\"><s> %s </s></font><br>";
+	private static final String HTML_FONT_FINISHED_DETAILS = "<font size = \"3\" font color = #363232><s> %s </s></font>";
 	
 	private static String index;
 	private static String taskName;
@@ -40,7 +43,7 @@ public class DisplaySetting {
 	private static String venue;
 	private static String endDate;
 	
-	public DisplaySetting(Task task, int i) throws NullPointerException, IOException {
+	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
 		
 		clearData();
 		assert(data.length()==0);
@@ -53,33 +56,77 @@ public class DisplaySetting {
 		
 		setVenueDate();
 		
-		data.append(HTML_OPEN + HTML_FONT_INDEX + index + ". " + HTML_FONT_CLOSE + HTML_FONT_TASKNAME + taskName + HTML_FONT_CLOSE + HTML_BREAK);
-		
-		
-		// date or end date isOutOfDate
-		if ((date != null || endDate !=null) && task.isOutOfDate()) {
-			data.append(HTML_FONT_OVERDUE + "Date:" + date + HTML_FONT_CLOSE);
-				if (endDate != null) {
-					data.append(HTML_FONT_OVERDUE + " BY: " + endDate + HTML_FONT_CLOSE );
-				}
-			data.append(HTML_FONT_CLOSE);
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_INDEX, index + ". ") + String.format(HTML_FONT_TASKNAME, taskName));
+				
+		if (!date.equals("---") && task.isOutOfDate()) {
+			data.append(String.format(HTML_FONT_OVERDUE, "Date: " + date));
 		}
 		
 		else {
-			data.append(HTML_FONT_TASK_DETAILS + "Date:" + date + HTML_FONT_CLOSE );
-			
-			if (endDate != null) {
-				data.append(HTML_FONT_TASK_DETAILS + " BY: " + endDate + HTML_FONT_CLOSE );
+			data.append(String.format(HTML_FONT_TASK_DETAILS, "Date: " + date));
+
+		}
+		
+		if (endDate != null) {
+			if (task.isOutOfDate()) {
+				data.append(String.format(HTML_FONT_OVERDUE,"  BY: " + endDate));
+			}		
+			else {
+				data.append(String.format(HTML_FONT_TASK_DETAILS, "  BY: " + endDate));	
 			}
 		}
+
+		data.append(HTML_BREAK);		
+		data.append(String.format(HTML_FONT_TASK_DETAILS, "Venue: " + venue));
+		data.append(HTML_BREAK+HTML_CLOSE);
+		
+		return getData();
+	}
+	
+	public static String getDeletedRowFormat(Task task, int i) throws NullPointerException, IOException {
+		clearData();
+		assert(data.length()==0);
+		
+
+		index = Integer.toString(i+1);
+		taskName = task.getContent();
+		date = task.getDateString();
+		venue = task.getVenue();
+		endDate = task.getDeadlineString();
+		
+		setVenueDate();
+		
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_FINISHED_INDEX, index + ". ") + String.format(HTML_FONT_FINISHED_TASKNAME, taskName));
 				
-		data.append(HTML_BREAK);
-		data.append(HTML_FONT_TASK_DETAILS + "Venue:" + venue + HTML_FONT_CLOSE + HTML_BREAK);
-		data.append(HTML_CLOSE);
+		if (!date.equals("---") && task.isOutOfDate()) {
+			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
+		}
+		
+		else {
+			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
+
+		}
+		
+		if (endDate != null) {
+			if (task.isOutOfDate()) {
+				data.append(String.format(HTML_FONT_FINISHED_DETAILS,"  BY: " + endDate));
+			}		
+			else {
+				data.append(String.format(HTML_FONT_FINISHED_DETAILS, "  BY: " + endDate));	
+			}
+		}
+
+		data.append(HTML_BREAK);		
+		data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Venue: " + venue));
+		data.append(HTML_BREAK+HTML_CLOSE);
+		
+		return getData();
 		
 	}
 	
-	public String getData() {
+	public static String getData() {
 		return data.toString();
 	}
 	
