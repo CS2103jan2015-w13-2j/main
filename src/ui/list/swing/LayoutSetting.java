@@ -55,8 +55,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setDateLabel() {
-		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 14));
-		UserInterface.lblDate.setBounds(400, 540, 200, 16);
+		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 16));
+		UserInterface.lblDate.setBounds(380, 540, 250, 16);
 	}
 	
 	public static void setHelpInfoLabel() {
@@ -126,14 +126,41 @@ public class LayoutSetting {
 	}
 	
 	public static void getTodayDate() {	
+		
 		Timer SimpleTimer = new Timer(1000, new ActionListener(){
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        UserInterface.lblDate.setText(java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
+		        String dayOfWeek = getDayOfWeek();
+		        UserInterface.lblDate.setText(dayOfWeek + ", " + java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));	        
 		    }
 
 		});
 		SimpleTimer.start();
+	}
+	
+	private static String getDayOfWeek() {
+		String dayOfWeekString = "";
+		Calendar calendar = Calendar.getInstance();
+		int dayOfWeekInt = calendar.get(Calendar.DAY_OF_WEEK);
+
+		switch (dayOfWeekInt) {
+			case Calendar.MONDAY: dayOfWeekString = "Monday"; 
+				break; 
+			case Calendar.TUESDAY: dayOfWeekString = "Tuesday";
+				break; 
+			case Calendar.WEDNESDAY: dayOfWeekString = "Wednesday"; 
+				break; 
+			case Calendar.THURSDAY: dayOfWeekString = "Thursday";
+				break; 
+			case Calendar.FRIDAY: dayOfWeekString = "Friday"; 
+				break; 
+			case Calendar.SATURDAY: dayOfWeekString = "Saturday"; 
+				break; 
+			case Calendar.SUNDAY: dayOfWeekString = "Sunday"; 
+				break; 
+		}
+		
+		return dayOfWeekString;
 	}
 	
 	public static void addToContentPane() {
