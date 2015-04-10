@@ -83,7 +83,7 @@ public class DisplaySetting {
 				
 		data.append(HTML_BREAK);
 		
-		if (venue.equals("")) {
+		if (venue == null || venue.equals("")) {
 			venue = "---";
 		}
 
