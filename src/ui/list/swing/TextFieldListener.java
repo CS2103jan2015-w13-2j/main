@@ -115,7 +115,10 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 				if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
 					try {
 						int modifyIndex = Integer.parseInt(tokens[1]);
-						return modifyIndex;
+						
+						if (modifyIndex <= UserInterface.taskList.size()) {
+							return modifyIndex;
+						}
 					} catch (Exception e) {
 						return -1;
 					}
