@@ -72,7 +72,9 @@ public class PrintHandler {
 		if (mode == ADD_MODE) {
 			
 			JLabel addedRow = new JLabel(labelText);
-			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
+			addedRow.setOpaque(true);
+			addedRow.setBackground(Color.green);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.green), "newly added");
 			title.setTitleJustification(TitledBorder.CENTER);
 			addedRow.setBorder(BorderFactory.createTitledBorder(title));
 			UserInterface.panel.add(addedRow);
@@ -81,7 +83,9 @@ public class PrintHandler {
 		
 		else if (mode == MODIFY_MODE) {
 			JLabel modifyRow = new JLabel(labelText);
-			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "modify");
+			modifyRow.setOpaque(true);
+			modifyRow.setBackground(Color.yellow);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.yellow), "modify");
 			title.setTitleJustification(TitledBorder.CENTER);
 			modifyRow.setBorder(BorderFactory.createTitledBorder(title));
 			UserInterface.panel.add(modifyRow);
