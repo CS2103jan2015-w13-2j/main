@@ -1,27 +1,17 @@
 package ui.list.swing;
 
 
-import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.swing.JTextField;
-
 import taskList.Task;
 import taskList.TaskList;
-
-import javax.swing.border.TitledBorder;
 
 /**
  * 
@@ -102,7 +92,7 @@ public class UserInterface {
 				
 		textField.setText(null);
 		BTL.executeCommand(input);
-		printStatusMessage();
+		PrintHandler.printStatusMessage();
 		taskList = BTL.getTasks();
 		
 		PageHandler.updatePage();
@@ -114,57 +104,11 @@ public class UserInterface {
 	public static void displayAll(int pageNumber) throws NullPointerException, IOException {
 		
 		taskList = BTL.getTasks();	
-		clearPanel();
+		PrintHandler.clearPanel();
 		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
-		printPage(pageNumber);
-	}
-	
-	public static void printPage (int pageNumber) throws NullPointerException, IOException {
-		int start = pageNumber * 5;
-
-		//not last page
-		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
-			for (int i=start; i < start+5; i++) {
-				printTask(taskList.get(i),i);
-			}
-		}
-
-		//last page
-		else {
-
-			for (int i=start; i<taskList.size(); i++) {
-				printTask(taskList.get(i),i);
-			}
-		}
-	}
-	
-	public static void printTask (Task task, int i) throws NullPointerException, IOException {
-		
-		String str = new DisplaySetting(task,i).getData();
-		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
-		
-		// to highlight added row
-		if (i+1 == taskList.size() && isAdd) {
-			JLabel addedRow = new JLabel(labelText);
-			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "new");
-			title.setTitleJustification(TitledBorder.CENTER);
-			addedRow.setBorder(BorderFactory.createTitledBorder(title));
-			panel.add(addedRow);
-			isAdd = false;
-		}
-		
-		else {
-			panel.add(new JLabel(labelText));
-		}
-		
-		refreshPanel();
-	}
-	
-	public static void printStatusMessage() {
-		lblCommandGuide.setText(DisplaySetting.getFeedbackGuideInfo());
-		resetGuide();
+		PrintHandler.printPage(pageNumber);
 	}
 	
 	public void setBackground(JLabel lblBackground) {
@@ -175,37 +119,5 @@ public class UserInterface {
 	
 	public static void exit() {
 		frame.dispose();
-	}
-	
-	public static void printHelp() {
-		frame.getContentPane().removeAll();
-		LayoutSetting.setHelpInfoLabel();
-		refreshFrame();
-	}
-	
-	
-	private static void refreshPanel() {
-		panel.revalidate();
-		panel.repaint();
-	}
-	
-	private static void refreshFrame() {
-		frame.revalidate();
-		frame.repaint();
-	}
-	
-	private static void clearPanel() {
-		panel.removeAll();
-		refreshPanel();
-	}
-	
-	public static void resetGuide() {
-	     Timer timer = new Timer();
-	     timer.schedule(new TimerTask() {
-	         @Override
-	         public void run() {
-	             UserInterface.lblCommandGuide.setText(COMMAND_GUIDE_DEFAULT_MESSAGE);
-	         }
-	     }, 3000);
-	 }
+	}	
 }

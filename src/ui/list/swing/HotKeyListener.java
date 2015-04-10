@@ -67,7 +67,7 @@ public class HotKeyListener extends KeyAdapter{
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
 //			System.out.println("F1 pressed");
-			UserInterface.printHelp();
+			PrintHandler.printHelp();
 			UserInterface.atHelpMenu = true;
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_HELP_MESSAGE);
 		}
