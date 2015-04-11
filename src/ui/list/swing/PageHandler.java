@@ -56,7 +56,7 @@ public class PageHandler {
 	}
 	
 	public static int getPageOfIndex(int index) {
-		int page = Math.floorDiv(index, (int) printPerPage);
+		int page = index / (int) printPerPage;
 		return page;
 	}
 	

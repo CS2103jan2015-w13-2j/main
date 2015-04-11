@@ -151,64 +151,48 @@ public class TaskManager {
 	}
 	
 	public void executeCommand(String command) {
-		switch (myParser.getOperation(command)) {
-		case ADD:
-			try {
+		try{
+			switch (myParser.getOperation(command)) {
+		
+			case ADD:
 				add(command);
-			} catch (Exception e) {
-				showMessage(e.getMessage());
-				e.printStackTrace();
-			}
-			break;
-		case DELETE:
-			delete(command);
-			break;
-		case COMPLETE:
-			complete(command);
-			break;
-		case DISPLAY:
-			try{
+				break;
+			case DELETE:
+				delete(command);
+				break;
+			case COMPLETE:
+				complete(command);
+				break;
+			case DISPLAY:
 				display(command);
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-			break;
-		case CLEAR:
-			clear();
-			break;
-		case MODIFY:
-			try {
+				break;
+			case CLEAR:
+				clear();
+				break;
+			case MODIFY:
 				modify(command);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			break;
-		case UNDO:
-			undo();
-			break;
-		case REDO:
-			redo();
-			break;
-		case SORT:
-			try {
+				break;
+			case UNDO:
+				undo();
+				break;
+			case REDO:
+				redo();
+				break;
+			case SORT:
 				sort(command);
-			} catch (Exception e1 ) {
-				e1.printStackTrace();
-			}
-			break;
-		case SEARCH:
-			try{
+				break;
+			case SEARCH:
 				search(command);
-			} catch (Exception e){
-				e.printStackTrace();
+				break;
+			case EXIT:
+				exit();
+				break;
+			default:
+				assert(false);
+				showMessage("No such command");
 			}
-			break;
-		case EXIT:
-			exit();
-			break;
-		default:
-			assert(false);
-			showMessage("No such command");
+		}catch (Exception e){
+			showMessage(e.getMessage());
 		}
 	}
 	
@@ -344,6 +328,9 @@ public class TaskManager {
 				return;
 			}
 			showMessage("Display all Tasks");
+		}else if(type.equals("file")){
+			mode = 3;
+			showMessage("Display all files");
 		}else{
 			mode = 0;
 			if (taskList.size() == 0) {
@@ -682,6 +669,11 @@ public class TaskManager {
 		return answers;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getAllFilePath(){
+		return (ArrayList<String>) this.fileList.clone();
+	}
+	
 	public boolean isEqual(TaskManager taskList2){
 		if (this.taskList.size() != taskList2.taskList.size()) return false;
 		@SuppressWarnings("unchecked")
@@ -709,11 +701,7 @@ public class TaskManager {
 	}
 	
 	public String getCommandTip(String command){
-<<<<<<< HEAD
-		return myParser.privideTips(command);
-=======
-		return bp.provideTips(command);
->>>>>>> 4b9120740dc50eda129a40b19c06ce5a326d7619
+		return myParser.provideTips(command);
 	}
 	
 	public int getCurrentMode(){
