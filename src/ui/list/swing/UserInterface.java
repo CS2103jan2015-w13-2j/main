@@ -27,6 +27,7 @@ public class UserInterface {
 	public static ArrayList<Task> taskList;
 	public static int deleteIndex = -1;	
 	public static int completeIndex = -1;
+	public static boolean isMinimized = false;
 
 
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");

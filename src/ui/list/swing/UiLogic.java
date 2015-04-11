@@ -1,5 +1,6 @@
 package ui.list.swing;
 
+import java.awt.Frame;
 import java.io.IOException;
 
 //@author A0117971Y
@@ -176,6 +177,27 @@ public class UiLogic {
 	private static void executeAndUpdate(String input) {
 		UserInterface.BTL.executeCommand(input);
 		UserInterface.taskList =  UserInterface.BTL.getTasks();		
+	}
+	
+	public static void processMaxMin() {
+
+		int state = UserInterface.frame.getExtendedState(); // get current state
+
+		if (UserInterface.isMinimized) {
+			
+			//maximize
+			state = state & ~Frame.ICONIFIED; // remove minimized from the state
+			UserInterface.frame.setExtendedState(state);
+			UserInterface.isMinimized = false;
+		}
+		
+		else {	
+			
+			//minimize
+			state = state | Frame.ICONIFIED; // add minimized to the state
+			UserInterface.frame.setExtendedState(state); // set that state
+			UserInterface.isMinimized = true;
+		}
 	}
 }
 

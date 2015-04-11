@@ -6,12 +6,12 @@ import java.io.IOException;
 
 //@author A0117971Y
 
-public class HotKeyListener extends KeyAdapter{
+public class HotKeyListener extends KeyAdapter {
 	
 	public static boolean isBackSpace = false;
 
 	public void keyPressed(KeyEvent arg1) {
-		
+
 		if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
 			
 				try {
@@ -90,6 +90,13 @@ public class HotKeyListener extends KeyAdapter{
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 		
+		// cntrl - m
+
+		else if ((arg1.getKeyCode() == KeyEvent.VK_M) && ((arg1.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+			System.out.println("cntrl m detected");
+			UiLogic.processMaxMin();
+		}
+
 		else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
 			System.out.println("Up pressed");
 			String history = TextFieldHistory.getLastHistory();
