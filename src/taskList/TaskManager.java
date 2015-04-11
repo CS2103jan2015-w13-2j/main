@@ -13,6 +13,7 @@ import storage.ConfigurationFileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
+import parser.DateParser;
 import parser.Parser;
 public class TaskManager {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
@@ -187,6 +188,10 @@ public class TaskManager {
 			case EXIT:
 				exit();
 				break;
+			case IMPORT:
+				importFile(command);
+			case EXPORT:
+				exportFile(command);
 			default:
 				assert(false);
 				showMessage("No such command");
@@ -222,7 +227,7 @@ public class TaskManager {
 	/*
 	 * delete content in arraylist, but do not actully store to file
 	 */
-	private void delete(String command) {
+	private void delete(String command) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		int removeIndex = -1;
@@ -258,7 +263,7 @@ public class TaskManager {
 	/*
 	 * complete content in arraylist, save this task to finished list
 	 */
-	private void complete(String command) {
+	private void complete(String command) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		if (mode == 0){
@@ -444,6 +449,37 @@ public class TaskManager {
 		}
 	}	
 	
+	/*
+	 * import, readFile from device, if the file not existed, just create a new file
+	 */
+	private void importFile(String command) throws NullPointerException, IOException{
+		String newFileName = myParser.getTitle(command);
+		fileName = newFileName;
+		if (!fileList.contains(newFileName)){
+			fileList.add(newFileName);
+		}else{
+			mode = 0;
+			loadFile();
+		}
+		saveFile();
+		saveConfiguration();
+	}
+	
+	/*
+	 * export, saveFile to the device and give its a name
+	 */
+	private void exportFile(String command) throws IOException{
+		String newFileName = myParser.getTitle(command);
+		fileName = newFileName;
+		if (!fileList.contains(newFileName)){
+			fileList.add(newFileName);
+		}
+		saveFile();
+		saveConfiguration();
+	}
+	
+	
+	
 	public boolean compareString(String string1, String string2){
 		if (string1 == null){
 			if (string2 == null) return false;
@@ -579,7 +615,7 @@ public class TaskManager {
 	/*
 	 * clear all data in arraylist, but do not actully store to file
 	 */
-	private void clear() {
+	private void clear() throws IOException {
 		showMessage(MESSAGE_CLEAR_OPERATION, null);
 		taskList.clear();
 		saveFile();
@@ -590,18 +626,23 @@ public class TaskManager {
 	 * exit the program
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
-	private void exit() {
+	private void exit() throws IOException {
 		saveFile();
 		UserInterface.exit();
 		System.exit(0);
 	}
 	
-	private void saveFile(){
-		try{
+	private void saveFile() throws IOException{
 			fileOperation.saveToFile(taskList,completedTaskList);
-		}catch(Exception e){
-			feedBack.add("cannot save to file successfully");
-		}
+	}
+	
+	private void loadFile() throws IOException{
+		taskList = fileOperation.getUnfinishedTaskListFromFile();
+		completedTaskList = fileOperation.getFinishedTaskListFromFile();
+	}
+	
+	private void saveConfiguration() throws IOException{
+		configurationFileOperation.saveConfiguration(fileName, fileList);;
 	}
 	
 	public ArrayList<String> getFileContent(){
