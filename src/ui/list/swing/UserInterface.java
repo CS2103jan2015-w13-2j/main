@@ -25,7 +25,9 @@ public class UserInterface {
 	public static boolean atHelpMenu = false;
 	public static TaskList BTL;
 	public static ArrayList<Task> taskList;
-	public static int deleteIndex = -1;
+	public static int deleteIndex = -1;	
+	public static int completeIndex = -1;
+
 
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
 	public static JPanel panel = new JPanel();

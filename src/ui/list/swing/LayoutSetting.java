@@ -84,8 +84,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setCommandGuideLabel() {
-		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.BOLD, 18));
-		UserInterface.lblCommandGuide.setBounds(59, 498, 501, 29);
+		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.BOLD, 16));
+		UserInterface.lblCommandGuide.setBounds(59, 498, 520, 29);
 	}
 	
 	public static void setLabels() {

@@ -78,6 +78,30 @@ public class UiLogic {
 		return -1;
 	}
 	
+	public static int isValidComplete(String input) {
+		
+		String currentInput = input;
+		
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("finish")) {
+				try {
+					int completeIndex = Integer.parseInt(tokens[1]);
+
+					if (completeIndex <= UserInterface.taskList.size()) {
+						UserInterface.completeIndex = completeIndex;
+						return completeIndex;
+					}
+				} catch (Exception e) {
+					return -1;
+				}
+			}
+		}
+		
+		return -1;
+		
+	}
+	
 	/**
 	 * Processes text field after user pressed enter
 	 * @throws NullPointerException
@@ -88,10 +112,15 @@ public class UiLogic {
 
 		String input = UserInterface.textField.getText();
 		UserInterface.deleteIndex = UiLogic.isValidDeleteIndex(input);
+		UserInterface.completeIndex=UiLogic.isValidComplete(input);
 	
 		//valid delete
 		if ( UserInterface.deleteIndex != -1) {
 			processDelete(input);
+		}
+		
+		else if (UserInterface.completeIndex != -1) {
+			processComplete(input);
 		}
 
 		else {
@@ -102,6 +131,14 @@ public class UiLogic {
 		PrintHandler.printStatusMessage();
 		UserInterface.isAdd = false;
 	}
+	
+	
+	private static void processComplete(String input) throws NullPointerException, IOException {
+		System.out.println("is valid complete");
+		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.completeIndex-1));
+		executeAndUpdate(input);	
+	}
+	
 	
 	/**
 	 * Processes delete operations
