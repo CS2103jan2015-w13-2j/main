@@ -19,6 +19,7 @@ public class ObjectConverter {
 
 	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
 	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
+	private static final String KEY_FOR_FILE_PATH_LIST = "file path list";
 	
 	private static final String KEY_FOR_CONTENT = "content";
 	private static final String KEY_FOR_DATE = "date";
@@ -100,6 +101,27 @@ public class ObjectConverter {
 		
 		return tempJsonTask;
 	}
+	
+	public ArrayList<String> getFilePathListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getFilePathListFromJsonObject(jsonObject, KEY_FOR_FILE_PATH_LIST);
+	}
+	
+	private ArrayList<String> getFilePathListFromJsonObject(JSONObject jsonObject, String keyForFilePathList){
+		ArrayList<String> filePathList = new ArrayList<String>();
+		JSONArray jsonStringArray = jsonObject.getJSONArray(keyForFilePathList);
+		if(jsonStringArray == null){
+			showMessageNotFound(keyForFilePathList);
+			return filePathList;
+		}
+		
+		for(int i = 0; i < jsonStringArray.length(); i++){
+			String filePath = (String) jsonStringArray.get(i);
+			filePathList.add(filePath);
+		}
+		return filePathList;
+	}
+	
 	
 	public ArrayList<Task> getUnfinishedTaskListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
