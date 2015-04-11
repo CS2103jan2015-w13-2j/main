@@ -58,7 +58,7 @@ public class taskListTest {
 		//Set up test case
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//test clear
 		testOneCommand("simple clear",EXCEPTED_ANSWER_CLEAR, CLEAR_COMMAND,taskList);
@@ -89,7 +89,7 @@ public class taskListTest {
 		//set up testcase
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//testcase 1
 		taskList.executeCommand("clear");
@@ -141,7 +141,7 @@ public class taskListTest {
 		//set up testcase
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//testcase 1
 		taskList.executeCommand("clear");
@@ -177,7 +177,7 @@ public class taskListTest {
 	
 
 	}
-	private void testOneCommand(String description, String expected, String command, TaskList taskList) throws NullPointerException, IOException {
+	private void testOneCommand(String description, String expected, String command, TaskManager taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
 		System.out.println("Debug");
 		System.out.println(expected);

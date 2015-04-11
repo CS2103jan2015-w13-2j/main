@@ -17,6 +17,8 @@ public class PrintHandler {
 	
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
+	private static final int COMPLETE_MODE = 3;
+	private static final int printPerPage = 4;
 
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		
@@ -24,11 +26,11 @@ public class PrintHandler {
 		clearPanel();		
 		String taskHeading = DisplaySetting.getTaskInfoDetails();		
 		UserInterface.panel.add(new JLabel(taskHeading));		
-		int start = pageNumber * 5;
+		int start = pageNumber * printPerPage;
 
 		//not last page
 		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
-			for (int i=start; i < start+5; i++) {
+			for (int i=start; i < start+printPerPage; i++) {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
@@ -56,9 +58,18 @@ public class PrintHandler {
 			printHighlightRow(labelText, MODIFY_MODE);
 		}
 		
+		//highlight completed row
+		else if (UserInterface.completeIndex != -1 && i+1 == UserInterface.completeIndex || task.hasFinished()) {
+			System.out.println("printing finished task");
+			printHighlightRow(labelText,COMPLETE_MODE);
+		}
+
+		
 		else if (UserInterface.deleteIndex != -1 && i+1==UserInterface.deleteIndex) {
 			printDeletedRow(task,i);
 		}
+		
+
 		
 		else {
 			UserInterface.panel.add(new JLabel(labelText));
@@ -72,9 +83,7 @@ public class PrintHandler {
 		if (mode == ADD_MODE) {
 			
 			JLabel addedRow = new JLabel(labelText);
-			addedRow.setOpaque(true);
-			addedRow.setBackground(Color.green);
-			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.green), "newly added");
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.darkGray), "newly added");
 			title.setTitleJustification(TitledBorder.CENTER);
 			addedRow.setBorder(BorderFactory.createTitledBorder(title));
 			UserInterface.panel.add(addedRow);
@@ -90,6 +99,14 @@ public class PrintHandler {
 			modifyRow.setBorder(BorderFactory.createTitledBorder(title));
 			UserInterface.panel.add(modifyRow);
 			UserInterface.isModify = false;
+		}
+		
+		else if (mode == COMPLETE_MODE) {
+			JLabel finishedRow = new JLabel(labelText);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.green),"COMPLETED");
+			title.setTitleJustification(TitledBorder.CENTER);
+			finishedRow.setBorder(BorderFactory.createTitledBorder(title));
+			UserInterface.panel.add(finishedRow);
 		}
 	}
 	

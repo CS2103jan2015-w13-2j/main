@@ -27,14 +27,14 @@ public class DisplaySetting {
 	private static final String HTML_CLOSE = "</html>";
 	private static final String HTML_BREAK = "<br>";
 	private static final String HTML_FONT_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"> %s </font>";
-	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\"> %s </font><br>";
+	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Comic Sans Ms\"> %s </font><br>";
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232> %s </font>";
 	private static final String HTML_FONT_CLOSE = "</font>";
-	private static final String HTML_FONT_VIEW_TASK_INFO = "<html><font size = \"6\" font face = \"HanziPen TC\"> %s </font></html>";
+	private static final String HTML_FONT_VIEW_TASK_INFO = "<html><font size = \"6\" font face = \"Century Gothic\"><i><u> %s </u></i></font></html>";
 	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000> %s </font>";
 	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000> %s </font>";
 	private static final String HTML_FONT_FINISHED_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font>";
-	private static final String HTML_FONT_FINISHED_TASKNAME = "<font size = \"6\" font face = \"Arial\"><s> %s </s></font><br>";
+	private static final String HTML_FONT_FINISHED_TASKNAME = "<font size = \"6\" font face = \"Comic Sans Ms\"><s> %s </s></font><br>";
 	private static final String HTML_FONT_FINISHED_DETAILS = "<font size = \"3\" font color = #363232><s> %s </s></font>";
 	
 	private static String index;
@@ -158,7 +158,7 @@ public class DisplaySetting {
 		int mode = 0;
 
 		try {
-			mode = UserInterface.BTL.getCurrentMode();
+			mode = UserInterface.BTM.getCurrentMode();
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
@@ -180,7 +180,7 @@ public class DisplaySetting {
 		
 		data.append(HTML_OPEN);
 		data.append(HTML_FONT_FEEDBACK_GUIDE_INFO);
-		data.append(UserInterface.BTL.getLastFeedBack());	
+		data.append(UserInterface.BTM.getLastFeedBack());	
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);
 		

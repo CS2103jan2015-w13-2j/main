@@ -13,19 +13,24 @@ import org.json.JSONObject;
 import parser.DateParser;
 import taskList.Task;
 
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class ObjectConverter {
-	private static final String LOGGER_NAME = "TaskBuddy.log";
-	
-
+	//private static final String LOGGER_NAME = "TaskBuddy.log";
 	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
 	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
+	private static final String KEY_FOR_FILE_PATH = "file path";
+	private static final String KEY_FOR_FILE_PATH_LIST = "file path list";
 	
 	private static final String KEY_FOR_CONTENT = "content";
 	private static final String KEY_FOR_DATE = "date";
 	private static final String KEY_FOR_DEADLINE = "deadline";
 	private static final String KEY_FOR_VENUE = "venue";
 	
-	private static final Logger logger = Logger.getLogger(LOGGER_NAME);
+	//private static final Logger logger = Logger.getLogger(LOGGER_NAME);
 	private DateFormat dateFormat;
 	
 	public ObjectConverter(){
@@ -101,6 +106,50 @@ public class ObjectConverter {
 		return tempJsonTask;
 	}
 	
+	public String getJsonStringFromConfiguration(String fileName, ArrayList<String> filePathList){
+		JSONObject jsonObject = new JSONObject();
+		
+		jsonObject.put(KEY_FOR_FILE_PATH, fileName);
+		
+		JSONArray filePathArray = new JSONArray();
+		
+		for (int i = 0; i < filePathList.size(); i++) {
+			filePathArray.put(i,filePathList.get(i));
+		}
+		jsonObject.put(KEY_FOR_FILE_PATH_LIST, filePathArray);
+		return jsonObject.toString();
+	}
+	
+	public String getFilePathFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getFilePathFromJsonObject(jsonObject);
+	}
+	
+	public ArrayList<String> getFilePathListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getFilePathListFromJsonObject(jsonObject);
+	}
+	
+	private ArrayList<String> getFilePathListFromJsonObject(JSONObject jsonObject){
+		ArrayList<String> filePathList = new ArrayList<String>();
+		JSONArray jsonStringArray = jsonObject.getJSONArray(KEY_FOR_FILE_PATH_LIST);
+		if(jsonStringArray == null){
+			//showMessageNotFound(KEY_FOR_FILE_PATH_LIST);
+			return filePathList;
+		}
+		
+		for(int i = 0; i < jsonStringArray.length(); i++){
+			String filePath = (String) jsonStringArray.get(i);
+			filePathList.add(filePath);
+		}
+		return filePathList;
+	}
+	
+	private String getFilePathFromJsonObject(JSONObject jsonObject){
+		String filePath = (String) jsonObject.get(KEY_FOR_FILE_PATH);
+		return filePath;
+	}
+	
 	public ArrayList<Task> getUnfinishedTaskListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
 		return getTaskListFromJsonObject(jsonObject, KEY_FOR_UNFINISHED_TASKLIST);
@@ -118,7 +167,7 @@ public class ObjectConverter {
 		
 		JSONArray jsonTaskArray = jsonObject.getJSONArray(keyForTaskList);
 		if(jsonTaskArray == null){
-			showMessageNotFound(keyForTaskList);
+			//showMessageNotFound(keyForTaskList);
 			return taskList;
 		}
 		
@@ -144,7 +193,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_CONTENT);
 		}catch(JSONException notFound){
-			showMessageNotFound(KEY_FOR_CONTENT);
+			//showMessageNotFound(KEY_FOR_CONTENT);
 			return null;
 		}
 	}
@@ -153,7 +202,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_DATE);
 		}catch(JSONException notFound){
-			showMessageNotFound(KEY_FOR_DATE);
+			//showMessageNotFound(KEY_FOR_DATE);
 			return null;
 		}
 	}
@@ -162,7 +211,7 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_DEADLINE);
 		}catch(JSONException notFound){
-			showMessageNotFound(KEY_FOR_DEADLINE);
+			//showMessageNotFound(KEY_FOR_DEADLINE);
 			return null;
 		}
 	}
@@ -171,13 +220,13 @@ public class ObjectConverter {
 		try{
 			return jsonTask.getString(KEY_FOR_VENUE);
 		}catch(JSONException notFound){
-			showMessageNotFound(KEY_FOR_VENUE);
+			//showMessageNotFound(KEY_FOR_VENUE);
 			return null;
 		}
 	}
 	
-	private void showMessageNotFound(String key){
-		//logger.info(String.format(MESSAGE_NOT_FOUND, key));
-	}
+//	private void showMessageNotFound(String key){
+//		//logger.info(String.format(MESSAGE_NOT_FOUND, key));
+//	}
 
 }

@@ -2,7 +2,6 @@ package ui.list.swing;
 
 
 import java.awt.EventQueue;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JTextField;
 import taskList.Task;
-import taskList.TaskList;
+import taskList.TaskManager;
 
 //@author A0117971Y
 
@@ -23,9 +22,12 @@ public class UserInterface {
 	public static boolean isAdd = false;
 	public static boolean isModify = false;
 	public static boolean atHelpMenu = false;
-	public static TaskList BTL;
+	public static TaskManager BTM;
 	public static ArrayList<Task> taskList;
-	public static int deleteIndex = -1;
+	public static int deleteIndex = -1;	
+	public static int completeIndex = -1;
+	public static boolean isMinimized = false;
+
 
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
 	public static JPanel panel = new JPanel();
@@ -64,7 +66,7 @@ public class UserInterface {
 	 * @throws NullPointerException 
 	 */
 	public UserInterface() throws NullPointerException, IOException {
-		BTL = new TaskList("default.txt");
+		BTM = new TaskManager("default.txt");
 		initialize();
 	}
 
@@ -79,7 +81,7 @@ public class UserInterface {
 	}
 	
 	public static void display(int pageNumber) throws NullPointerException, IOException {		
-		taskList = BTL.getTasks();	
+		taskList = BTM.getTasks();	
 		PrintHandler.clearPanel();
 		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));		
 		lblPageNumber.setText(pageNumber+1 + "");	
