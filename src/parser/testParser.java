@@ -38,8 +38,7 @@ public class testParser {
 	private int testNumber;
 	private String testString;
 	private Date testDate;
-	private Date answerDate;
-	private ArrayList<String> testArrayList;
+	private ArrayList<Integer> testArrayList;
 	private Parser p;
 	SimpleDateFormat sdf;
 	
@@ -86,20 +85,24 @@ public class testParser {
 	@Test
 	public void testGetIndex() {
 		try {
-			testNumber = p.getIndex(null);
+			testArrayList = p.getIndex(null);
 			fail(FAIL);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
 		}
 		try {
-			testNumber = p.getIndex("modify 7 -d the day after tomorrow");
-			assertEquals(7, testNumber);
+			testArrayList = p.getIndex("modify 5,6,7 -d the day after tomorrow");
+			ArrayList<Integer> temp = new ArrayList<Integer>();
+			temp.add(5);
+			temp.add(6);
+			temp.add(7);
+			assertEquals(temp, testNumber);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
-			testNumber = p.getIndex("modify -d the day after tomorrow");
+			testArrayList = p.getIndex("modify -d the day after tomorrow");
 			fail(FAIL);
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);

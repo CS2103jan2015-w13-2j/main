@@ -112,31 +112,26 @@ public class Parser {
 		return result;
 	}
 
-	public int getIndex(String operation) throws IOException {
+	public ArrayList<Integer> getIndex(String operation) throws IOException {
 		assert(getOperation(operation) == Operation.MODIFY ||
 				getOperation(operation) == Operation.DELETE);
 		String temp = getTitle(operation);
+		Matcher m;
 		if (temp == "" || temp == null) {
 			logIOException(EXCEPTION_NOINDEX);
 		}
 		String[] temps = REGEX_SPACE.split(temp);
-		Matcher m = REGEX_NUMBERS.matcher(temps[0]);
-		if (m.matches()) {
-			logIOException(EXCEPTION_INDEXILLEGAL);
-		} 
-		return Integer.valueOf(temps[0]);
-		/*
 		String[] tempGroup = REGEX_COMMA.split(temps[0]);
 		ArrayList<Integer> indexGroup = new ArrayList<Integer>();
 		for (String str : tempGroup) {
 			m = REGEX_NUMBERS.matcher(str);
-			if (m.matches()) {
+			if (!m.matches()) {
 				logIOException(EXCEPTION_INDEXILLEGAL);
 			} else {
 				indexGroup.add(Integer.valueOf(str));
 			}
 		}
-		return indexGroup;*/
+		return indexGroup;
 	}
 	
 	public String getNewTitle(String operation) throws NullPointerException, 
