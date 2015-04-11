@@ -10,8 +10,8 @@ public class JsonStringFileOperation{
 	private static final String LOGGER_NAME = "TaskBuddy.log";
 	
 	private static final String MESSAGE_READ_FILE = "Read file successfully.";
-	private static final String MEAAGE_SAVE_TO_FILE = "Save to file successfully.";
-	private static final String MESSAGE_SAVE_TO_TEMP_FILE = "Save to temp file successfully.";
+	private static final String MESSAGE_SAVE_FILE = "Save to file successfully.";
+	private static final String MESSAGE_SAVE_TEMP_FILE = "Save to temp file successfully.";
 	private static final String MESSAGE_CANNOT_PARSE = "Cannot parse the file with JSON format, return empty task list.\n";
 	
 	private static final String TEMP_FILE_EXTENTION = ".tmp";
@@ -63,28 +63,28 @@ public class JsonStringFileOperation{
 	
 	public void saveToFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
-		logger.info(MEAAGE_SAVE_TO_FILE);
+		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
 	public void saveToFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{		
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
-		logger.info(MEAAGE_SAVE_TO_FILE);
+		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
 	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
-		logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
+		logger.info(MESSAGE_SAVE_TEMP_FILE);
 	}
 	
 	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{
 		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
-		logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
+		logger.info(MESSAGE_SAVE_TEMP_FILE);
 	}
 	
 	public void replaceFileWithTempFile() throws IOException{
 		savedFile.delete();
 		tempSavedFile.renameTo(tempSavedFile);
-		logger.info(MESSAGE_SAVE_TO_TEMP_FILE);
+		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
 	private String generateTempFileName(String fileName){
