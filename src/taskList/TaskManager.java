@@ -709,7 +709,11 @@ public class TaskManager {
 	}
 	
 	public String getCommandTip(String command){
+<<<<<<< HEAD
 		return myParser.privideTips(command);
+=======
+		return bp.provideTips(command);
+>>>>>>> 4b9120740dc50eda129a40b19c06ce5a326d7619
 	}
 	
 	public int getCurrentMode(){

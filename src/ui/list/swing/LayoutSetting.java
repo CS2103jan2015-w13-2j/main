@@ -6,17 +6,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-
-
 import javax.swing.Timer;
-
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
@@ -56,8 +51,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setDateLabel() {
-		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 16));
-		UserInterface.lblDate.setBounds(380, 540, 250, 16);
+		UserInterface.lblDate.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblDate.setBounds(350, 540, 270, 16);
 	}
 	
 	public static void setHelpInfoLabel() {
@@ -69,12 +64,12 @@ public class LayoutSetting {
 	}
 	
 	public static void setHelpLabel() {
-		UserInterface.lblHelp.setFont(new Font("HanziPen TC", Font.BOLD, 15));
-		UserInterface.lblHelp.setBounds(537, 34, 72, 16);
+		UserInterface.lblHelp.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblHelp.setBounds(537, 30, 72, 20);
 	}
 	
 	public static void setStatusMessageLabel() {
-		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.BOLD, 18));
+		UserInterface.lblStatusMessage.setFont(new Font("Century Gothic", Font.ITALIC, 14));
 		UserInterface.lblStatusMessage.setBounds(59, 440, 537, 29);
 	}
 	
@@ -84,7 +79,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setCommandGuideLabel() {
-		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.BOLD, 16));
+		UserInterface.lblCommandGuide.setFont(new Font("Century Gothic", Font.ITALIC, 14));
 		UserInterface.lblCommandGuide.setBounds(59, 498, 520, 29);
 	}
 	
