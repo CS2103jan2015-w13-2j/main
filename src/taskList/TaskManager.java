@@ -80,10 +80,10 @@ public class TaskManager {
 		//Add in a initParser() command.
 	}
 	
-	public TaskManager() throws IOException{
-		fileName = configurationFileOperation.getLastOpenFilePath();
-		fileList = configurationFileOperation.getHistoryFilePath();
+	public TaskManager(){
 		try{
+			fileName = configurationFileOperation.getLastOpenFilePath();
+			fileList = configurationFileOperation.getHistoryFilePath();
 			fileOperation = new JsonStringFileOperation(fileName);
 		}catch(Exception e){
 			log.info("There is a file reading error");
@@ -108,9 +108,10 @@ public class TaskManager {
 		//Add in a initParser() command.
 	}
 	
-	public TaskManager getStaredInstance(String inputFileName){
+	public static TaskManager getSharedInstance(){
 		if (sharedInstance == null) {
-			sharedInstance = new TaskManager(inputFileName);
+			sharedInstance = new TaskManager();
+
 		}
 		return sharedInstance;
 	}
