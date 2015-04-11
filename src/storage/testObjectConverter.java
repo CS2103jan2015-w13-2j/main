@@ -34,6 +34,8 @@ public class testObjectConverter {
 	@Before
 	public void initTextBuddy(){
 	    converter = new ObjectConverter();
+	    //Home folder
+	    System.getProperty("user.home");
 	}
 	
 	/*

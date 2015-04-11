@@ -10,12 +10,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import parser.DateParser;
 import taskList.Task;
 
 public class ObjectConverter {
 	private static final String LOGGER_NAME = "TaskBuddy.log";
 	
-	private static final String MESSAGE_NOT_FOUND = "%s is not found in the JSON Object.\n";
 
 	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
 	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
@@ -29,8 +29,7 @@ public class ObjectConverter {
 	private DateFormat dateFormat;
 	
 	public ObjectConverter(){
-		//new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
-		dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+		dateFormat = new SimpleDateFormat(DateParser.FORMAT_DEFAULT);
 	}
 	
 	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList){

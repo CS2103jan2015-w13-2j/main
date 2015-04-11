@@ -8,7 +8,7 @@ import java.util.List;
 import com.joestelmach.natty.*;
 
 public class DateParser {
-	private static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
+	public static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
 	private static final String FORMAT_DAY = "yyyy-MM-dd";
 
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
