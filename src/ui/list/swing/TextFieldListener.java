@@ -34,25 +34,17 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 	public void insertUpdate(DocumentEvent e) {
 		inputStream = UserInterface.textField.getText();
 		
-		if (isValidModifyListener() != INVALID_SYNTAX) {
+		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + isValidModifyListener());
-			int pageOfModify = PageHandler.getPageOfIndex(isValidModifyListener()-1);
+			System.out.println("valid modify index = " + UiLogic.isValidModifyListener());
+			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
 			try {
 				PrintHandler.printPage(pageOfModify);
 			} catch (NullPointerException | IOException e1) {
 				e1.printStackTrace();
 			}
 		}
-		
-//		else {
-//			try {
-//				PrintHandler.printPage(PageHandler.getCurrentPage());
-//			} catch (NullPointerException | IOException e1) {
-//				e1.printStackTrace();
-//			}
-//		}
-		
+
 		BalloonTipSuggestion.getBalloonTip();		
 		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
@@ -63,10 +55,10 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		
 		inputStream = UserInterface.textField.getText();
 		
-		if (isValidModifyListener() != INVALID_SYNTAX) {
+		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + isValidModifyListener());
-			int pageOfModify = PageHandler.getPageOfIndex(isValidModifyListener()-1);
+			System.out.println("valid modify index = " + UiLogic.isValidModifyListener());
+			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
 			try {
 				PrintHandler.printPage(pageOfModify);
 			} catch (NullPointerException | IOException e1) {
@@ -75,7 +67,6 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		}
 		
 		else if (!inputStream.isEmpty()){
-			System.out.println("input stream is empty");
 			try {
 				PrintHandler.printPage(PageHandler.getCurrentPage());
 			} catch (NullPointerException | IOException e1) {
@@ -86,7 +77,6 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		BalloonTipSuggestion.getBalloonTip();
 		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
-
 	}
 
 	@Override
@@ -107,61 +97,4 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
 		}
 	}
-	
-	public static int isValidModifyListener() {
-		String currentInput = inputStream;
-		
-		if (currentInput != null && !currentInput.equals("")) {
-			String[] tokens = currentInput.split(" ");
-				if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
-					try {
-						int modifyIndex = Integer.parseInt(tokens[1]);
-						
-						if (modifyIndex <= UserInterface.taskList.size()) {
-							return modifyIndex;
-						}
-					} catch (Exception e) {
-						return -1;
-					}
-				}
-		}
-		
-		return -1;
-	}
-	
-	public static int isValidDeleteIndex(String input) {
-		
-		String currentInput = input;
-		
-		if (currentInput != null && !currentInput.equals("")) {
-			String[] tokens = currentInput.split(" ");
-			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("delete")) {
-				try {
-					int deleteIndex = Integer.parseInt(tokens[1]);
-
-					if (deleteIndex <= UserInterface.taskList.size()) {
-						UserInterface.deleteIndex = deleteIndex;
-						return deleteIndex;
-					}
-				} catch (Exception e) {
-					return -1;
-				}
-			}
-		}
-		
-		return -1;
-	}
-		
-	public static boolean isValidAdd(String currentInput) {
-
-		if (currentInput != null && !currentInput.equals("")) {
-			String[] tokens = currentInput.split(" ");
-			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("add")) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 }

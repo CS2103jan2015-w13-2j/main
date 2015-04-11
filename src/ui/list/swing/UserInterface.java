@@ -82,11 +82,11 @@ public class UserInterface {
 		
 		System.out.println("PROCESSING TEXTFIELD -------------------------------------");
 		String input = textField.getText();
-		deleteIndex = TextFieldListener.isValidDeleteIndex(input);
+		deleteIndex = UiLogic.isValidDeleteIndex(input);
 		System.out.println("deleteIndex = " + deleteIndex);
 //		String[] tokens = input.split(" ");
 		
-		if (TextFieldListener.isValidAdd(input)) {
+		if (UiLogic.isValidAdd(input)) {
 //			if (tokens[0].equals("add")) {
 				isAdd = true;
 			}

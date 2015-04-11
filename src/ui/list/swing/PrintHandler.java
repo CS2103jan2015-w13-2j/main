@@ -23,16 +23,10 @@ public class PrintHandler {
 	
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		
-		PageHandler.setCurrentPage(pageNumber);
-		
-		System.out.println("printing page number " + pageNumber);
-		
-		clearPanel();
-		
-		String taskHeading = DisplaySetting.getTaskInfoDetails();
-		
-		UserInterface.panel.add(new JLabel(taskHeading));
-		
+		PageHandler.setCurrentPage(pageNumber);		
+		clearPanel();		
+		String taskHeading = DisplaySetting.getTaskInfoDetails();		
+		UserInterface.panel.add(new JLabel(taskHeading));		
 		int start = pageNumber * 5;
 
 		//not last page
@@ -41,10 +35,8 @@ public class PrintHandler {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
-
 		//last page
 		else {
-
 			for (int i=start; i<UserInterface.taskList.size(); i++) {
 				printTask(UserInterface.taskList.get(i),i);
 			}
@@ -53,14 +45,9 @@ public class PrintHandler {
 		refreshPanel();
 	}
 	
-	public static void printTask (Task task, int i) throws NullPointerException, IOException {
-		
-		System.out.println("printing task number: " + i);
-		System.out.println("deleted index: " + UserInterface.deleteIndex);
-
-		
-		String labelText = DisplaySetting.getTaskInfoFormat(task, i);
-//		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
+	public static void printTask (Task task, int i) throws NullPointerException, IOException {		
+		String str = DisplaySetting.getTaskInfoFormat(task, i);
+		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
 		
 		// to highlight added row
 		if (i+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
@@ -68,7 +55,7 @@ public class PrintHandler {
 		}
 		
 		//highlight modify row
-		else if (i+1 == TextFieldListener.isValidModifyListener() && UserInterface.isModify) {
+		else if (i+1 == UiLogic.isValidModifyListener() && UserInterface.isModify) {
 			printHighlightRow(labelText, MODIFY_MODE);
 		}
 		
@@ -102,7 +89,7 @@ public class PrintHandler {
 			JLabel modifyRow = new JLabel(labelText);
 			modifyRow.setOpaque(true);
 			modifyRow.setBackground(Color.yellow);
-			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.yellow), "modify");
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.yellow), "modifying");
 			title.setTitleJustification(TitledBorder.CENTER);
 			modifyRow.setBorder(BorderFactory.createTitledBorder(title));
 			UserInterface.panel.add(modifyRow);
