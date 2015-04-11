@@ -7,6 +7,11 @@ import java.io.IOException;
 
 public class UiLogic {
 	
+	public static final int DELETE_MODE = 0;
+	public static final int MODIFY_MODE = 1;
+	public static final int COMPLETE_MODE = 2;
+
+	
 	/**
 	 * Checks if its a valid add operation
 	 * @param input by user
@@ -31,25 +36,14 @@ public class UiLogic {
 	 */
 	
 	public static int isValidDeleteIndex(String input) {
-		
 		String currentInput = input;
-		
+
 		if (currentInput != null && !currentInput.equals("")) {
 			String[] tokens = currentInput.split(" ");
 			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("delete")) {
-				try {
-					int deleteIndex = Integer.parseInt(tokens[1]);
-
-					if (deleteIndex <= UserInterface.taskList.size()) {
-						UserInterface.deleteIndex = deleteIndex;
-						return deleteIndex;
-					}
-				} catch (Exception e) {
-					return -1;
-				}
+				return getOperationIndex(tokens[1], DELETE_MODE);
 			}
 		}
-		
 		return -1;
 	}
 	
@@ -60,48 +54,54 @@ public class UiLogic {
 	
 	public static int isValidModifyListener() {
 		String currentInput = TextFieldListener.getInputStream();
-		
+
 		if (currentInput != null && !currentInput.equals("")) {
 			String[] tokens = currentInput.split(" ");
-				if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
-					try {
-						int modifyIndex = Integer.parseInt(tokens[1]);
-						
-						if (modifyIndex <= UserInterface.taskList.size()) {
-							return modifyIndex;
-						}
-					} catch (Exception e) {
-						return -1;
-					}
-				}
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
+				return getOperationIndex(tokens[1], MODIFY_MODE);
+			}
 		}
-		
+
 		return -1;
 	}
 	
 	public static int isValidComplete(String input) {
-		
+
 		String currentInput = input;
-		
+
 		if (currentInput != null && !currentInput.equals("")) {
 			String[] tokens = currentInput.split(" ");
-			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("finish")) {
-				try {
-					int completeIndex = Integer.parseInt(tokens[1]);
-
-					if (completeIndex <= UserInterface.taskList.size()) {
-						UserInterface.completeIndex = completeIndex;
-						return completeIndex;
-					}
-				} catch (Exception e) {
-					return -1;
+			if (tokens.length >= 2) {
+				switch (tokens[0].toLowerCase()) {
+				case "finish": return getOperationIndex(tokens[1],COMPLETE_MODE);
+				case "complete": return getOperationIndex(tokens[1],COMPLETE_MODE);
+				default: return -1;
 				}
+
 			}
 		}
-		
 		return -1;
-		
 	}
+
+	
+	private static int getOperationIndex(String index, int mode) {
+		try {
+			int operationIndex = Integer.parseInt(index);
+			if (operationIndex <= UserInterface.taskList.size()) {
+				
+				switch (mode) {
+				case COMPLETE_MODE: UserInterface.completeIndex = operationIndex; return operationIndex;
+				case DELETE_MODE: UserInterface.deleteIndex = operationIndex; return operationIndex;
+				case MODIFY_MODE: return operationIndex;				
+				}				
+			}
+		} catch (Exception e) {
+			return -1;
+		
+		}
+		return -1;
+	}
+	
 	
 	/**
 	 * Processes text field after user pressed enter
