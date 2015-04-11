@@ -18,6 +18,7 @@ public class PrintHandler {
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
 	private static final int COMPLETE_MODE = 3;
+	private static final int printPerPage = 4;
 
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		
@@ -25,11 +26,11 @@ public class PrintHandler {
 		clearPanel();		
 		String taskHeading = DisplaySetting.getTaskInfoDetails();		
 		UserInterface.panel.add(new JLabel(taskHeading));		
-		int start = pageNumber * 5;
+		int start = pageNumber * printPerPage;
 
 		//not last page
 		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
-			for (int i=start; i < start+5; i++) {
+			for (int i=start; i < start+printPerPage; i++) {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
