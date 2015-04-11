@@ -13,7 +13,7 @@ import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
 import parser.Parser;
-public class TaskList {
+public class TaskManager {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
 	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
@@ -41,12 +41,12 @@ public class TaskList {
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
 	private ArrayList<String> feedBack = new ArrayList<String>();
-	private String name = TaskList.class.getName(); 
+	private String name = TaskManager.class.getName(); 
 	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
-	private static TaskList sharedInstance; 
+	private static TaskManager sharedInstance; 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
-	public TaskList(String inputFileName){
+	public TaskManager(String inputFileName){
 		mode = 0;
 		fileName = inputFileName;
 		try{
@@ -73,9 +73,9 @@ public class TaskList {
 		//Add in a initParser() command.
 	}
 	
-	public TaskList getStaredInstance(String inputFileName){
+	public TaskManager getStaredInstance(String inputFileName){
 		if (sharedInstance == null) {
-			sharedInstance = new TaskList(inputFileName);
+			sharedInstance = new TaskManager(inputFileName);
 		}
 		return sharedInstance;
 	}
@@ -648,7 +648,7 @@ public class TaskList {
 		return answers;
 	}
 	
-	public boolean isEqual(TaskList taskList2){
+	public boolean isEqual(TaskManager taskList2){
 		if (this.taskList.size() != taskList2.taskList.size()) return false;
 		@SuppressWarnings("unchecked")
 		ArrayList<Task> taskListCopy1 = (ArrayList<Task>) this.taskList.clone();

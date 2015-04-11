@@ -158,7 +158,7 @@ public class DisplaySetting {
 		int mode = 0;
 
 		try {
-			mode = UserInterface.BTL.getCurrentMode();
+			mode = UserInterface.BTM.getCurrentMode();
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
@@ -180,7 +180,7 @@ public class DisplaySetting {
 		
 		data.append(HTML_OPEN);
 		data.append(HTML_FONT_FEEDBACK_GUIDE_INFO);
-		data.append(UserInterface.BTL.getLastFeedBack());	
+		data.append(UserInterface.BTM.getLastFeedBack());	
 		data.append(HTML_FONT_CLOSE);
 		data.append(HTML_CLOSE);
 		

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import taskList.TaskList;
+import taskList.TaskManager;
 
 
 public class IntegrationTest {
@@ -59,7 +59,7 @@ public class IntegrationTest {
 		//Set up test case
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//test clear
 		testOneCommand("simple clear",EXCEPTED_ANSWER_CLEAR, CLEAR_COMMAND,taskList);
@@ -82,7 +82,7 @@ public class IntegrationTest {
 		
 		//test display
 		testOneCommand("simple display",EXCEPTED_ANSWER_DISPLAY, DISPLAY_COMMAND,taskList);
-		TaskList taskList2 = new TaskList(args[0]);
+		TaskManager taskList2 = new TaskManager(args[0]);
 		assertEquals("See whether file saved successfully", taskList.isEqual(taskList2), true);
 	}
 	@Test
@@ -91,7 +91,7 @@ public class IntegrationTest {
 		//set up testcase
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//testcase 1
 		taskList.executeCommand("clear");
@@ -136,7 +136,7 @@ public class IntegrationTest {
 		taskList.executeCommand("add "+SEARCH_STRING_9);
 		taskList.executeCommand("add "+SEARCH_STRING_10);
 		testOneCommand("simple search",NOT_EXIST, SEARCH_COMMAND_NOT_EXIST,taskList);
-		TaskList taskList2 = new TaskList(args[0]);
+		TaskManager taskList2 = new TaskManager(args[0]);
 		assertEquals("See whether file saved successfully", taskList.isEqual(taskList2), true);
 	}
 	
@@ -145,7 +145,7 @@ public class IntegrationTest {
 		//set up testcase
 		String[] args = new String[1];
 		args[0] = TEST_FILENAME;
-		TaskList taskList = new TaskList(args[0]);
+		TaskManager taskList = new TaskManager(args[0]);
 		
 		//testcase 1
 		taskList.executeCommand("clear");
@@ -178,7 +178,7 @@ public class IntegrationTest {
 		taskList.executeCommand("add "+G_STRING);
 		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
 		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
-		TaskList taskList2 = new TaskList(args[0]);
+		TaskManager taskList2 = new TaskManager(args[0]);
 		assertEquals("See whether file saved successfully", taskList.isEqual(taskList2), true);
 
 
@@ -189,7 +189,7 @@ public class IntegrationTest {
 
 	}
 	
-	private void testOneCommand(String description, String expected, String command, TaskList taskList) throws NullPointerException, IOException {
+	private void testOneCommand(String description, String expected, String command, TaskManager taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
 		System.out.println("Debug");
 		System.out.println(expected);

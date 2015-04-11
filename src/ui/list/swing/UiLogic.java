@@ -175,8 +175,8 @@ public class UiLogic {
 	 * @param input
 	 */
 	private static void executeAndUpdate(String input) {
-		UserInterface.BTL.executeCommand(input);
-		UserInterface.taskList =  UserInterface.BTL.getTasks();		
+		UserInterface.BTM.executeCommand(input);
+		UserInterface.taskList =  UserInterface.BTM.getTasks();		
 	}
 	
 	public static void processMaxMin() {
