@@ -36,10 +36,19 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		
 		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + UiLogic.isValidModifyListener());
 			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
+			
 			try {
 				PrintHandler.printPage(pageOfModify);
+			} catch (NullPointerException | IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (!inputStream.isEmpty()) {
+			try {
+				PageHandler.updatePage();
+				PrintHandler.printPage(PageHandler.getCurrentPage());
 			} catch (NullPointerException | IOException e1) {
 				e1.printStackTrace();
 			}
@@ -57,7 +66,6 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		
 		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
 			UserInterface.isModify = true;
-			System.out.println("valid modify index = " + UiLogic.isValidModifyListener());
 			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
 			try {
 				PrintHandler.printPage(pageOfModify);

@@ -15,12 +15,9 @@ import taskList.Task;
 
 public class PrintHandler {
 	
-
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
 
-
-	
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 		
 		PageHandler.setCurrentPage(pageNumber);		
@@ -60,7 +57,6 @@ public class PrintHandler {
 		}
 		
 		else if (UserInterface.deleteIndex != -1 && i+1==UserInterface.deleteIndex) {
-			System.out.println("printing deleted task with strike... index = " + i + " delete index = " + UserInterface.deleteIndex);
 			printDeletedRow(task,i);
 		}
 		

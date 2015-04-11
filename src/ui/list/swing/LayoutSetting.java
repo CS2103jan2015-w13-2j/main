@@ -33,7 +33,7 @@ public class LayoutSetting {
 	public static void setFrameListener() {
 		UserInterface.frame.addKeyListener(hotKeyListener);
 	}
-	
+		
 	public static void setTextFieldListener() {
 		UserInterface.textField.addKeyListener(hotKeyListener);
 	}
@@ -165,6 +165,7 @@ public class LayoutSetting {
 	}
 	
 	public static void addToContentPane() {
+		
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);

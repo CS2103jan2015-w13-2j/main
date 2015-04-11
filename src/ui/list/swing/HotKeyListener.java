@@ -15,7 +15,7 @@ public class HotKeyListener extends KeyAdapter{
 		if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
 			
 				try {
-					UserInterface.processTextField();
+					UiLogic.processTextField();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -41,7 +41,7 @@ public class HotKeyListener extends KeyAdapter{
 						PageHandler.flipPrevPage();
 						System.out.println("flipped prev page");
 						try {
-							UserInterface.displayAll(PageHandler.getCurrentPage());
+							UserInterface.display(PageHandler.getCurrentPage());
 						} catch (NullPointerException | IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -60,7 +60,7 @@ public class HotKeyListener extends KeyAdapter{
 						PageHandler.flipNextPage();
 						System.out.println("flipped next page");
 						try {
-							UserInterface.displayAll(PageHandler.getCurrentPage());
+							UserInterface.display(PageHandler.getCurrentPage());
 						} catch (NullPointerException | IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -82,7 +82,7 @@ public class HotKeyListener extends KeyAdapter{
 			UserInterface.atHelpMenu = false;
 			LayoutSetting.setShowTaskInfo();
 			try {
-				UserInterface.displayAll(PageHandler.getCurrentPage());
+				UserInterface.display(PageHandler.getCurrentPage());
 			} catch (NullPointerException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

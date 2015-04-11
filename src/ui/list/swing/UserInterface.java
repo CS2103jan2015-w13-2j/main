@@ -75,58 +75,15 @@ public class UserInterface {
 	 */
 	private void initialize() throws NullPointerException, IOException {		
 		LayoutSetting.setAll();
-		displayAll(0);
+		display(0);
 	}
 	
-	public static void processTextField() throws NullPointerException, IOException {
-		
-		System.out.println("PROCESSING TEXTFIELD -------------------------------------");
-		String input = textField.getText();
-		deleteIndex = UiLogic.isValidDeleteIndex(input);
-		System.out.println("deleteIndex = " + deleteIndex);
-//		String[] tokens = input.split(" ");
-		
-		if (UiLogic.isValidAdd(input)) {
-//			if (tokens[0].equals("add")) {
-				isAdd = true;
-			}
-		
-		TextFieldHistory.updateHistory(input);
-		
-		//valid delete
-		if (deleteIndex != -1) {
-			System.out.println("is valid delete");
-			PrintHandler.printPage(PageHandler.getPageOfIndex(deleteIndex-1));
-			BTL.executeCommand(input);
-			taskList = BTL.getTasks();		
-		}
-		
-		else {
-			System.out.println("is NOT DELETE");
-			BTL.executeCommand(input);
-			taskList = BTL.getTasks();		
-			PageHandler.updatePage();
-			displayAll(PageHandler.getCurrentPage());
-		}
-		
-		PrintHandler.printStatusMessage();
-		isAdd = false;
-	}
-	
-	public static void displayAll(int pageNumber) throws NullPointerException, IOException {
-		
+	public static void display(int pageNumber) throws NullPointerException, IOException {		
 		taskList = BTL.getTasks();	
 		PrintHandler.clearPanel();
 		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));		
-		lblPageNumber.setText(pageNumber+1 + "");
-		
+		lblPageNumber.setText(pageNumber+1 + "");	
 		PrintHandler.printPage(pageNumber);
-	}
-	
-	public void setBackground(JLabel lblBackground) {
-//		System.out.println("setting background image");
-		lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
-		frame.getContentPane().add(lblBackground);
 	}
 	
 	public static void exit() {
