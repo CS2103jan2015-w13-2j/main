@@ -159,10 +159,10 @@ public class TaskManager {
 				add(command);
 				break;
 			case DELETE:
-				delete(command);
+				deleteMultiple(command);
 				break;
 			case COMPLETE:
-				complete(command);
+				completeMultiple(command);
 				break;
 			case DISPLAY:
 				display(command);
@@ -171,7 +171,7 @@ public class TaskManager {
 				clear();
 				break;
 			case MODIFY:
-				modify(command);
+				modifyMultiple(command);
 				break;
 			case UNDO:
 				undo();
@@ -227,15 +227,10 @@ public class TaskManager {
 	/*
 	 * delete content in arraylist, but do not actully store to file
 	 */
-	private void delete(String command) throws IOException {
+	private void delete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
-		int removeIndex = -1;
-		try {
-			removeIndex = myParser.getIndex(command);
-		} catch (IOException e) {
-		
-		}	
+
 		if (removeIndex < 0 || removeIndex > taskList.size()) {
 			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 			return;
@@ -260,18 +255,27 @@ public class TaskManager {
 			undo.add(taskList);
 		}
 	}
+	
+	/*
+	 * deleteMultiple use delete functions multiple times to finish the delete function
+	 */
+	private void deleteMultiple(String command) throws Exception{
+		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
+		for (int i = 0; i < deleteIndex.size(); i++){
+			delete(deleteIndex.get(i));
+		}
+	}	
+	
+	
+	
 	/*
 	 * complete content in arraylist, save this task to finished list
 	 */
-	private void complete(String command) throws IOException {
+	private void complete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		if (mode == 0){
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
+			
 			if (removeIndex < 0 || removeIndex > taskList.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 				return;
@@ -286,11 +290,6 @@ public class TaskManager {
 			saveFile();
 			undo.add(taskList);
 		}else{
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
 			if (removeIndex < 0 || removeIndex > searchResult.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 				return;
@@ -309,6 +308,20 @@ public class TaskManager {
 			undo.add(taskList);
 		}
 	}
+	
+	/*
+	 * complete multiple use complete functions multiple times to finish the delete function
+	 */
+	private void completeMultiple(String command) throws Exception{
+		ArrayList<Integer> completeIndex = myParser.getIndex(command);
+		for (int i = 0; i < completeIndex.size(); i++){
+			complete(completeIndex.get(i));
+		}
+	}	
+	
+	
+	
+	
 	/*
 	 * display the content in arraylist, which is the real-time file content
 	 */
@@ -354,14 +367,13 @@ public class TaskManager {
 	/*
 	 * modify the content in arraylist, which is the real-time file content
 	 */
-	private void modify(String command) throws Exception{
+	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		if (mode == 0){
 			assert(myParser.isValid(command));
 			String content = myParser.getNewTitle(command);
 			try{
-				int index = myParser.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
 				Date newDate = myParser.getDate(command);
 				Date deadLine = myParser.getDeadline(command);
@@ -387,7 +399,6 @@ public class TaskManager {
 			assert(myParser.isValid(command));
 			String content = myParser.getNewTitle(command);
 			try{
-				int index = myParser.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
 				Date newDate = myParser.getDate(command);
 				Date deadLine = myParser.getDeadline(command);
@@ -420,6 +431,18 @@ public class TaskManager {
 			}
 		}
 	}	
+	
+	/*
+	 * modify multiple, use modify function several times to finish the modify function
+	*/
+	private void modifyMultiple(String command) throws Exception{
+		ArrayList<Integer> modifyIndex = myParser.getIndex(command);
+		for (int i = 0; i < modifyIndex.size(); i++){
+			modify(modifyIndex.get(i),command);
+		}
+	}	
+	
+	
 	/*
 	 * rodo, return the arrayList before last operation.
 	 */
