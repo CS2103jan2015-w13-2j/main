@@ -98,6 +98,7 @@ public class UserInterface {
 			System.out.println("is valid delete");
 			PrintHandler.printPage(PageHandler.getPageOfIndex(deleteIndex-1));
 			BTL.executeCommand(input);
+			taskList = BTL.getTasks();		
 		}
 		
 		else {

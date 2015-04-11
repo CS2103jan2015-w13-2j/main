@@ -29,6 +29,10 @@ public class PrintHandler {
 		
 		clearPanel();
 		
+		String taskHeading = DisplaySetting.getTaskInfoDetails();
+		
+		UserInterface.panel.add(new JLabel(taskHeading));
+		
 		int start = pageNumber * 5;
 
 		//not last page

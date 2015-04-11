@@ -30,7 +30,7 @@ public class DisplaySetting {
 	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Arial\"> %s </font><br>";
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232> %s </font>";
 	private static final String HTML_FONT_CLOSE = "</font>";
-	private static final String HTML_FONT_VIEW_TASK_INFO = "<font size = \"6\" font face = \"HanziPen TC\"> %s </font>";
+	private static final String HTML_FONT_VIEW_TASK_INFO = "<html><font size = \"6\" font face = \"HanziPen TC\"> %s </font></html>";
 	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000> %s </font>";
 	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000> %s </font>";
 	private static final String HTML_FONT_FINISHED_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font>";
@@ -154,7 +154,7 @@ public class DisplaySetting {
 	}
 
 	@SuppressWarnings("finally")
-	private static String getTaskInfoDetails() {
+	public static String getTaskInfoDetails() {
 		int mode = 0;
 
 		try {
@@ -165,11 +165,11 @@ public class DisplaySetting {
 //			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
-			case TASK_INFO_UNCOMPLETED: return TASK_INFO_UNCOMPLETED_MSG;
-			case TASK_INFO_SEARCH_RESULT: return TASK_INFO_SEARCH_RESULT_MSG;
-			case TASK_INFO_COMPLETED: return TASK_INFO_COMPLETED_MSG;
-			case TASK_INFO_ALL_TASKS: return TASK_INFO_ALL_TASKS_MSG;
-			default: return "UNDEFINED MODE";
+			case TASK_INFO_UNCOMPLETED: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+			case TASK_INFO_SEARCH_RESULT: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+			case TASK_INFO_COMPLETED: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+			case TASK_INFO_ALL_TASKS: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
+			default: return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
 			
 			}
 		}
