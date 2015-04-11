@@ -1,8 +1,10 @@
 package ui.list.swing;
 
+//@author A0117971Y
+
 public class PageHandler {
 	
-	private static double printPerPage = 5.0;
+	private static double printPerPage = 4.0;
 	private static int currentPage = 0;
 	private static int lastPage = 0;
 
@@ -14,6 +16,12 @@ public class PageHandler {
 		if (lastPage < currentPage || UserInterface.isAdd) {
 			currentPage = getLastPage();
 		}			
+	}
+	
+	public static void setCurrentPage(int page) {
+		if (page <= getLastPage()) {
+			currentPage = page;
+		}
 	}
 	
 	public static int getTotalPage() {
@@ -28,7 +36,6 @@ public class PageHandler {
 		int totalPage = getTotalPage();
 		
 		if (totalPage > 0) {
-			System.out.println("last page = " + (totalPage-1));
 			return totalPage - 1;
 		}
 		
@@ -50,4 +57,11 @@ public class PageHandler {
 		updatePage();
 		System.out.println("current page = " + currentPage);
 	}
+	
+	public static int getPageOfIndex(int index) {
+		int page = Math.floorDiv(index, (int) printPerPage);
+		
+		return page;
+	}
+	
 }

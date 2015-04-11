@@ -1,5 +1,8 @@
 package ui.list.swing;
 
+
+//@author A0117971Y
+
 public class BalloonTipSuggestion {
 	
     private static void setBalloonTipSuggestion() {

@@ -1,16 +1,16 @@
 package storage;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.*;
 
 import taskList.Task;
 
-
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class testObjectConverter {
 	private static final int TEST_SIZE = 200;
 	private static final int BIG_PRIME_NUMBER = 107;
@@ -34,6 +34,8 @@ public class testObjectConverter {
 	@Before
 	public void initTextBuddy(){
 	    converter = new ObjectConverter();
+	    //Home folder
+	    System.getProperty("user.home");
 	}
 	
 	/*

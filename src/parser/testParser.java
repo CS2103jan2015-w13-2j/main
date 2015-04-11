@@ -49,6 +49,7 @@ public class testParser {
 	@Test
 	public void testArguments() {
 		//test Arguments null
+		
 		try {
 			testBoolean = p.isArgumentsCorrect(null);
 		} catch (Exception e) {

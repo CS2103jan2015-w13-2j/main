@@ -3,6 +3,9 @@ package ui.list.swing;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -12,12 +15,15 @@ import javax.swing.JLabel;
 
 
 
+import javax.swing.Timer;
+
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
 import net.java.balloontip.styles.BalloonTipStyle;
 import net.java.balloontip.styles.EdgedBalloonStyle;
 
+//@author A0117971Y
 
 public class LayoutSetting {
 	
@@ -27,13 +33,13 @@ public class LayoutSetting {
 	public static void setFrameListener() {
 		UserInterface.frame.addKeyListener(hotKeyListener);
 	}
-	
+		
 	public static void setTextFieldListener() {
 		UserInterface.textField.addKeyListener(hotKeyListener);
 	}
 	
 	public static void setFrame() {
-		UserInterface.frame.setBounds(100, 100, 653, 562);
+		UserInterface.frame.setBounds(100, 100, 653, 582);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface.frame.getContentPane().setLayout(null);
 		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
@@ -50,8 +56,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setDateLabel() {
-		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 15));
-		UserInterface.lblDate.setBounds(280, 34, 200, 16);
+		UserInterface.lblDate.setFont(new Font("HanziPen TC", Font.BOLD, 16));
+		UserInterface.lblDate.setBounds(380, 540, 250, 16);
 	}
 	
 	public static void setHelpInfoLabel() {
@@ -68,7 +74,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setStatusMessageLabel() {
-		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
+		UserInterface.lblStatusMessage.setFont(new Font("HanziPen TC", Font.BOLD, 18));
 		UserInterface.lblStatusMessage.setBounds(59, 440, 537, 29);
 	}
 	
@@ -78,8 +84,8 @@ public class LayoutSetting {
 	}
 	
 	public static void setCommandGuideLabel() {
-		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.ITALIC, 18));
-		UserInterface.lblCommandGuide.setBounds(59, 498, 501, 29);
+		UserInterface.lblCommandGuide.setFont(new Font("HanziPen TC", Font.BOLD, 16));
+		UserInterface.lblCommandGuide.setBounds(59, 498, 520, 29);
 	}
 	
 	public static void setLabels() {
@@ -107,7 +113,7 @@ public class LayoutSetting {
 	}
 	
 	public static void setBalloonTipStyle() {
-		BalloonTipStyle style = new EdgedBalloonStyle(Color.GREEN, Color.BLUE);
+		BalloonTipStyle style = new EdgedBalloonStyle(new Color(224,224,224), Color.BLACK);
 		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 15, 7, false);
 	}
 	
@@ -120,7 +126,46 @@ public class LayoutSetting {
 		suggestion.setVisible(false);
 	}
 	
+	public static void getTodayDate() {	
+		
+		Timer SimpleTimer = new Timer(1000, new ActionListener(){
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String dayOfWeek = getDayOfWeek();
+		        UserInterface.lblDate.setText(dayOfWeek + ", " + java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));	        
+		    }
+
+		});
+		SimpleTimer.start();
+	}
+	
+	private static String getDayOfWeek() {
+		String dayOfWeekString = "";
+		Calendar calendar = Calendar.getInstance();
+		int dayOfWeekInt = calendar.get(Calendar.DAY_OF_WEEK);
+
+		switch (dayOfWeekInt) {
+			case Calendar.MONDAY: dayOfWeekString = "Monday"; 
+				break; 
+			case Calendar.TUESDAY: dayOfWeekString = "Tuesday";
+				break; 
+			case Calendar.WEDNESDAY: dayOfWeekString = "Wednesday"; 
+				break; 
+			case Calendar.THURSDAY: dayOfWeekString = "Thursday";
+				break; 
+			case Calendar.FRIDAY: dayOfWeekString = "Friday"; 
+				break; 
+			case Calendar.SATURDAY: dayOfWeekString = "Saturday"; 
+				break; 
+			case Calendar.SUNDAY: dayOfWeekString = "Sunday"; 
+				break; 
+		}
+		
+		return dayOfWeekString;
+	}
+	
 	public static void addToContentPane() {
+		
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
@@ -136,8 +181,8 @@ public class LayoutSetting {
 		setFrame();
 		setPanels();
 		setScrollPane();
-		setLabels();
 		addToContentPane();
+		setLabels();
 		setTextField();
 
 	}
@@ -148,6 +193,7 @@ public class LayoutSetting {
 		setFrameListener();
 		setTextFieldListener();
 		setShowTaskInfo();
+		getTodayDate();
 	}
 
 }

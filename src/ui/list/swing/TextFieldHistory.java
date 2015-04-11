@@ -1,11 +1,12 @@
 package ui.list.swing;
 
+//@author A0117971Y
 
 import java.util.Stack;
 
 public class TextFieldHistory {
-	public static Stack<String> history = new Stack<String> ();
-	public static Stack<String> temp = new Stack<String>();
+	private static Stack<String> history = new Stack<String> ();
+	private static Stack<String> temp = new Stack<String>();
 	private final static String UNABLE_TO_OBTAIN_LAST_HISTORY = "invalid";
 	
 	public static void updateHistory(String input) {

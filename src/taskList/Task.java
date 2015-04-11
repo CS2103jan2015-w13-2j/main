@@ -185,7 +185,12 @@ public class Task implements Comparable<Task>{
 		Date today = taskParser.getDate("add -d today");
 		System.out.println("today is " +today);
 		if (deadline == null){
-			if (date == null) return false;else return (today.after(date));
+			if (date == null) return false;else {
+				System.out.println("debug ");
+				System.out.println(today.after(date));
+				
+				return (today.after(date));
+			}
 		}else
 		return (today.after(deadline));
 	}
