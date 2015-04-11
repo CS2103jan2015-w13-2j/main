@@ -6,6 +6,11 @@ import java.util.logging.Logger;
 
 import taskList.Task;
 
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class JsonStringFileOperation{
 	private static final String LOGGER_NAME = "TaskBuddy.log";
 	

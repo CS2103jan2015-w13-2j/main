@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class FileOperation {
 	private static final String LOGGER_NAME = "TaskBuddy.log";
 	

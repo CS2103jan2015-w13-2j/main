@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class ConfigurationFileOperation{
 	private static final String LOGGER_NAME = "TaskBuddy.log";
 	
@@ -56,7 +61,6 @@ public class ConfigurationFileOperation{
 			x.add(DEFAULT_FILE_NAME);
 			return x;
 		}
-		
 	}
 	
 	public void saveConfiguration(String fileName, ArrayList<String> filePathList) throws IOException {
