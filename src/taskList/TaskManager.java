@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
+import storage.ConfigurationFileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
@@ -28,7 +29,8 @@ public class TaskManager {
 
 	private Scanner sc;
 	private String fileName;
-	private JsonStringFileOperation fo;
+	private JsonStringFileOperation fileOperation;
+	private ConfigurationFileOperation configurationFileOperation;
 	private ArrayList<Task> taskList;
 	private ArrayList<Task> completedTaskList;	
 	private ArrayList<Task> searchResult;
@@ -40,9 +42,11 @@ public class TaskManager {
 	//mode == 4 means the result shown in screen is all existing file
 	private int mode = 0;
 	private Parser myParser;
+	
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
 	private ArrayList<String> feedBack = new ArrayList<String>();
+	private ArrayList<String> fileList = new ArrayList<String>();
 	private String name = TaskManager.class.getName(); 
 	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
@@ -52,16 +56,44 @@ public class TaskManager {
 		mode = 0;
 		fileName = inputFileName;
 		try{
-			fo = new JsonStringFileOperation(fileName);
+			fileOperation = new JsonStringFileOperation(fileName);
 		}catch(Exception e){
 			log.info("There is a file reading error");
 			feedBack.add("Cannot open the file correctly");
 		}
 		feedBack.clear();
 		try{
-			fo = new JsonStringFileOperation(fileName);
-			taskList = fo.getUnfinishedTaskListFromFile();
-			completedTaskList = fo.getFinishedTaskListFromFile();
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
+			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
+			searchResult = new ArrayList<Task>();
+			undo = new Undo<ArrayList<Task>>(taskList);
+			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
+		}catch(Exception e){
+			log.info("There is a command invalid error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
+		myParser = new Parser();
+		//Add in a initParser() command.
+	}
+	
+	public TaskManager() throws IOException{
+		fileName = configurationFileOperation.getLastOpenFilePath();
+		fileList = configurationFileOperation.getHistoryFilePath();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+		}catch(Exception e){
+			log.info("There is a file reading error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
+		feedBack.clear();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
 			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
@@ -579,7 +611,7 @@ public class TaskManager {
 	
 	private void saveFile(){
 		try{
-			fo.saveToFile(taskList,completedTaskList);
+			fileOperation.saveToFile(taskList,completedTaskList);
 		}catch(Exception e){
 			feedBack.add("cannot save to file successfully");
 		}
