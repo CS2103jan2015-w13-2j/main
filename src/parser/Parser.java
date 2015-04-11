@@ -1,6 +1,7 @@
 package parser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.logging.Level;
@@ -56,7 +57,9 @@ public class Parser {
 	
 	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
 	
-	private static final Pattern NUMBERS = Pattern.compile(".*[^0-9].*");
+	private static final Pattern REGEX_NUMBERS = Pattern.compile(".*[^0-9].*");
+	private static final Pattern REGEX_COMMA = Pattern.compile(",");
+	private static final Pattern REGEX_SPACE = Pattern.compile(" ");
 	
 	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
@@ -115,12 +118,24 @@ public class Parser {
 		if (temp == "" || temp == null) {
 			logIOException(EXCEPTION_NOINDEX);
 		}
-		String[] temps = temp.split(" ");
-		Matcher m = NUMBERS.matcher(temps[0]);
+		String[] temps = REGEX_SPACE.split(temp);
+		Matcher m = REGEX_NUMBERS.matcher(temps[0]);
 		if (m.matches()) {
 			logIOException(EXCEPTION_INDEXILLEGAL);
 		} 
 		return Integer.valueOf(temps[0]);
+		/*
+		String[] tempGroup = REGEX_COMMA.split(temps[0]);
+		ArrayList<Integer> indexGroup = new ArrayList<Integer>();
+		for (String str : tempGroup) {
+			m = REGEX_NUMBERS.matcher(str);
+			if (m.matches()) {
+				logIOException(EXCEPTION_INDEXILLEGAL);
+			} else {
+				indexGroup.add(Integer.valueOf(str));
+			}
+		}
+		return indexGroup;*/
 	}
 	
 	public String getNewTitle(String operation) throws NullPointerException, 
