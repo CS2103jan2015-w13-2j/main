@@ -4,14 +4,18 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
-
 import taskList.Task;
 
 //@author A0117971Y
+
+/**
+ * This class handles all printing methods
+ * @author A0117971Y
+ *
+ */
 
 public class PrintHandler {
 	
@@ -19,24 +23,31 @@ public class PrintHandler {
 	private static final int MODIFY_MODE = 2;
 	private static final int COMPLETE_MODE = 3;
 	private static final int printPerPage = 4;
+	
+	
+	/**
+	 * This class prints the a page given their page number
+	 * @param pageNumber
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
 
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
-		
+				
 		PageHandler.setCurrentPage(pageNumber);		
-		clearPanel();		
-		String taskHeading = DisplaySetting.getTaskInfoDetails();		
-		UserInterface.panel.add(new JLabel(taskHeading));		
-		int start = pageNumber * printPerPage;
-
+		printTaskHeading();
+		int startIndex = pageNumber * printPerPage;
+		int endIndex = startIndex + printPerPage;
+		
 		//not last page
 		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
-			for (int i=start; i < start+printPerPage; i++) {
+			for (int i=startIndex; i < endIndex; i++) {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
 		//last page
 		else {
-			for (int i=start; i<UserInterface.taskList.size(); i++) {
+			for (int i=startIndex; i<UserInterface.taskList.size(); i++) {
 				printTask(UserInterface.taskList.get(i),i);
 			}
 		}
@@ -44,32 +55,45 @@ public class PrintHandler {
 		refreshPanel();
 	}
 	
-	public static void printTask (Task task, int i) throws NullPointerException, IOException {		
-		String str = DisplaySetting.getTaskInfoFormat(task, i);
+	/**
+	 * Prints task heading
+	 */
+	
+	public static void printTaskHeading() {
+		clearPanel();		
+		String taskHeading = DisplayFormat.getTaskInfoDetails();		
+		UserInterface.panel.add(new JLabel(taskHeading));	
+	}
+	
+	/**
+	 * Prints an individual task
+	 * @param task
+	 * @param index
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	public static void printTask (Task task, int index) throws NullPointerException, IOException {		
+		String str = DisplayFormat.getTaskInfoFormat(task, index);
 		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
 		
-		// to highlight added row
-		if (i+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
+		// to highlight added task
+		if (index+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
 			printHighlightRow(labelText,ADD_MODE);
 		}
 		
-		//highlight modify row
-		else if (i+1 == UiLogic.isValidModifyListener() && UserInterface.isModify) {
+		//highlight modifying task
+		else if (index+1 == UiLogic.isValidModifyListener() && UserInterface.isModify) {
 			printHighlightRow(labelText, MODIFY_MODE);
 		}
 		
-		//highlight completed row
-		else if (UserInterface.completeIndex != -1 && i+1 == UserInterface.completeIndex || task.hasFinished()) {
-			System.out.println("printing finished task");
+		//highlight completed task
+		else if (UserInterface.completeIndex != -1 && index+1 == UserInterface.completeIndex || task.hasFinished()) {
 			printHighlightRow(labelText,COMPLETE_MODE);
 		}
-
-		
-		else if (UserInterface.deleteIndex != -1 && i+1==UserInterface.deleteIndex) {
-			printDeletedRow(task,i);
+		//strike off deleted task
+		else if (UserInterface.deleteIndex != -1 && index+1==UserInterface.deleteIndex) {
+			printDeletedRow(task,index);
 		}
-		
-
 		
 		else {
 			UserInterface.panel.add(new JLabel(labelText));
@@ -77,6 +101,12 @@ public class PrintHandler {
 		
 		refreshPanel();
 	}
+	
+	/**
+	 * Prints highlighted tasks used in add, modify, complete functions
+	 * @param labelText
+	 * @param mode
+	 */
 	
 	private static void printHighlightRow(String labelText, int mode) {
 		
@@ -110,14 +140,25 @@ public class PrintHandler {
 		}
 	}
 	
-	private static void printDeletedRow(Task task, int i) throws NullPointerException, IOException {
-		String labelText = DisplaySetting.getDeletedRowFormat(task, i);
+	/**
+	 * Prints deleted task with a strike formatting
+	 * @param task
+	 * @param index
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	
+	private static void printDeletedRow(Task task, int index) throws NullPointerException, IOException {
+		String labelText = DisplayFormat.getDeletedRowFormat(task, index);
 		UserInterface.panel.add(new JLabel(labelText));
 		UserInterface.deleteIndex = -1;
 	}
 	
+	/**
+	 * Prints status message after user execute command
+	 */
 	public static void printStatusMessage() {
-		UserInterface.lblCommandGuide.setText(DisplaySetting.getFeedbackGuideInfo());
+		UserInterface.lblCommandGuide.setText(DisplayFormat.getFeedbackGuideInfo());
 		resetGuide();
 	}
 	
@@ -131,7 +172,7 @@ public class PrintHandler {
 		UserInterface.panel.revalidate();
 		UserInterface.panel.repaint();
 	}
-	
+
 	private static void refreshFrame() {
 		UserInterface.frame.revalidate();
 		UserInterface.frame.repaint();
@@ -142,6 +183,9 @@ public class PrintHandler {
 		refreshPanel();
 	}
 	
+	/**
+	 * Set timer of 3000millis for statusMessage to switch back to commandGuide message
+	 */
 	public static void resetGuide() {
 	     Timer timer = new Timer();
 	     timer.schedule(new TimerTask() {

@@ -22,7 +22,6 @@ public class HotKeyListener extends KeyAdapter {
 					e.printStackTrace();
 				}
 				
-				UserInterface.textField.setText(null);
 
 		}
 		
@@ -50,7 +49,6 @@ public class HotKeyListener extends KeyAdapter {
 				}
 			}
 			
-//			System.out.println("current page = " + UserInterface.currentPage);
 		}
 			
 		

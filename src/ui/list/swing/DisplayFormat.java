@@ -6,7 +6,7 @@ import taskList.Task;
 
 //@author A0117971Y
 
-public class DisplaySetting {
+public class DisplayFormat {
 	
 	//mode == 0 means the result shown in screen is taskList,
 	//mode == 1 means the result shown in screen is searchResult
