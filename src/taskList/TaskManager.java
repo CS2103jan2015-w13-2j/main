@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
+import storage.ConfigurationFileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
@@ -28,19 +29,24 @@ public class TaskManager {
 
 	private Scanner sc;
 	private String fileName;
-	private JsonStringFileOperation fo;
+	private JsonStringFileOperation fileOperation;
+	private ConfigurationFileOperation configurationFileOperation;
 	private ArrayList<Task> taskList;
 	private ArrayList<Task> completedTaskList;	
 	private ArrayList<Task> searchResult;
+	
 	//mode == 0 means the result shown in screen is taskList,
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
+	//mode == 4 means the result shown in screen is all existing file
 	private int mode = 0;
-	private Parser bp;
+	private Parser myParser;
+	
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
 	private ArrayList<String> feedBack = new ArrayList<String>();
+	private ArrayList<String> fileList = new ArrayList<String>();
 	private String name = TaskManager.class.getName(); 
 	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
@@ -50,16 +56,16 @@ public class TaskManager {
 		mode = 0;
 		fileName = inputFileName;
 		try{
-			fo = new JsonStringFileOperation(fileName);
+			fileOperation = new JsonStringFileOperation(fileName);
 		}catch(Exception e){
 			log.info("There is a file reading error");
 			feedBack.add("Cannot open the file correctly");
 		}
 		feedBack.clear();
 		try{
-			fo = new JsonStringFileOperation(fileName);
-			taskList = fo.getUnfinishedTaskListFromFile();
-			completedTaskList = fo.getFinishedTaskListFromFile();
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
 			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
@@ -69,7 +75,35 @@ public class TaskManager {
 			feedBack.add("Cannot open the file correctly");
 		}
 		
-		bp = new Parser();
+		myParser = new Parser();
+		//Add in a initParser() command.
+	}
+	
+	public TaskManager() throws IOException{
+		fileName = configurationFileOperation.getLastOpenFilePath();
+		fileList = configurationFileOperation.getHistoryFilePath();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+		}catch(Exception e){
+			log.info("There is a file reading error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
+		feedBack.clear();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
+			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
+			searchResult = new ArrayList<Task>();
+			undo = new Undo<ArrayList<Task>>(taskList);
+			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
+		}catch(Exception e){
+			log.info("There is a command invalid error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
+		myParser = new Parser();
 		//Add in a initParser() command.
 	}
 	
@@ -117,7 +151,7 @@ public class TaskManager {
 	}
 	
 	public void executeCommand(String command) {
-		switch (bp.getOperation(command)) {
+		switch (myParser.getOperation(command)) {
 		case ADD:
 			try {
 				add(command);
@@ -184,13 +218,13 @@ public class TaskManager {
 	private void add(String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode >= 1) mode = 0;
-		assert(bp.isValid(command));
-		String content = bp.getTitle(command);
+		assert(myParser.isValid(command));
+		String content = myParser.getTitle(command);
 		try{
-			Date date = bp.getDate(command);
+			Date date = myParser.getDate(command);
 			System.out.println(date);
-			Date deadLine = bp.getDeadline(command);
-			String venue = bp.getVenue(command);
+			Date deadLine = myParser.getDeadline(command);
+			String venue = myParser.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION, content);
 			taskList.add(new Task(content,date,deadLine,venue));
 			System.out.println(taskList.get(2).isOutOfDate());
@@ -209,7 +243,7 @@ public class TaskManager {
 		if (mode > 1) mode = 0;
 		int removeIndex = -1;
 		try {
-			removeIndex = bp.getIndex(command);
+			removeIndex = myParser.getIndex(command);
 		} catch (IOException e) {
 		
 		}	
@@ -292,7 +326,7 @@ public class TaskManager {
 	private void display(String command) throws NullPointerException, IOException {
 		String type = "unfinished";
 		try {
-			type = bp.getTitle(command);
+			type = myParser.getTitle(command);
 		} catch (Exception e) {
 			
 		}
@@ -332,14 +366,14 @@ public class TaskManager {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		if (mode == 0){
-			assert(bp.isValid(command));
-			String content = bp.getNewTitle(command);
+			assert(myParser.isValid(command));
+			String content = myParser.getNewTitle(command);
 			try{
-				int index = bp.getIndex(command) - 1;
+				int index = myParser.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
-				Date newDate = bp.getDate(command);
-				Date deadLine = bp.getDeadline(command);
-				String newVenue = bp.getVenue(command);
+				Date newDate = myParser.getDate(command);
+				Date deadLine = myParser.getDeadline(command);
+				String newVenue = myParser.getVenue(command);
 				if ((index < 0)||(index > taskList.size())){
 					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
 					return;
@@ -358,14 +392,14 @@ public class TaskManager {
 				throw e;
 			}
 		}else{
-			assert(bp.isValid(command));
-			String content = bp.getNewTitle(command);
+			assert(myParser.isValid(command));
+			String content = myParser.getNewTitle(command);
 			try{
-				int index = bp.getIndex(command) - 1;
+				int index = myParser.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
-				Date newDate = bp.getDate(command);
-				Date deadLine = bp.getDeadline(command);
-				String newVenue = bp.getVenue(command);
+				Date newDate = myParser.getDate(command);
+				Date deadLine = myParser.getDeadline(command);
+				String newVenue = myParser.getVenue(command);
 				if ((index < 0)||(index > searchResult.size())){
 					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
 					return;
@@ -502,7 +536,7 @@ public class TaskManager {
 	private void sort(String command) throws Exception {
 		String content;
 		try{
-			content = bp.getTitle(command);
+			content = myParser.getTitle(command);
 		}catch(Exception e){
 			content = "time";
 		}
@@ -541,10 +575,10 @@ public class TaskManager {
 	private void search(String command) throws NullPointerException, IOException {
 		mode = 1;
 		searchResult.clear();
-		String keyWord = bp.getTitle(command);
+		String keyWord = myParser.getTitle(command);
 		if (keyWord.equals("today")){
 			dateFormat = new SimpleDateFormat ("YYYY-MM-dd");
-			keyWord = dateFormat.format(bp.getDate("add -d today"));
+			keyWord = dateFormat.format(myParser.getDate("add -d today"));
 			System.out.println("today is " + keyWord);
 		}
 		for (int i = 0; i < taskList.size(); i++){
@@ -577,7 +611,7 @@ public class TaskManager {
 	
 	private void saveFile(){
 		try{
-			fo.saveToFile(taskList,completedTaskList);
+			fileOperation.saveToFile(taskList,completedTaskList);
 		}catch(Exception e){
 			feedBack.add("cannot save to file successfully");
 		}
@@ -671,11 +705,15 @@ public class TaskManager {
 	}
 	
 	public String getAutoFill(String command){
-		return bp.autoFill(command);
+		return myParser.autoFill(command);
 	}
 	
 	public String getCommandTip(String command){
+<<<<<<< HEAD
+		return myParser.privideTips(command);
+=======
 		return bp.provideTips(command);
+>>>>>>> 4b9120740dc50eda129a40b19c06ce5a326d7619
 	}
 	
 	public int getCurrentMode(){
