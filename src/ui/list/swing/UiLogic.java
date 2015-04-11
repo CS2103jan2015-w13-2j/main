@@ -48,8 +48,8 @@ public class UiLogic {
 	}
 	
 	/**
-	 * Check if input is a valid modify command
-	 * @return index of modify opeataion, -1 if invalid
+	 * Check if input is a valid modify command while user is typing
+	 * @return index of modify operation, -1 if invalid
 	 */
 	
 	public static int isValidModifyListener() {
@@ -64,6 +64,12 @@ public class UiLogic {
 
 		return -1;
 	}
+	
+	/**
+	 * Check if input is a valid complete command
+	 * @param input
+	 * @return index of complete operation, -1 if invalid
+	 */
 	
 	public static int isValidComplete(String input) {
 
@@ -83,7 +89,12 @@ public class UiLogic {
 		return -1;
 	}
 
-	
+	/**
+	 * 
+	 * @param index
+	 * @param mode
+	 * @return index of operation performed
+	 */
 	private static int getOperationIndex(String index, int mode) {
 		try {
 			int operationIndex = Integer.parseInt(index);
@@ -128,7 +139,8 @@ public class UiLogic {
 			processNonDelete(input);
 		}
 		
-		TextFieldHistory.updateHistory(input);		
+		TextFieldHistory.updateHistory(input);	
+		UserInterface.textField.setText(null);
 		PrintHandler.printStatusMessage();
 		UserInterface.isAdd = false;
 	}
@@ -140,26 +152,12 @@ public class UiLogic {
 		executeAndUpdate(input);	
 	}
 	
-	
-	/**
-	 * Processes delete operations
-	 * @param input
-	 * @throws NullPointerException
-	 * @throws IOException
-	 */
-	
 	private static void processDelete(String input) throws NullPointerException, IOException {
 		System.out.println("is valid delete");
 		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.deleteIndex-1));
 		executeAndUpdate(input);	
 	}
 	
-	/**
-	 * Processes non delete operation
-	 * @param input
-	 * @throws NullPointerException
-	 * @throws IOException
-	 */
 	private static void processNonDelete(String input) throws NullPointerException, IOException {
 		if (UiLogic.isValidAdd(input)) {
 			UserInterface.isAdd = true;
@@ -179,6 +177,9 @@ public class UiLogic {
 		UserInterface.taskList =  UserInterface.BTM.getTasks();		
 	}
 	
+	/**
+	 * Executes maximize and minimize of window
+	 */
 	public static void processMaxMin() {
 
 		int state = UserInterface.frame.getExtendedState(); // get current state
