@@ -675,7 +675,7 @@ public class TaskManager {
 	}
 	
 	public String getCommandTip(String command){
-		return bp.privideTips(command);
+		return bp.provideTips(command);
 	}
 	
 	public int getCurrentMode(){
