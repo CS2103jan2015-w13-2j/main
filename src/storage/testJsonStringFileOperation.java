@@ -14,7 +14,11 @@ import org.junit.*;
 
 import taskList.Task;
 
-
+/**
+ * 
+ * @author Huang Weilong A0119392B
+ * @version 2015 April 11
+ */
 public class testJsonStringFileOperation {
 	private static final int TEST_SIZE = 200;
 	private static final int BIG_PRIME_NUMBER1 = 107;
