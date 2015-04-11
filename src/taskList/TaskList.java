@@ -255,6 +255,10 @@ public class TaskList {
 			}
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			Task finishedOne = taskList.remove(removeIndex - 1);
+			
+			//update hasfinished added here		
+			finishedOne.finish();
+			
 			completedTaskList.add(finishedOne);
 			saveFile();
 			undo.add(taskList);

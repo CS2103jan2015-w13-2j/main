@@ -58,7 +58,8 @@ public class PrintHandler {
 		}
 		
 		//highlight completed row
-		else if (UserInterface.completeIndex != -1 && i+1 == UserInterface.completeIndex) {
+		else if (UserInterface.completeIndex != -1 && i+1 == UserInterface.completeIndex || task.hasFinished()) {
+			System.out.println("printing finished task");
 			printHighlightRow(labelText,COMPLETE_MODE);
 		}
 
