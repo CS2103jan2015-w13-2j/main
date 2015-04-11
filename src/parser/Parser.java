@@ -9,22 +9,23 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//@author A0119503M
 /**
+ * This class supports main functions to understand users’ command, 
+ * the controller can call these functions to get the operation type 
+ * as well as various contents of users’ commands.
  * APIs:
- * 	int getOperation(String operation) throws NullPointerException
- *  boolean isValid(String operation) throws NullPointerException
- * 	boolean isArgumentsCorrect(String operation) throws NullPointerException
- * 	int getIndex(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException, IOException
- *  String getNewTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException
- *  String getTitle(String operation) throws NullPointerException, 
-	StringIndexOutOfBoundsException
- * 	String getVenue(String operation) throws NullPointerException
- *  Date getDate(String operation) throws NullPointerException, IOException
- *  Date getDeadline(String operation) throws NullPointerException, IOException
- * @author Colonel
- *
+ * 	getOperation(String): Operation throws NullPointerException
+ *  isValid(String): boolean throws NullPointerException
+ * 	isArgumentsCorrect(String): boolean throws NullPointerException
+ * 	getIndex(String): int throws IOException
+ *  getNewTitle(String): String throws NullPointerException, IOException
+ *  getTitle(String): String throws NullPointerException, IOException
+ * 	getVenue(String): String throws NullPointerException
+ *  getDate(String): Date throws NullPointerException, IOException
+ *  getDeadline(String): Date throws NullPointerException, IOException
+ *  autoFill(String): String throws NullPointerException
+ *  provideTips(String): String throws NullPointerException
  */
 public class Parser {
 	private static final String EXCEPTION_NOTITLE = "no title inputed";

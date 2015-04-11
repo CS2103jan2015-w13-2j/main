@@ -1,5 +1,14 @@
 package parser;
 
+//@author A0119503M
+/**
+ * this class is to check whether the format of users’ command is defined. 
+ * Specifically, it is to check whether the operation type is supported 
+ * and the arguments are correct.
+ * APIs:
+ *  isValidFormat(String): boolean throws NullPointerException
+ *  isArgumentsFormatCorrect: boolean throws NullPointerException
+ */
 public class FormatChecker {
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
