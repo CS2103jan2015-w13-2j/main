@@ -213,7 +213,7 @@ public class Parser {
 		return result;
 	}
 	
-	public String privideTips(String operation) throws NullPointerException {
+	public String provideTips(String operation) throws NullPointerException {
 		String result = null;
 		try {
 			Operation operationType = getOperation(operation);
