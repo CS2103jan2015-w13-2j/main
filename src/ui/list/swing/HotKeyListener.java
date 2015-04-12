@@ -8,152 +8,171 @@ import java.io.IOException;
 
 public class HotKeyListener extends KeyAdapter {
 	
-	public static boolean isBackSpace = false;
-
+	private static final String INVALID = "invalid";
+	
 	public void keyPressed(KeyEvent arg1) {
 
 		if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
-			
-				try {
-					UiLogic.processTextField();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-
+			enterHandler();
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_TAB) {
-//			System.out.println("tab pressed");
-			if (BalloonTipSuggestion.getAutoFill() != null) {
-				UserInterface.textField.setText(BalloonTipSuggestion.getAutoFill() + " ");
-			}
+			tabHandler();
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
-			System.out.println("Left arrow pressed!");
-			
-			System.out.println("at file page = " + PageHandler.isAtFilePage);
-			if (UserInterface.textField.getText().isEmpty()) {
-				if (PageHandler.getCurrentPage() > 0 && !UserInterface.atHelpMenu && !PageHandler.isAtFilePage) {
-					if (PageHandler.getCurrentPage() > 0) {
-						PageHandler.flipPrevPage();
-//						System.out.println("flipped prev page");
-						try {
-							UserInterface.display(PageHandler.getCurrentPage());
-						} catch (NullPointerException | IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-				
-				
-			}
-			
-				if (PageHandler.isAtFilePage && UserInterface.textField.getText().isEmpty()){
-				System.out.println("at prev file page");
-				if (PageHandler.getFileCurrentPage() > 0) {
-					PageHandler.flipPrevFilePage();
-					try {
-						UserInterface.display(PageHandler.getFileCurrentPage());
-					} catch (NullPointerException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			}
-			
+			leftKeyHandler();
 		}
-			
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
-//			System.out.println("Right Arrow Pressed!");			
-			if (UserInterface.textField.getText().isEmpty() && !UserInterface.atHelpMenu && PageHandler.getCurrentPage() < PageHandler.getLastPage() && !PageHandler.isAtFilePage) {
-						PageHandler.flipNextPage();
-						System.out.println("flipped next page");
-						try {
-							UserInterface.display(PageHandler.getCurrentPage());
-						} catch (NullPointerException | IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					
-			}
-//			System.out.println("current page = " + UserInterface.currentPage);
-			if (PageHandler.isAtFilePage && UserInterface.textField.getText().isEmpty()){
-				System.out.println("at next file page");
-				
-				System.out.println("filePathTotalPage = " + PageHandler.getFilePathTotalPage());
-				System.out.println("fileCurrentPage = " + PageHandler.getFileCurrentPage());
-				System.out.println("fileLastPage = " + PageHandler.getFileLastPage() );
-
-				
-				
-				if (PageHandler.getFileCurrentPage() < PageHandler.getFileLastPage()) {
-					PageHandler.flipNextFilePage();
-					try {
-						UserInterface.display(PageHandler.getFileCurrentPage());
-					} catch (NullPointerException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-			}
+			rightKeyHandler();
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
-//			System.out.println("F1 pressed");
-			PrintHandler.printHelp();
-			UserInterface.atHelpMenu = true;
-			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_HELP_MESSAGE);
-		}
-		
-		else if (arg1.getKeyCode() == KeyEvent.VK_F2) {
-			System.out.println("F2 pressed");
-			FileChooser.run(UserInterface.fileChooserFrame, 515, 149);
+			F1Handler();
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE && UserInterface.atHelpMenu) {
-//			System.out.println("ESC pressed");
-			UserInterface.atHelpMenu = false;
-			LayoutSetting.setShowTaskInfo();
-			try {
-				UserInterface.display(PageHandler.getCurrentPage());
-			} catch (NullPointerException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+			escHandler();
 		}
-		
-		// cntrl - m
-
+		//detect ctrl+m
 		else if ((arg1.getKeyCode() == KeyEvent.VK_M) && ((arg1.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-			System.out.println("cntrl m detected");
-			UiLogic.processMaxMin();
+			ctrlMHandler();
 		}
 
 		else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
-			System.out.println("Up pressed");
-			String history = TextFieldHistory.getLastHistory();
-			if (!history.equals("invalid")) {
-				UserInterface.textField.setText(history);
-			}
+			upKeyHandler();
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
-			System.out.println("Down Pressed");
-			String history = TextFieldHistory.getForwardHistory();
-			if (!history.equals("invalid")) {
-				UserInterface.textField.setText(history);
+			downKeyHandler();
+		}
+	}
+	
+	private static boolean canPressLeftTaskPage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getCurrentPage() > 0;
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean notAtFilePage = !PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && notAtFilePage;
+	}
+	
+	private static boolean canPressLeftFilePage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage =  PageHandler.getFileCurrentPage() > 0;
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean isAtFilePage = PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && isAtFilePage;
+	}
+	
+	private static void leftKeyHandler() {
+		if (canPressLeftTaskPage()) {
+			PageHandler.flipPrevPage();
+			try {
+				UserInterface.display(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		else if (canPressLeftFilePage()) {
+			PageHandler.flipPrevFilePage();
+			try {
+				UserInterface.display(PageHandler.getFileCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static boolean canPressRightTaskPage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getCurrentPage() < PageHandler.getLastPage();
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean notAtFilePage = !PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && notAtFilePage;
+	}
+	
+	private static boolean canPressRightFilePage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getFileCurrentPage()<PageHandler.getFileLastPage();
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean isAtFilePage = PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && isAtFilePage;
+	}
+	
+	private static void rightKeyHandler() {		
+		if (canPressRightTaskPage()) {
+			PageHandler.flipNextPage();
+			try {
+				UserInterface.display(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
 			}
 		}
 		
+		else if (canPressRightFilePage()) {
+			PageHandler.flipNextFilePage();
+			try {
+				UserInterface.display(PageHandler.getFileCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static void F1Handler() {
+		PrintHandler.printHelp();
+		UserInterface.atHelpMenu = true;
+	}
+	
+	private static void escHandler() {
+		UserInterface.atHelpMenu = false;
+		LayoutSetting.setShowTaskInfo();
+		try {
+			UserInterface.display(PageHandler.getCurrentPage());
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
+		}
+		UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+	}
+	
+	private static void ctrlMHandler() {
+		UiLogic.processMaxMin();
+	}
+	
+	private static void upKeyHandler() {
+		String history = TextFieldHistory.getLastHistory();
+		if (!history.equals(INVALID)) {
+			UserInterface.textField.setText(history);
+		}
+	}
+	
+	private static void downKeyHandler() {
+		String history = TextFieldHistory.getForwardHistory();
+		if (!history.equals(INVALID)) {
+			UserInterface.textField.setText(history);
+		}
+	}
+	
+	private static void tabHandler() {
+		if (BalloonTipSuggestion.getAutoFill() != null) {
+			UserInterface.textField.setText(BalloonTipSuggestion.getAutoFill() + " ");
+		}
+	}
+	
+	private static void enterHandler() {
+		try {
+			UiLogic.processTextField();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

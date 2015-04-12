@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
-
 import taskList.Task;
-import taskList.TaskManager;
 
 //@author A0117971Y
 
@@ -23,16 +20,13 @@ import taskList.TaskManager;
 
 public class PrintHandler {
 	
-
-	//mode == 4 means the result shown in screen is all existing file	
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
 	private static final int COMPLETE_MODE = 3;
-	private static final int EXISTING_FILE_MODE = 4;
 	private static final int printPerPage = 4;
 	private static final int printFilePerPage = 10;
-	
-	
+	private static final int INVALID = -1;
+		
 	/**
 	 * This class prints the a page given their page number(including page 0)
 	 * @param pageNumber
@@ -49,14 +43,12 @@ public class PrintHandler {
 		//not last page
 		if (PageHandler.getFileCurrentPage()<PageHandler.getFileLastPage()) {
 			for (int i=startIndex; i<endIndex; i++) {
-				System.out.println("printing non last page");
 				printFilePaths(i);
 			}
 		}
 
 		else {
 			for (int i=startIndex; i<UserInterface.BTM.getAllFilePath().size(); i++) {
-				System.out.println("printing last page");
 				printFilePaths(i);
 			}
 		}
@@ -65,13 +57,11 @@ public class PrintHandler {
 	}
 
 
-	public static void printPage (int pageNumber) throws NullPointerException, IOException {
-				
+	public static void printPage (int pageNumber) throws NullPointerException, IOException {			
 		PageHandler.setCurrentPage(pageNumber);		
 		printTaskHeading();
 		int startIndex = pageNumber * printPerPage;
 		int endIndex = startIndex + printPerPage;
-
 			//not last page
 			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
 				for (int i=startIndex; i < endIndex; i++) {
@@ -120,11 +110,11 @@ public class PrintHandler {
 		}
 		
 		//highlight completed task
-		else if (UserInterface.completeIndex != -1 && index+1 == UserInterface.completeIndex || task.hasFinished()) {
+		else if (UserInterface.completeIndex != INVALID && index+1 == UserInterface.completeIndex || task.hasFinished()) {
 			printHighlightRow(labelText,COMPLETE_MODE);
 		}
 		//strike off deleted task
-		else if (UserInterface.deleteIndex != -1 && index+1==UserInterface.deleteIndex) {
+		else if (UserInterface.deleteIndex != INVALID && index+1==UserInterface.deleteIndex) {
 			printDeletedRow(task,index);
 		}
 		
@@ -194,7 +184,7 @@ public class PrintHandler {
 	private static void printDeletedRow(Task task, int index) throws NullPointerException, IOException {
 		String labelText = DisplayFormat.getDeletedRowFormat(task, index);
 		UserInterface.panel.add(new JLabel(labelText));
-		UserInterface.deleteIndex = -1;
+		UserInterface.deleteIndex = INVALID;
 	}
 	
 	/**

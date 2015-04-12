@@ -13,11 +13,7 @@ public class DisplayFormat {
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-	
-	private static final int TASK_INFO_UNCOMPLETED = 0;
-	private static final int TASK_INFO_SEARCH_RESULT = 1;
-	private static final int TASK_INFO_COMPLETED = 2;
-	private static final int TASK_INFO_ALL_TASKS = 3;
+
 	private static final String TASK_INFO_UNCOMPLETED_MSG = "Things to do: ";
 	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
 	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
@@ -90,7 +86,6 @@ public class DisplayFormat {
 		clearData();
 		assert(data.length()==0);
 		
-
 		index = Integer.toString(i+1);
 		taskName = task.getContent();
 		date = task.getDateString();
@@ -105,7 +100,6 @@ public class DisplayFormat {
 		if (!date.equals("---") && task.isOutOfDate()) {
 			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
 		}
-		
 		else {
 			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
 
@@ -125,7 +119,6 @@ public class DisplayFormat {
 		data.append(HTML_BREAK+HTML_CLOSE);
 		
 		return getData();
-		
 	}
 	
 	public static String getData() {
@@ -133,7 +126,6 @@ public class DisplayFormat {
 	}
 	
 	private static void setVenueDate() {
-		
 		if (venue == null || venue.equals("")) {
 			venue = "---";
 		}
@@ -152,19 +144,17 @@ public class DisplayFormat {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-						System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
-
-			case TODO_TASKLIST: PageHandler.isAtFilePage = false; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
-			case SEARCH_LIST: PageHandler.isAtFilePage = false; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
-			case FINISHED_TASKLIST: PageHandler.isAtFilePage = false; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
-			case ALL_TASKLIST: PageHandler.isAtFilePage = false; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
-			case FILE_PATH: PageHandler.isAtFilePage = true; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO, TASK_INFO_FILE_PATH_MSG);
+				case TODO_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+				case SEARCH_LIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+				case FINISHED_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+				case ALL_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
+				case FILE_PATH: PageHandler.isAtFilePage = true; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO, TASK_INFO_FILE_PATH_MSG);
 
 			default: PageHandler.isAtFilePage = false; 
 			return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
