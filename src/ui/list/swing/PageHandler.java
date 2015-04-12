@@ -5,6 +5,7 @@ package ui.list.swing;
 public class PageHandler {
 	
 	private static double printPerPage = 4.0;
+	private static double printFilePerPage = 10.0;
 	private static int currentPage = 0;
 	private static int lastPage = 0;
 	public static boolean isAtFilePage = false;
@@ -42,11 +43,13 @@ public class PageHandler {
 	
 	public static void flipPrevFilePage() {
 		fileCurrentPage--;
+		System.out.println("Flip prev file page " + fileCurrentPage);
 		updateFilePage();
 	}
 	
 	public static void flipNextFilePage() {
 		fileCurrentPage++;
+		System.out.println("Flip next file page " + fileCurrentPage);
 		updateFilePage();
 	}
 	
@@ -64,9 +67,10 @@ public class PageHandler {
 		return totalPage;
 	}
 	
-	private static int getFilePathTotalPage() {
-		int pathSize = UserInterface.BTM.getAllFilePath().size();
-		int totalPathPage = (int) Math.ceil(pathSize/printPerPage);
+	public static int getFilePathTotalPage() {
+		System.out.println("path size = " + UserInterface.files.size());
+		int pathSize = UserInterface.files.size();
+		int totalPathPage = (int) Math.ceil(pathSize/printFilePerPage);
 		
 		return totalPathPage;
 	}

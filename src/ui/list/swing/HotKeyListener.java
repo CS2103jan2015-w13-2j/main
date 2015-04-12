@@ -33,7 +33,9 @@ public class HotKeyListener extends KeyAdapter {
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
-//			System.out.println("Left arrow pressed!");
+			System.out.println("Left arrow pressed!");
+			
+			System.out.println("at file page = " + PageHandler.isAtFilePage);
 			if (UserInterface.textField.getText().isEmpty()) {
 				if (PageHandler.getCurrentPage() > 0 && !UserInterface.atHelpMenu && !PageHandler.isAtFilePage) {
 					if (PageHandler.getCurrentPage() > 0) {
@@ -51,7 +53,8 @@ public class HotKeyListener extends KeyAdapter {
 				
 			}
 			
-			else if (PageHandler.isAtFilePage){
+				if (PageHandler.isAtFilePage && UserInterface.textField.getText().isEmpty()){
+				System.out.println("at prev file page");
 				if (PageHandler.getFileCurrentPage() > 0) {
 					PageHandler.flipPrevFilePage();
 					try {
@@ -81,8 +84,16 @@ public class HotKeyListener extends KeyAdapter {
 					
 			}
 //			System.out.println("current page = " + UserInterface.currentPage);
-			else if (PageHandler.isAtFilePage){
-				if (PageHandler.getFileCurrentPage() > 0) {
+			if (PageHandler.isAtFilePage && UserInterface.textField.getText().isEmpty()){
+				System.out.println("at next file page");
+				
+				System.out.println("filePathTotalPage = " + PageHandler.getFilePathTotalPage());
+				System.out.println("fileCurrentPage = " + PageHandler.getFileCurrentPage());
+				System.out.println("fileLastPage = " + PageHandler.getFileLastPage() );
+
+				
+				
+				if (PageHandler.getFileCurrentPage() < PageHandler.getFileLastPage()) {
 					PageHandler.flipNextFilePage();
 					try {
 						UserInterface.display(PageHandler.getFileCurrentPage());

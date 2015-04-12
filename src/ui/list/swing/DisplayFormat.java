@@ -143,18 +143,6 @@ public class DisplayFormat {
 		}
 	}
 	
-//	public static String getViewTaskInfo() {
-//		clearData();
-//		
-//		data.append(HTML_OPEN);
-//		data.append(HTML_FONT_VIEW_TASK_INFO);
-//		data.append(getTaskInfoDetails());
-//		data.append(HTML_FONT_CLOSE);
-//		data.append(HTML_CLOSE);	
-//		
-//		return data.toString();
-//	}
-
 	@SuppressWarnings("finally")
 	public static String getTaskInfoDetails() {
 		DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
@@ -164,7 +152,7 @@ public class DisplayFormat {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			//			System.out.println("Continue after catch mode = " + mode);
+						System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
 			case TODO_TASKLIST: PageHandler.isAtFilePage = false; 
