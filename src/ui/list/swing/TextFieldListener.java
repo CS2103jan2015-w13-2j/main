@@ -45,7 +45,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 			}
 		}
 		
-		else if (!inputStream.isEmpty()) {
+		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage) {
 			try {
 				PageHandler.updatePage();
 				PrintHandler.printPage(PageHandler.getCurrentPage());
@@ -74,7 +74,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 			}
 		}
 		
-		else if (!inputStream.isEmpty()){
+		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage){
 			try {
 				PrintHandler.printPage(PageHandler.getCurrentPage());
 			} catch (NullPointerException | IOException e1) {
