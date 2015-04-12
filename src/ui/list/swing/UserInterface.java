@@ -2,13 +2,19 @@ package ui.list.swing;
 
 
 import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.JTextField;
+
 import taskList.Task;
 import taskList.TaskManager;
 
@@ -79,6 +85,7 @@ public class UserInterface {
 	 */
 	private void initialize() throws NullPointerException, IOException {		
 		LayoutSetting.setAll();
+		addSystemTrayWindowStateListener();
 		display(0);
 	}
 	
@@ -98,6 +105,13 @@ public class UserInterface {
 			taskList = BTM.getTasks();	
 			PrintHandler.printPage(pageNumber);
 		}
+	}
+	public static void addSystemTrayWindowStateListener() {
+		frame.addWindowStateListener(new WindowStateListener() {
+			public void windowStateChanged(WindowEvent arg) {
+				SystemTray_TaskBuddy.Minimise(arg);
+			}
+		});
 	}
 	
 	public static void exit() {
