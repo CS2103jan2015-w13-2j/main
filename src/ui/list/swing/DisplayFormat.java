@@ -3,6 +3,7 @@ package ui.list.swing;
 import java.io.IOException;
 
 import taskList.Task;
+import taskList.TaskManager.DISPLAY_MODE;
 
 //@author A0117971Y
 
@@ -12,18 +13,15 @@ public class DisplayFormat {
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-	//mode == 4 means the result shown in screen is all existing file
 	
-	private static final int TASK_INFO_UNCOMPLETED_MODE = 0;
-	private static final int TASK_INFO_SEARCH_RESULT_MODE = 1;
-	private static final int TASK_INFO_COMPLETED_MODE = 2;
-	private static final int TASK_INFO_ALL_TASKS_MODE = 3;
-	private static final int TASK_INFO_EXIST_FILE_MODE = 4;
+	private static final int TASK_INFO_UNCOMPLETED = 0;
+	private static final int TASK_INFO_SEARCH_RESULT = 1;
+	private static final int TASK_INFO_COMPLETED = 2;
+	private static final int TASK_INFO_ALL_TASKS = 3;
 	private static final String TASK_INFO_UNCOMPLETED_MSG = "Things to do: ";
 	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
 	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
 	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
-	private static final String TASK_INFO_EXISTING_FILE_MSG = "Existing files:";
 	
 	private static StringBuilder data = new StringBuilder();
 	private static final String HTML_OPEN = "<html>";
@@ -45,17 +43,6 @@ public class DisplayFormat {
 	private static String date;
 	private static String venue;
 	private static String endDate;
-	
-	public static String getPathInfoFormat(String path, int i) {
-		clearData();
-		data.append(HTML_OPEN);
-		data.append(String.format(HTML_FONT_INDEX,i+1));
-		data.append(String.format(HTML_FONT_FINISHED_TASKNAME, path));
-		data.append(HTML_CLOSE);
-		
-		return data.toString();
-		
-	}
 	
 	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
 		
@@ -169,22 +156,20 @@ public class DisplayFormat {
 
 	@SuppressWarnings("finally")
 	public static String getTaskInfoDetails() {
-		int mode = 0;
+		DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
 
 		try {
 			mode = UserInterface.BTM.getCurrentMode();
-			System.out.println("mode is = " + mode);
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
 //			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
-			case TASK_INFO_UNCOMPLETED_MODE: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
-			case TASK_INFO_SEARCH_RESULT_MODE: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
-			case TASK_INFO_COMPLETED_MODE: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
-			case TASK_INFO_ALL_TASKS_MODE: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
-			case TASK_INFO_EXIST_FILE_MODE: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_EXISTING_FILE_MSG);
+			case TODO_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+			case SEARCH_LIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+			case FINISHED_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+			case ALL_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
 			default: return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
 			
 			}

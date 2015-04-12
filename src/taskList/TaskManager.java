@@ -24,10 +24,12 @@ public class TaskManager {
 	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
 	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
 	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify\n";
-	private static final int BY_TIME = 0;
-	private static final int BY_VENUE = 1;
-	private static final int BY_TITLE = 2;
-
+	public enum SORT_MODE {
+		BY_TIME,BY_VENUE,BY_TITLE
+	}
+	public enum DISPLAY_MODE {
+		TODO_TASKLIST, SEARCH_LIST, FINISHED_TASKLIST, ALL_TASKLIST, FILE_PATH
+	}
 	private Scanner sc;
 	private String fileName;
 	private JsonStringFileOperation fileOperation;
@@ -41,7 +43,7 @@ public class TaskManager {
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
 	//mode == 4 means the result shown in screen is all existing file
-	private int mode = 0;
+	private DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
 	private Parser myParser;
 	
 	private Undo<ArrayList<Task>> undo;
@@ -54,7 +56,7 @@ public class TaskManager {
 	private static TaskManager sharedInstance; 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
 	public TaskManager(String inputFileName){
-		mode = 0;
+		mode = DISPLAY_MODE.TODO_TASKLIST;
 		fileName = inputFileName;
 		try{
 			fileOperation = new JsonStringFileOperation(fileName);
@@ -211,7 +213,7 @@ public class TaskManager {
 	 */
 	private void add(String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
-		if (mode >= 1) mode = 0;
+		switchToChangeableMode();
 		assert(myParser.isValid(command));
 		String content = myParser.getTitle(command);
 		try{
@@ -235,17 +237,17 @@ public class TaskManager {
 	 */
 	private void delete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
-		if (mode > 1) mode = 0;
+		switchToChangeableMode();
 
-		if (removeIndex < 0 || removeIndex > taskList.size()) {
+		if (removeIndex <= 0 || removeIndex > taskList.size()) {
 			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 			return;
 		}
-		if (mode == 0) {
+		if (mode == DISPLAY_MODE.TODO_TASKLIST) {
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			taskList.remove(removeIndex - 1);
-			saveFile();
-			undo.add(taskList); 
+			System.out.println("here here "+removeIndex);
+			saveFile(); 
 		} else {
 			int indexinTaskList = 0;
 			for (int i = 0; i < taskList.size(); i++){
@@ -258,7 +260,6 @@ public class TaskManager {
 			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
 			searchResult.remove(removeIndex - 1);
 			saveFile();
-			undo.add(taskList);
 		}
 	}
 	
@@ -267,10 +268,12 @@ public class TaskManager {
 	 */
 	private void deleteMultiple(String command) throws Exception{
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
-		for (int i = 0; i < deleteIndex.size(); i++){
-			System.out.println("hahaha "+deleteIndex.get( i));
+		Collections.sort(deleteIndex);
+		for (int i = deleteIndex.size()-1; i >= 0; i--){
+			System.out.println("index for this operation is "+deleteIndex.get(i));
 			delete(deleteIndex.get(i));
 		}
+		undo.add(taskList);
 	}	
 	
 	
@@ -280,8 +283,8 @@ public class TaskManager {
 	 */
 	private void complete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
-		if (mode > 1) mode = 0;
-		if (mode == 0){
+		switchToChangeableMode();
+		if (mode == DISPLAY_MODE.TODO_TASKLIST){
 			
 			if (removeIndex < 0 || removeIndex > taskList.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
@@ -321,7 +324,8 @@ public class TaskManager {
 	 */
 	private void completeMultiple(String command) throws Exception{
 		ArrayList<Integer> completeIndex = myParser.getIndex(command);
-		for (int i = 0; i < completeIndex.size(); i++){
+		Collections.sort(completeIndex);
+		for (int i = completeIndex.size()-1; i >= 0; i--){
 			complete(completeIndex.get(i));
 		}
 	}	
@@ -340,24 +344,24 @@ public class TaskManager {
 			
 		}
 		if (type.equals("finished")){
-			mode = 2;
+			mode = DISPLAY_MODE.FINISHED_TASKLIST;
 			if (completedTaskList.size() == 0){
 				showMessage(MESSAGE_EMPTY_FILE,null);
 				return;
 			}
 			showMessage("Display finished Task");
 		}else if (type.equals("all")){
-			mode = 3;
+			mode = DISPLAY_MODE.ALL_TASKLIST;
 			if (completedTaskList.size() + taskList.size() == 0){
 				showMessage(MESSAGE_EMPTY_FILE,null);
 				return;
 			}
 			showMessage("Display all Tasks");
 		}else if(type.equals("file")){
-			mode = 3;
+			mode = DISPLAY_MODE.FILE_PATH;
 			showMessage("Display all files");
 		}else{
-			mode = 0;
+			mode = DISPLAY_MODE.TODO_TASKLIST;
 			if (taskList.size() == 0) {
 				showMessage(MESSAGE_EMPTY_FILE, null);
 				return;
@@ -377,8 +381,8 @@ public class TaskManager {
 	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		index-= 1;
-		if (mode > 1) mode = 0;
-		if (mode == 0){
+		switchToChangeableMode();
+		if (mode == DISPLAY_MODE.TODO_TASKLIST){
 			assert(myParser.isValid(command));
 			String content = myParser.getNewTitle(command);
 			try{
@@ -455,7 +459,7 @@ public class TaskManager {
 	 * rodo, return the arrayList before last operation.
 	 */
 	private void redo() {
-		if (undo.canRedo() && mode == 0){
+		if (undo.canRedo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.redo();
 			if (undoForCompleted.canRedo()) completedTaskList = (ArrayList<Task>) undoForCompleted.redo();
 			showMessage("redo operation successfully");
@@ -469,7 +473,7 @@ public class TaskManager {
 	 * undo, return the arrayList before last undo operation.
 	 */
 	private void undo() {
-		if (undo.canUndo() && mode == 0){
+		if (undo.canUndo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.undo();
 			if (undoForCompleted.canUndo()) {
 				completedTaskList = (ArrayList<Task>) undoForCompleted.undo();
@@ -489,7 +493,7 @@ public class TaskManager {
 		if (!fileList.contains(newFileName)){
 			fileList.add(newFileName);
 		}else{
-			mode = 0;
+			mode = DISPLAY_MODE.TODO_TASKLIST;
 			loadFile();
 		}
 		saveFile();
@@ -533,7 +537,7 @@ public class TaskManager {
 		}
 	}
 	
-	private void sortTaskList(int type) throws Exception{
+	private void sortTaskList(SORT_MODE type) throws Exception{
 		Task[] taskArray = new Task[taskList.size()];
 		taskList.toArray(taskArray);
 		switch (type){
@@ -598,19 +602,19 @@ public class TaskManager {
 		content.toLowerCase();
 		if (content.equals("time")){
 			try {
-				sortTaskList(BY_TIME);
+				sortTaskList(SORT_MODE.BY_TIME);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}else if (content.equals("venue")){
 			try {
-				sortTaskList(BY_VENUE);
+				sortTaskList(SORT_MODE.BY_VENUE);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}else if (content.equals("title")){
 			try {
-				sortTaskList(BY_TITLE);
+				sortTaskList(SORT_MODE.BY_TITLE);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -627,7 +631,7 @@ public class TaskManager {
 	 * search operation would return all the tasks which conform to the sort requirements.
 	 */
 	private void search(String command) throws NullPointerException, IOException {
-		mode = 1;
+		mode = DISPLAY_MODE.SEARCH_LIST;
 		searchResult.clear();
 		String keyWord = myParser.getTitle(command);
 		if (keyWord.equals("today")){
@@ -676,6 +680,12 @@ public class TaskManager {
 		configurationFileOperation.saveConfiguration(fileName, fileList);;
 	}
 	
+	private void switchToChangeableMode(){
+		if (mode != DISPLAY_MODE.SEARCH_LIST){
+			mode = DISPLAY_MODE.TODO_TASKLIST;
+		}
+	}
+	
 	public ArrayList<String> getFileContent(){
 		ArrayList<String> content = new ArrayList<String>(); 
 		for (Task task: taskList){
@@ -686,22 +696,29 @@ public class TaskManager {
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Task> getTasks(){
-		if (mode == 0){
+		switch (mode){
+		case TODO_TASKLIST:
 			ArrayList<Task> answers = new ArrayList<Task>();
 			for (int i = 0; i < taskList.size(); i++){
 				if (!taskList.get(i).hasFinished())
 					answers.add(taskList.get(i));
 			}
 			return answers;
-		}else if (mode == 1){
+		case SEARCH_LIST:
 			return (ArrayList<Task>) searchResult.clone();
-	
-		}else if (mode == 2){
+		case FINISHED_TASKLIST:
 			return (ArrayList<Task>) completedTaskList.clone();
-		}else{
+		case ALL_TASKLIST:
 			ArrayList<Task> bothTaskList = (ArrayList<Task>) taskList.clone();
 			bothTaskList.addAll((ArrayList<Task>)completedTaskList.clone());
 			return bothTaskList;
+		default:
+			ArrayList<Task> answers2 = new ArrayList<Task>();
+			for (int i = 0; i < taskList.size(); i++){
+				if (!taskList.get(i).hasFinished())
+					answers2.add(taskList.get(i));
+			}
+			return answers2;
 		}
 	}
 		
@@ -717,7 +734,7 @@ public class TaskManager {
 	
 	public String getAllTitles(){
 		String answer = new String("");
-		if (mode == 0){
+		if (mode == DISPLAY_MODE.TODO_TASKLIST){
 			for (int i = 0; i < taskList.size(); i++){
 				answer = answer + (i+1) + ". "+ taskList.get(i).getContent()+"\n";
 			}
@@ -773,7 +790,7 @@ public class TaskManager {
 		return myParser.provideTips(command);
 	}
 	
-	public int getCurrentMode(){
+	public DISPLAY_MODE getCurrentMode(){
 		
 		return mode;
 	}
