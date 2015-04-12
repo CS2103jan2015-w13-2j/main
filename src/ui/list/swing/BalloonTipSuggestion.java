@@ -12,8 +12,7 @@ public class BalloonTipSuggestion {
         if (autoFill != null) {
         LayoutSetting.showBalloonTipSuggestion(autoFill);
         
-        } 
-        
+        }         
         else {
         	LayoutSetting.closeBalloonTip();
         }
@@ -25,13 +24,11 @@ public class BalloonTipSuggestion {
     	if (inputStream.length() == 0) {
     		LayoutSetting.closeBalloonTip();
     	}
-
     	else {
     		setBalloonTipSuggestion();
     	}
-
     }
-    
+  
     public static String getAutoFill() {
     	return UserInterface.BTM.getAutoFill(TextFieldListener.getInputStream());
     }

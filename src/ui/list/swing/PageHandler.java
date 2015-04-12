@@ -13,7 +13,6 @@ public class PageHandler {
 	private static int fileLastPage = 0;
 
 	public static void updatePage() {
-		
 		lastPage = getLastPage();
 		currentPage = getCurrentPage();		
 		

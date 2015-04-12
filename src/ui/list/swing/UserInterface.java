@@ -90,8 +90,7 @@ public class UserInterface {
 		
 		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
 			files = BTM.getAllFilePath();
-			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());
-			
+			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());			
 		}
 		else {
 			PageHandler.isAtFilePage = false;

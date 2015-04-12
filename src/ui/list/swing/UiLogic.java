@@ -138,7 +138,6 @@ public class UiLogic {
 		UserInterface.isAdd = false;
 	}
 	
-	
 	private static void processComplete(String input) throws NullPointerException, IOException {
 		System.out.println("is valid complete");
 		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.completeIndex-1));
