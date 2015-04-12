@@ -28,8 +28,8 @@ public class JsonStringFileOperation{
 	private static final ArrayList<Task> EMPTY_UNFINISHED_TASKLIST = new ArrayList<Task>();
 	private static final ArrayList<Task> EMPTY_FINISHED_TASKLIST = new ArrayList<Task>();
 	
-	FileOperation savedFile;
-	FileOperation tempSavedFile;
+	private FileOperation savedFile;
+	private FileOperation tempSavedFile;
 	
 	/*
 	 * If the file name is invalid or null, throw IOException
