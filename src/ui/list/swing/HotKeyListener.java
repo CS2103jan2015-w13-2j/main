@@ -35,10 +35,10 @@ public class HotKeyListener extends KeyAdapter {
 		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
 //			System.out.println("Left arrow pressed!");
 			if (UserInterface.textField.getText().isEmpty()) {
-				if (PageHandler.getCurrentPage() > 0 && !UserInterface.atHelpMenu) {
+				if (PageHandler.getCurrentPage() > 0 && !UserInterface.atHelpMenu && !PageHandler.isAtFilePage) {
 					if (PageHandler.getCurrentPage() > 0) {
 						PageHandler.flipPrevPage();
-						System.out.println("flipped prev page");
+//						System.out.println("flipped prev page");
 						try {
 							UserInterface.display(PageHandler.getCurrentPage());
 						} catch (NullPointerException | IOException e) {
@@ -47,6 +47,21 @@ public class HotKeyListener extends KeyAdapter {
 						}
 					}
 				}
+				
+				
+			}
+			
+			else if (PageHandler.isAtFilePage){
+				if (PageHandler.getFileCurrentPage() > 0) {
+					PageHandler.flipPrevFilePage();
+					try {
+						UserInterface.display(PageHandler.getFileCurrentPage());
+					} catch (NullPointerException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
 			}
 			
 		}
@@ -54,7 +69,7 @@ public class HotKeyListener extends KeyAdapter {
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
 //			System.out.println("Right Arrow Pressed!");			
-			if (UserInterface.textField.getText().isEmpty() && !UserInterface.atHelpMenu && PageHandler.getCurrentPage() < PageHandler.getLastPage() ) {
+			if (UserInterface.textField.getText().isEmpty() && !UserInterface.atHelpMenu && PageHandler.getCurrentPage() < PageHandler.getLastPage() && !PageHandler.isAtFilePage) {
 						PageHandler.flipNextPage();
 						System.out.println("flipped next page");
 						try {
@@ -66,6 +81,18 @@ public class HotKeyListener extends KeyAdapter {
 					
 			}
 //			System.out.println("current page = " + UserInterface.currentPage);
+			else if (PageHandler.isAtFilePage){
+				if (PageHandler.getFileCurrentPage() > 0) {
+					PageHandler.flipNextFilePage();
+					try {
+						UserInterface.display(PageHandler.getFileCurrentPage());
+					} catch (NullPointerException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
