@@ -35,10 +35,10 @@ public class ConfigurationFileOperation{
 		this.converter = new ObjectConverter();
 	}
 	
-	public String getLastOpenFilePath() throws IOException {
-		String fileContent = configurationFile.readFile();
-		logger.info(MESSAGE_READ_CONFIGURATION_FILE);
+	public String getLastOpenFilePath(){
 		try{
+			String fileContent = configurationFile.readFile();
+			logger.info(MESSAGE_READ_CONFIGURATION_FILE);
 			String filePath = converter.getFilePathFromJsonString(fileContent);
 			if(isNull(filePath) || filePath.equals(EMPTY_STRING)){
 				filePath = DEFAULT_FILE_NAME;
@@ -50,10 +50,10 @@ public class ConfigurationFileOperation{
 		}
 	}
 	
-	public ArrayList<String> getHistoryFilePath() throws IOException {
-		String fileContent = configurationFile.readFile();
-		logger.info(MESSAGE_READ_CONFIGURATION_FILE);
+	public ArrayList<String> getHistoryFilePath(){
 		try{
+			String fileContent = configurationFile.readFile();
+			logger.info(MESSAGE_READ_CONFIGURATION_FILE);
 			ArrayList<String> x = converter.getFilePathListFromJsonString(fileContent);
 			return x;
 		}catch(Exception e){
