@@ -22,6 +22,7 @@ public class DisplayFormat {
 	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
 	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
 	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
+	private static final String TASK_INFO_FILE_PATH_MSG = "Existing files: ";
 	
 	private static StringBuilder data = new StringBuilder();
 	private static final String HTML_OPEN = "<html>";
@@ -142,17 +143,17 @@ public class DisplayFormat {
 		}
 	}
 	
-	public static String getViewTaskInfo() {
-		clearData();
-		
-		data.append(HTML_OPEN);
-		data.append(HTML_FONT_VIEW_TASK_INFO);
-		data.append(getTaskInfoDetails());
-		data.append(HTML_FONT_CLOSE);
-		data.append(HTML_CLOSE);	
-		
-		return data.toString();
-	}
+//	public static String getViewTaskInfo() {
+//		clearData();
+//		
+//		data.append(HTML_OPEN);
+//		data.append(HTML_FONT_VIEW_TASK_INFO);
+//		data.append(getTaskInfoDetails());
+//		data.append(HTML_FONT_CLOSE);
+//		data.append(HTML_CLOSE);	
+//		
+//		return data.toString();
+//	}
 
 	@SuppressWarnings("finally")
 	public static String getTaskInfoDetails() {
@@ -163,17 +164,34 @@ public class DisplayFormat {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-//			System.out.println("Continue after catch mode = " + mode);
+			//			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
-			case TODO_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
-			case SEARCH_LIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
-			case FINISHED_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
-			case ALL_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
-			default: return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
-			
+			case TODO_TASKLIST: PageHandler.isAtFilePage = false; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+			case SEARCH_LIST: PageHandler.isAtFilePage = false; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+			case FINISHED_TASKLIST: PageHandler.isAtFilePage = false; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+			case ALL_TASKLIST: PageHandler.isAtFilePage = false; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
+			case FILE_PATH: PageHandler.isAtFilePage = true; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO, TASK_INFO_FILE_PATH_MSG);
+
+			default: PageHandler.isAtFilePage = false; 
+			return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
+
 			}
 		}
+	}
+	
+	public static String getPathInfoFormat(String path, int index) {
+		clearData();
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_INDEX, (index+1) + ". ") + String.format(HTML_FONT_TASKNAME, path));
+		data.append(HTML_CLOSE);
+		
+		return data.toString();
 	}
 	
 	public static String getFeedbackGuideInfo() {
