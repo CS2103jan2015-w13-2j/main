@@ -81,6 +81,10 @@ public class FileOperation {
 		}
 	}
 	
+	/*
+	 * If the file with fileName exists, delete it.
+	 * Otherwise do nothing. 
+	 */
 	public void delete(){
 		File file = new File(fileName);
 		if (file.exists()){

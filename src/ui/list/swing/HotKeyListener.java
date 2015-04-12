@@ -75,6 +75,11 @@ public class HotKeyListener extends KeyAdapter {
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_HELP_MESSAGE);
 		}
 		
+		else if (arg1.getKeyCode() == KeyEvent.VK_F2) {
+			System.out.println("F2 pressed");
+			FileChooser.run(new FileChooser(), 250, 110);
+		}
+		
 		else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE && UserInterface.atHelpMenu) {
 //			System.out.println("ESC pressed");
 			UserInterface.atHelpMenu = false;

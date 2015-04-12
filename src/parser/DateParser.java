@@ -50,7 +50,7 @@ public class DateParser {
 		}
 	}
 	
-	public String formatDefault(Date date) throws  NullPointerException {
+	public static String formatDefault(Date date) throws  NullPointerException {
 		if (date == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
