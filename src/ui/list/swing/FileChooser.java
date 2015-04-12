@@ -19,80 +19,82 @@ public class FileChooser extends JFrame{
 	 * Default serial
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField filename = new JTextField();
-	private JTextField dir = new JTextField();
-	private JButton open = new JButton("Open"), save = new JButton("Save");
-	private JPanel p_1;
+	public static JTextField filename = new JTextField();
+	public static JTextField dir = new JTextField();
+	public static JButton importFrom = new JButton("Import from");
+	public static JButton exportTo = new JButton("Export to");
+	public static JButton ok = new JButton("Ok");
+
+	public static JPanel fileChooserPanel;
+	public static JPanel buttonPanel;
+	public static JLabel lblDirectory = new JLabel("Directory:");
+	public static JLabel lblFileName = new JLabel("File Name:");
+	public static JFileChooser fc = new JFileChooser();
 	
 	public FileChooser() {
-	    JPanel p = new JPanel();
-	    p.setBounds(0, 115, 575, 39);
-	    open.addActionListener(new OpenL());
-	    p.add(open);
-	    save.addActionListener(new SaveL());
-	    p.add(save);
+		System.out.println("new instance of FileChooser");
+	    buttonPanel = new JPanel();
+	    fileChooserPanel = new JPanel();
 	    Container cp = getContentPane();
 	    getContentPane().setLayout(null);
-	    cp.add(p);
-	    filename.setBounds(70, 65, 505, 44);
-	    filename.setEditable(false);
-	    p_1 = new JPanel();
-	    p_1.setBounds(0, 0, 575, 115);
-	    p_1.setLayout(null);
-	    dir.setBounds(70, 9, 505, 44);
-	    p_1.add(dir);
-	    dir.setEditable(false);
-	    p_1.add(filename);
-	    cp.add(p_1);
-	    
-	    JLabel lblDirectory = new JLabel("Directory:");
-	    lblDirectory.setBounds(6, 20, 73, 22);
-	    p_1.add(lblDirectory);
-	    
-	    JLabel lblFileName = new JLabel("File Name:");
-	    lblFileName.setBounds(6, 76, 73, 22);
-	    p_1.add(lblFileName);
+	    LayoutSetting.setFileChooseLayout();
+	    cp.add(buttonPanel);
+	    cp.add(fileChooserPanel);
+	    importFrom.addActionListener(new ImportListener());
+	    exportTo.addActionListener(new ExportListener());
+	    ok.addActionListener(new OkayListener());
 	  }
 	
-	class OpenL implements ActionListener {
+	class OkayListener implements ActionListener {
+
+		@Override
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser c = new JFileChooser();
+			String filePath = dir.getText() + "/" + filename.getText();
+			System.out.println("file path = " + filePath);
+			UserInterface.fileChooserFrame.dispose();
+		}
+		
+	}
+	
+	class ImportListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+//			JFileChooser c = new JFileChooser();
 			// Demonstrate "Open" dialog:
-			int rVal = c.showOpenDialog(FileChooser.this);
+			int rVal = fc.showOpenDialog(fc);
 			if (rVal == JFileChooser.APPROVE_OPTION) {
-				filename.setText(c.getSelectedFile().getName());
-				dir.setText(c.getCurrentDirectory().toString());
+				filename.setText(fc.getSelectedFile().getName());
+				dir.setText(fc.getCurrentDirectory().toString());
 			}
 			if (rVal == JFileChooser.CANCEL_OPTION) {
-				filename.setText("You pressed cancel");
+				filename.setText("");
 				dir.setText("");
 			}
 		}
 	}
 
-	class SaveL implements ActionListener {
+	class ExportListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser c = new JFileChooser();
+//			JFileChooser c = new JFileChooser();
 			// Demonstrate "Save" dialog:
-			int rVal = c.showSaveDialog(FileChooser.this);
+			System.out.println("opening dialog");
+			int rVal = fc.showSaveDialog(fc);
 			if (rVal == JFileChooser.APPROVE_OPTION) {
-				filename.setText(c.getSelectedFile().getName());
-				dir.setText(c.getCurrentDirectory().toString());
+				System.out.println("User pressed save");
+				filename.setText(fc.getSelectedFile().getName());
+				dir.setText(fc.getCurrentDirectory().toString());
 			}
 			if (rVal == JFileChooser.CANCEL_OPTION) {
-				filename.setText("You pressed cancel");
+				System.out.println("User pressed cancel");
+				filename.setText("");
 				dir.setText("");
 			}
 		}
 	}
 	
 	  public static void run(JFrame frame, int width, int height) {
+		  System.out.println("running fileChooser");
 		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		    frame.setSize(width, height);
 		    frame.setVisible(true);
-		  }
-	  
-	  public static void main(String[] args) {
-		    run(new FileChooser(), 250, 110);
 		  }
 }

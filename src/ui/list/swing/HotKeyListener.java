@@ -77,7 +77,7 @@ public class HotKeyListener extends KeyAdapter {
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_F2) {
 			System.out.println("F2 pressed");
-			FileChooser.run(new FileChooser(), 250, 110);
+			FileChooser.run(UserInterface.fileChooserFrame, 515, 149);
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE && UserInterface.atHelpMenu) {

@@ -134,6 +134,28 @@ public class LayoutSetting {
 		SimpleTimer.start();
 	}
 	
+	public static void setFileChooseLayout() {
+	    FileChooser.buttonPanel.setBounds(0, 87, 575, 39);
+	    FileChooser.filename.setBounds(80, 49, 422, 28);
+	    FileChooser.fileChooserPanel.setBounds(0, 0, 575, 88);
+	    FileChooser.dir.setBounds(80, 9, 422, 28);
+	    FileChooser.lblDirectory.setBounds(10, 12, 62, 22);
+	    FileChooser.lblFileName.setBounds(6, 49, 66, 22);
+	    
+	    FileChooser.dir.setEditable(false);
+	    FileChooser.filename.setEditable(false);
+	    FileChooser.fileChooserPanel.setLayout(null);
+	    
+	    FileChooser.buttonPanel.add(FileChooser.importFrom);
+	    FileChooser.buttonPanel.add(FileChooser.exportTo);
+	    FileChooser.buttonPanel.add(FileChooser.ok);
+	    FileChooser.fileChooserPanel.add(FileChooser.dir);
+	    FileChooser.fileChooserPanel.add(FileChooser.filename);
+	    FileChooser.fileChooserPanel.add(FileChooser.lblDirectory);    
+	    FileChooser.fileChooserPanel.add(FileChooser.lblFileName);
+
+	}
+	
 	private static String getDayOfWeek() {
 		String dayOfWeekString = "";
 		Calendar calendar = Calendar.getInstance();
