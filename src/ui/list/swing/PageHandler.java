@@ -8,9 +8,10 @@ public class PageHandler {
 	private static double printFilePerPage = 10.0;
 	private static int currentPage = 0;
 	private static int lastPage = 0;
-	public static boolean isAtFilePage = false;
 	private static int fileCurrentPage = 0;
 	private static int fileLastPage = 0;
+
+	public static boolean isAtFilePage = false;
 
 	public static void updatePage() {
 		lastPage = getLastPage();

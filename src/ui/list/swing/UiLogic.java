@@ -7,9 +7,9 @@ import java.io.IOException;
 
 public class UiLogic {
 	
-	public static final int DELETE_MODE = 0;
-	public static final int MODIFY_MODE = 1;
-	public static final int COMPLETE_MODE = 2;
+	private static final int DELETE_MODE = 0;
+	private static final int MODIFY_MODE = 1;
+	private static final int COMPLETE_MODE = 2;
 
 	
 	/**
