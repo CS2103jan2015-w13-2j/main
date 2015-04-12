@@ -56,7 +56,7 @@ public class Parser {
 	private static final String[] KEYWORD_IMPORT = {"import", "load"};
 	private static final String[] KEYWORD_EXPORT = {"export", "save"};
 	
-	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
+	private static final String[] OPTIONS = {"-v", "-d", "-dd"};
 	
 	private static final Pattern REGEX_NUMBERS = Pattern.compile(".*[^0-9].*");
 	private static final Pattern REGEX_COMMA = Pattern.compile(",");
