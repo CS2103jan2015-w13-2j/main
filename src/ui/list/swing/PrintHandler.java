@@ -2,11 +2,14 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
+
 import taskList.Task;
 
 //@author A0117971Y
@@ -19,9 +22,12 @@ import taskList.Task;
 
 public class PrintHandler {
 	
+
+	//mode == 4 means the result shown in screen is all existing file	
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
 	private static final int COMPLETE_MODE = 3;
+	private static final int EXISTING_FILE_MODE = 4;
 	private static final int printPerPage = 4;
 	
 	
@@ -38,20 +44,32 @@ public class PrintHandler {
 		printTaskHeading();
 		int startIndex = pageNumber * printPerPage;
 		int endIndex = startIndex + printPerPage;
-		
-		//not last page
-		if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
-			for (int i=startIndex; i < endIndex; i++) {
-				printTask(UserInterface.taskList.get(i),i);
+
+		//print existing file
+
+		if (UserInterface.BTM.getCurrentMode() == EXISTING_FILE_MODE) {
+			for (int i=startIndex; i<endIndex; i++) {
+				printFilePaths(i);
 			}
 		}
-		//last page
+
 		else {
-			for (int i=startIndex; i<UserInterface.taskList.size(); i++) {
-				printTask(UserInterface.taskList.get(i),i);
+
+			//not last page
+			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
+				for (int i=startIndex; i < endIndex; i++) {
+					printTask(UserInterface.taskList.get(i),i);
+				}
 			}
+			//last page
+			else {
+				for (int i=startIndex; i<UserInterface.taskList.size(); i++) {
+					printTask(UserInterface.taskList.get(i),i);
+				}
+			}
+
 		}
-		
+
 		refreshPanel();
 	}
 	
@@ -100,6 +118,16 @@ public class PrintHandler {
 		}
 		
 		refreshPanel();
+	}
+	
+	public static void printFilePaths(int i) {
+		ArrayList<String> paths = UserInterface.BTM.getAllFilePath();
+		String labelText;
+
+		labelText = DisplayFormat.getPathInfoFormat(paths.get(i), i);
+		UserInterface.panel.add(new JLabel(labelText));
+
+
 	}
 	
 	/**
