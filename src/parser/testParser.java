@@ -20,7 +20,8 @@ public class testParser {
 	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
 	private static final String EXCEPTION_NOINDEX = "you must enter an index";
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
-	private static final String FAIL = "no exception thrown";
+	private static final String FAIL_NOEXCEPTION = "no exception thrown";
+	private static final String FAIL_EXCEPTION = "unexpected exception";
 	
 	private static final String FEEDBACK_ADD = 
 			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
@@ -52,7 +53,7 @@ public class testParser {
 	public void testGetOperation() {
 		try {
 			testOperation = p.getOperation(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -67,7 +68,7 @@ public class testParser {
 	public void testIsArgumentsCorrect() {
 		try {
 			testBoolean = p.isArgumentsCorrect(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -86,24 +87,26 @@ public class testParser {
 	public void testGetIndex() {
 		try {
 			testArrayList = p.getIndex(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
 		}
 		try {
-			testArrayList = p.getIndex("modify 5,6,7 -d the day after tomorrow");
+			testArrayList = p.getIndex("modify 4,5,6,7 -d the day after tomorrow");
 			ArrayList<Integer> temp = new ArrayList<Integer>();
+			temp.add(4);
 			temp.add(5);
 			temp.add(6);
 			temp.add(7);
-			assertEquals(temp, testNumber);
+			assertEquals(temp, testArrayList);
 		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
 			e.printStackTrace();
 		}
 		try {
 			testArrayList = p.getIndex("modify -d the day after tomorrow");
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NOTITLE));
@@ -114,7 +117,7 @@ public class testParser {
 	public void testGetNewTitle() {
 		try {
 			testString = p.getNewTitle(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -135,7 +138,7 @@ public class testParser {
 	public void testGetTitle() {
 		try {
 			testString = p.getTitle(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -154,7 +157,7 @@ public class testParser {
 	public void testGetVenue() {
 		try {
 			testString = p.getVenue(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -169,7 +172,7 @@ public class testParser {
 	public void testGetDate() {
 		try {
 			testDate = p.getDate(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -188,7 +191,7 @@ public class testParser {
 	public void testGetDeadline() {
 		try {
 			testDate = p.getDeadline(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -207,7 +210,7 @@ public class testParser {
 	public void testAutoFill() {
 		try {
 			testString = p.autoFill(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -224,7 +227,7 @@ public class testParser {
 	public void testProvideTips() {
 		try {
 			testString = p.provideTips(null);
-			fail(FAIL);
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));

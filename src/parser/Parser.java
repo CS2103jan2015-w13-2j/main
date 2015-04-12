@@ -11,9 +11,9 @@ import java.util.regex.Pattern;
 
 //@author A0119503M
 /**
- * This class supports main functions to understand users鈥� command, 
+ * This class supports main functions to understand users' command, 
  * the controller can call these functions to get the operation type 
- * as well as various contents of users鈥� commands.
+ * as well as various contents of users' commands.
  * APIs:
  * 	getOperation(String): Operation throws NullPointerException
  *  isValid(String): boolean throws NullPointerException
@@ -125,12 +125,11 @@ public class Parser {
 		ArrayList<Integer> indexGroup = new ArrayList<Integer>();
 		for (String str : tempGroup) {
 			m = REGEX_NUMBERS.matcher(str);
-			System.out.println(str);
-		//	if (str.matches("[0-9]{1,}")) {
-		//		logIOException(EXCEPTION_INDEXILLEGAL);
-		//	} else {
+			if (m.matches()) {
+				logIOException(EXCEPTION_INDEXILLEGAL);
+			} else {
 				indexGroup.add(Integer.valueOf(str));
-		//	}
+			}
 		}
 		return indexGroup;
 	}
@@ -240,6 +239,7 @@ public class Parser {
 			}
 		}
 		return str.substring(start, end+1);
+		
 	}	
 
 	private Operation getOperationIndex(String operation) {
