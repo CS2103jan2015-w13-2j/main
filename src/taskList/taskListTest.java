@@ -16,7 +16,7 @@ public class taskListTest {
 	private static final String ADD_COMMAND_1 = "add jumped over the moon";
 	private static final String ADD_COMMAND_2 = "add little brown fox";
 	private static final String DELETE_COMMAND_1 = "delete 1";
-	private static final String SORT_COMMAND = "sort";
+	private static final String SORT_COMMAND = "sort title";
 	private static final String SEARCH_COMMAND_1 = "search word1";
 	private static final String SEARCH_COMMAND_2 = "search word2";
 	private static final String SEARCH_COMMAND_NOT_EXIST = "search word22222";
@@ -177,6 +177,203 @@ public class taskListTest {
 	
 
 	}
+	
+	@Test
+	public void testUndo() throws NullPointerException, IOException{
+		//set up testcase
+		String[] args = new String[1];
+		args[0] = TEST_FILENAME;
+		TaskManager taskList = new TaskManager(args[0]);
+		
+		//testcase 1
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+A_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		ArrayList<String> exceptedList = new ArrayList<String>();
+		exceptedList.add(A_STRING);
+		exceptedList.add(B_STRING);
+		exceptedList.add(C_STRING);
+		exceptedList.add(D_STRING);
+		exceptedList.add(E_STRING);
+		exceptedList.add(F_STRING);
+		exceptedList.add(G_STRING);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.executeCommand(CLEAR_COMMAND);
+		taskList.undo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		//testcase 2
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+A_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.executeCommand(CLEAR_COMMAND);
+		taskList.undo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+
+	}
+	
+	@Test
+	public void testRedo() throws NullPointerException, IOException{
+		//set up testcase
+		String[] args = new String[1];
+		args[0] = TEST_FILENAME;
+		TaskManager taskList = new TaskManager(args[0]);
+		
+		//testcase 1
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+A_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		ArrayList<String> exceptedList = new ArrayList<String>();
+		exceptedList.add(A_STRING);
+		exceptedList.add(B_STRING);
+		exceptedList.add(C_STRING);
+		exceptedList.add(D_STRING);
+		exceptedList.add(E_STRING);
+		exceptedList.add(F_STRING);
+		exceptedList.add(G_STRING);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		//testcase 2
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+A_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+
+	}
+	
+	@Test
+	public void testImport() throws NullPointerException, IOException{
+		//set up testcase
+		String[] args = new String[1];
+		args[0] = TEST_FILENAME;
+		TaskManager taskList = new TaskManager(args[0]);
+		
+		//testcase 1
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+A_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		ArrayList<String> exceptedList = new ArrayList<String>();
+		exceptedList.add(A_STRING);
+		exceptedList.add(B_STRING);
+		exceptedList.add(C_STRING);
+		exceptedList.add(D_STRING);
+		exceptedList.add(E_STRING);
+		exceptedList.add(F_STRING);
+		exceptedList.add(G_STRING);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		//testcase 2
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+A_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		TaskManager taskList2 = new TaskManager("Another File");
+		taskList2.executeCommand("import "+args[0]);
+		assertEquals("undo test", exceptedList, taskList2.getTaskList());
+		
+	}
+	
+	@Test
+	public void testExport() throws NullPointerException, IOException{
+		//set up testcase
+		String[] args = new String[1];
+		args[0] = TEST_FILENAME;
+		TaskManager taskList = new TaskManager(args[0]);
+		
+		//testcase 1
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+A_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		ArrayList<String> exceptedList = new ArrayList<String>();
+		exceptedList.add(A_STRING);
+		exceptedList.add(B_STRING);
+		exceptedList.add(C_STRING);
+		exceptedList.add(D_STRING);
+		exceptedList.add(E_STRING);
+		exceptedList.add(F_STRING);
+		exceptedList.add(G_STRING);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		//testcase 2
+		taskList.executeCommand("clear");
+		taskList.executeCommand("add "+A_STRING);
+		taskList.executeCommand("add "+B_STRING);
+		taskList.executeCommand("add "+C_STRING);
+		taskList.executeCommand("add "+D_STRING);
+		taskList.executeCommand("add "+E_STRING);
+		taskList.executeCommand("add "+F_STRING);
+		taskList.executeCommand("add "+G_STRING);
+		testOneCommand("simple sort",EXCEPTED_ANSWER_SORT, SORT_COMMAND,taskList);
+		assertEquals("Change to todoList", exceptedList, taskList.getTaskList());
+		taskList.undo();
+		taskList.redo();
+		assertEquals("undo test", exceptedList, taskList.getTaskList());
+		
+		TaskManager taskList2 = new TaskManager("Another File");
+		taskList.executeCommand("export anotherfile");
+		taskList2.executeCommand("import anotherfile");
+		assertEquals("undo test", exceptedList, taskList2.getTaskList());
+		
+	}
 	private void testOneCommand(String description, String expected, String command, TaskManager taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
 		System.out.println("Debug");
@@ -184,5 +381,7 @@ public class taskListTest {
 		System.out.println(taskList.getAllTitles());
 		assertEquals(description, expected, taskList.getAllTitles()); 
 	}
+	
+	
 
 }
