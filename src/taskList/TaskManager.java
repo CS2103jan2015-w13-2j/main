@@ -10,28 +10,25 @@ import java.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import storage.ConfigurationFileOperation;
-import storage.FileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
 import parser.DateParser;
 import parser.Parser;
 public class TaskManager {
-	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
-	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
-	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
-	private static final String MESSAGE_DELETE_OPERATION_FAILURE = "index is not valid for delete from %s %s\n ";
-	private static final String MESSAGE_CLEAR_OPERATION = "all content deleted from %s\n";
-	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
-	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
-	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify\n";
+	private static final String MESSAGE_EMPTY_FILE = "No related file found";
+	private static final String MESSAGE_ADD_OPERATION = "Add new task successfully";
+	private static final String MESSAGE_DELETE_OPERATION = "Delete operation successfully";
+	private static final String MESSAGE_DELETE_OPERATION_FAILURE = "Index is not valid for delete operation";
+	private static final String MESSAGE_CLEAR_OPERATION = "all content has been deleted";
+	private static final String MESSAGE_MODIFY_OPERATION = "Modify successfully \n";
+	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "Index is not valid for modify\n";
 	public enum SORT_MODE {
 		BY_TIME,BY_VENUE,BY_TITLE
 	}
 	public enum DISPLAY_MODE {
 		TODO_TASKLIST, SEARCH_LIST, FINISHED_TASKLIST, ALL_TASKLIST, FILE_PATH
 	}
-	private Scanner sc;
 	private String fileName;
 	private JsonStringFileOperation fileOperation;
 	private ConfigurationFileOperation configurationFileOperation;
@@ -39,11 +36,6 @@ public class TaskManager {
 	private ArrayList<Task> completedTaskList;	
 	private ArrayList<Task> searchResult;
 	
-	//mode == 0 means the result shown in screen is taskList,
-	//mode == 1 means the result shown in screen is searchResult
-	//mode == 2 means the result shown in screen is completedTaskList
-	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-	//mode == 4 means the result shown in screen is all existing file
 	private DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
 	private Parser myParser;
 	
@@ -53,18 +45,18 @@ public class TaskManager {
 	private ArrayList<String> fileList = new ArrayList<String>();
 	private String name = TaskManager.class.getName(); 
 	private int lastOperationIndex = -1;
-	private Logger log = Logger.getLogger(name);// <= (2)  
+	private Logger log = Logger.getLogger(name);
+	//Only one instance for TaskManager, instead of new a TaskManager, other method get instance by getSharedInstance method
 	private static TaskManager sharedInstance; 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+	//A date format used to format date so that search and sort is easy to be implemented
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(DateParser.FORMAT_DEFAULT);
+	
+	/*
+	 * Construct a TaskManager with a given file name
+	 */
 	public TaskManager(String inputFileName){
 		mode = DISPLAY_MODE.TODO_TASKLIST;
 		fileName = inputFileName;
-		try{
-			fileOperation = new JsonStringFileOperation(fileName);
-		}catch(Exception e){
-			log.info("There is a file reading error");
-			feedBack.add("Cannot open the file correctly");
-		}
 		feedBack.clear();
 		try{
 			fileOperation = new JsonStringFileOperation(fileName);
@@ -76,28 +68,28 @@ public class TaskManager {
 			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
-			feedBack.add("Cannot open the file correctly");
+			showMessage("Cannot open the file correctly");
 		}
 		
 		myParser = new Parser();
 		//Add in a initParser() command.
 	}
-	
+
+	/*
+	 * Construct a TaskManager based on the configuration file
+	 */
 	public TaskManager(){
+		mode = DISPLAY_MODE.TODO_TASKLIST;
+		feedBack.clear();
 		try{
 			configurationFileOperation = new ConfigurationFileOperation();
-		}catch (Exception e){
-			System.out.println("wrong");
-		}
-		try{
 			fileName = configurationFileOperation.getLastOpenFilePath();
 			System.out.println("debug "+fileName);
 			fileList = configurationFileOperation.getHistoryFilePath();
 			fileOperation = new JsonStringFileOperation(fileName);
 		}catch (Exception e){
-			System.out.println("fuck");
+			showMessage("Something wrong happens when open configuration file");
 		}
-		feedBack.clear();
 		try{
 			fileOperation = new JsonStringFileOperation(fileName);
 			taskList = fileOperation.getUnfinishedTaskListFromFile();
@@ -108,13 +100,15 @@ public class TaskManager {
 			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
 		}catch(Exception e){
 			log.info("There is a command invalid error");
-			feedBack.add("Cannot open the file correctly");
+			showMessage("Cannot open the file correctly");
 		}
 		
 		myParser = new Parser();
-		//Add in a initParser() command.
 	}
 	
+	/*
+	 * return the sharedInstance of TaskManager instead of creating more than one instances
+	 */
 	public static TaskManager getSharedInstance(){
 		if (sharedInstance == null) {
 			sharedInstance = new TaskManager();
@@ -123,16 +117,12 @@ public class TaskManager {
 		return sharedInstance;
 	}
 	
-	/*
-	 * print messages
-	 */
-	private void showMessage(String message, String content) {
-		feedBack.add(String.format(message, this.fileName, content));
-		System.out.print(String.format(message, this.fileName, content));
-	}
+
 
 	/*
-	 * print single messages
+	 * parameters: String message
+	 * return: Nothing
+	 * Description: add message into feedback and provide api for UI to get feedback of last operation
 	 */
 	private void showMessage(String message) {
 		this.feedBack.add(message);
@@ -142,22 +132,10 @@ public class TaskManager {
 	
 	
 	/*
-	 * show the file content in format
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: apis provided for UI to executeCommand
 	 */
-	private void showFileContent(int index, String content) {
-		System.out.print(String.format(MESSAGE_DISPLAY_OPERATION, index,
-				content));
-	}
-	
-	public void startWaitingForCommand() throws NullPointerException, IOException{
-		sc = new Scanner(System.in);
-		String inputCommand;
-		while (true) {
-			System.out.print("Command: ");
-			inputCommand = sc.nextLine();
-			executeCommand(inputCommand);
-		}
-	}
 	
 	public void executeCommand(String command) {
 		try{
@@ -212,10 +190,12 @@ public class TaskManager {
 	}
 	
 	/*
-	 * add new content to arraylist, but do not actully store to file
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: add task into task list. Can be used in search mode but would not change what displays inside search result
 	 */
 	private void add(String command) throws Exception{
-		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		//User should not modify the completed task, so the mode would be switched to TODO_TASKLIST automatically
 		switchToChangeableMode();
 		assert(myParser.isValid(command));
 		String content = myParser.getTitle(command);
@@ -224,7 +204,7 @@ public class TaskManager {
 			System.out.println(date);
 			Date deadLine = myParser.getDeadline(command);
 			String venue = myParser.getVenue(command);
-			showMessage(MESSAGE_ADD_OPERATION, content);
+			showMessage(MESSAGE_ADD_OPERATION);
 			taskList.add(new Task(content,date,deadLine,venue));
 			System.out.println(taskList.get(0).isOutOfDate());
 			saveFile();
@@ -236,18 +216,20 @@ public class TaskManager {
 	}
 	
 	/*
-	 * delete content in arraylist, but do not actully store to file
+	 * parameters: int removeIndex
+	 * return: Nothing
+	 * Description: delete a single task based on its index. If it is on the search mode, it would delete related task inside taskList
 	 */
 	private void delete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		switchToChangeableMode();
 
 		if (removeIndex <= 0 || removeIndex > taskList.size()) {
-			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+			showMessage(MESSAGE_DELETE_OPERATION_FAILURE);
 			return;
 		}
 		if (mode == DISPLAY_MODE.TODO_TASKLIST) {
-			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
+			showMessage(MESSAGE_DELETE_OPERATION);
 			taskList.remove(removeIndex - 1);
 			System.out.println("here here "+removeIndex);
 			saveFile(); 
@@ -260,14 +242,16 @@ public class TaskManager {
 				}
 			}
 			taskList.remove(indexinTaskList);
-			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
+			showMessage(MESSAGE_DELETE_OPERATION);
 			searchResult.remove(removeIndex - 1);
 			saveFile();
 		}
 	}
 	
 	/*
-	 * deleteMultiple use delete functions multiple times to finish the delete function
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: delete several tasks at the same time
 	 */
 	private void deleteMultiple(String command) throws Exception{
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
@@ -282,7 +266,10 @@ public class TaskManager {
 	
 	
 	/*
-	 * complete content in arraylist, save this task to finished list
+	 * parameters: int removeIndex
+	 * return: Nothing
+	 * Description: complete a single task based on its index. If it is on the search mode, it would complete related task inside taskList
+	 * The completed one would be marked as finish and moved to completedTaskList
 	 */
 	private void complete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
@@ -290,10 +277,10 @@ public class TaskManager {
 		if (mode == DISPLAY_MODE.TODO_TASKLIST){
 			
 			if (removeIndex < 0 || removeIndex > taskList.size()) {
-				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE);
 				return;
 			}
-			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
+			showMessage(MESSAGE_DELETE_OPERATION);
 			Task finishedOne = taskList.remove(removeIndex - 1);
 			
 			//update hasfinished added here		
@@ -304,7 +291,7 @@ public class TaskManager {
 			undo.add(taskList);
 		}else{
 			if (removeIndex < 0 || removeIndex > searchResult.size()) {
-				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
+				showMessage(MESSAGE_DELETE_OPERATION_FAILURE);
 				return;
 			}
 			int indexinTaskList = 0;
@@ -315,7 +302,7 @@ public class TaskManager {
 				}
 			}
 			taskList.remove(indexinTaskList);
-			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
+			showMessage(MESSAGE_DELETE_OPERATION);
 			searchResult.remove(removeIndex - 1);
 			saveFile();
 			undo.add(taskList);
@@ -323,7 +310,9 @@ public class TaskManager {
 	}
 	
 	/*
-	 * complete multiple use complete functions multiple times to finish the delete function
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: complete several tasks at the same time
 	 */
 	private void completeMultiple(String command) throws Exception{
 		ArrayList<Integer> completeIndex = myParser.getIndex(command);
@@ -337,7 +326,9 @@ public class TaskManager {
 	
 	
 	/*
-	 * display the content in arraylist, which is the real-time file content
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: switch DISPLAY_MODE to relative type based on command
 	 */
 	private void display(String command) throws NullPointerException, IOException {
 		String type = "unfinished";
@@ -349,14 +340,14 @@ public class TaskManager {
 		if (type.equals("finished")){
 			mode = DISPLAY_MODE.FINISHED_TASKLIST;
 			if (completedTaskList.size() == 0){
-				showMessage(MESSAGE_EMPTY_FILE,null);
+				showMessage(MESSAGE_EMPTY_FILE);
 				return;
 			}
 			showMessage("Display finished Task");
 		}else if (type.equals("all")){
 			mode = DISPLAY_MODE.ALL_TASKLIST;
 			if (completedTaskList.size() + taskList.size() == 0){
-				showMessage(MESSAGE_EMPTY_FILE,null);
+				showMessage(MESSAGE_EMPTY_FILE);
 				return;
 			}
 			showMessage("Display all Tasks");
@@ -366,20 +357,18 @@ public class TaskManager {
 		}else{
 			mode = DISPLAY_MODE.TODO_TASKLIST;
 			if (taskList.size() == 0) {
-				showMessage(MESSAGE_EMPTY_FILE, null);
+				showMessage(MESSAGE_EMPTY_FILE);
 				return;
-			}
-			int i = 1;
-			for (Task content : taskList) {
-				showFileContent(i, content.getContent());
-				i += 1;
 			}
 			showMessage("Display todo Task");
 		}
 	}
 	
+	
 	/*
-	 * modify the content in arraylist, which is the real-time file content
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: modify one task based on its index
 	 */
 	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
@@ -404,7 +393,7 @@ public class TaskManager {
 				Task newTask = new Task(content,newDate,deadLine,newVenue);
 				taskList.remove(index);
 				taskList.add(index, newTask);
-				showMessage(MESSAGE_MODIFY_OPERATION, content);
+				showMessage(MESSAGE_MODIFY_OPERATION);
 				saveFile();
 				undo.add(taskList);
 			}catch (Exception e){
@@ -438,7 +427,7 @@ public class TaskManager {
 				taskList.add(index, newTask);
 				searchResult.remove(index);
 				searchResult.add(newTask);
-				showMessage(MESSAGE_MODIFY_OPERATION, content);
+				showMessage(MESSAGE_MODIFY_OPERATION);
 				saveFile();
 				undo.add(taskList);
 			}catch (Exception e){
@@ -448,8 +437,10 @@ public class TaskManager {
 	}	
 	
 	/*
-	 * modify multiple, use modify function several times to finish the modify function
-	*/
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: modify several tasks at the same time
+	 */
 	private void modifyMultiple(String command) throws Exception{
 		ArrayList<Integer> modifyIndex = myParser.getIndex(command);
 		for (int i = 0; i < modifyIndex.size(); i++){
@@ -459,7 +450,9 @@ public class TaskManager {
 	
 	
 	/*
-	 * rodo, return the arrayList before last operation.
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: Redo operation
 	 */
 	void redo() {
 		if (undo.canRedo() && mode == DISPLAY_MODE.TODO_TASKLIST){
@@ -473,7 +466,9 @@ public class TaskManager {
 	}
 
 	/*
-	 * undo, return the arrayList before last undo operation.
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: Undo operation
 	 */
 	void undo() {
 		if (undo.canUndo() && mode == DISPLAY_MODE.TODO_TASKLIST){
@@ -498,6 +493,7 @@ public class TaskManager {
 		if (!fileList.contains(newFileName)){
 			mode = DISPLAY_MODE.TODO_TASKLIST;
 			fileList.add(newFileName);
+			System.out.println("fafaaf");
 			loadFile();
 		}else{
 			mode = DISPLAY_MODE.TODO_TASKLIST;
@@ -662,7 +658,7 @@ public class TaskManager {
 	 * clear all data in arraylist, but do not actully store to file
 	 */
 	private void clear() throws IOException {
-		showMessage(MESSAGE_CLEAR_OPERATION, null);
+		showMessage(MESSAGE_CLEAR_OPERATION);
 		taskList.clear();
 		saveFile();
 	}
