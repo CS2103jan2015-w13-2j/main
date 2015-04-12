@@ -23,6 +23,7 @@ public class UserInterface {
 	public static boolean atHelpMenu = false;
 	public static TaskManager BTM;
 	public static ArrayList<Task> taskList;
+	public static ArrayList<String> files;
 	public static int deleteIndex = -1;	
 	public static int completeIndex = -1;
 	public static boolean isMinimized = false;
@@ -36,6 +37,7 @@ public class UserInterface {
 	public static JLabel lblPageNumber = new JLabel("");
 	public static JLabel lblHelp = new JLabel("F1 - Help");
 	public static JLabel lblDate = new JLabel();
+	public static JLabel lblFile = new JLabel();
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
 	public static JFrame fileChooserFrame = new FileChooser();
@@ -81,17 +83,19 @@ public class UserInterface {
 	}
 	
 	public static void display(int pageNumber) throws NullPointerException, IOException {		
-		taskList = BTM.getTasks();	
 		PrintHandler.clearPanel();
 		panel.add(new JLabel(DisplayFormat.getTaskInfoDetails()));		
 		lblPageNumber.setText(pageNumber+1 + "");
 		
 		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
+			System.out.println("printing file page " + pageNumber);
+			files = BTM.getAllFilePath();
 			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());
 			
 		}
 		else {
 			PageHandler.isAtFilePage = false;
+			taskList = BTM.getTasks();	
 			PrintHandler.printPage(pageNumber);
 		}
 	}

@@ -63,6 +63,12 @@ public class LayoutSetting {
 		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
 	}
 	
+	public static void setFilePathLabel() {
+		UserInterface.lblFile.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblFile.setBounds(20,540,500,16);
+		UserInterface.lblFile.setText("Current File: " + UserInterface.BTM.getCurrentPath());
+	}
+	
 	public static void setHelpLabel() {
 		UserInterface.lblHelp.setFont(new Font("Century Gothic", Font.ITALIC, 16));
 		UserInterface.lblHelp.setBounds(537, 30, 72, 20);
@@ -90,6 +96,7 @@ public class LayoutSetting {
 		setPageLabel();
 		setStatusMessageLabel();
 		setHelpLabel();
+		setFilePathLabel();
 	}
 	
 	public static void setScrollPane() {
@@ -183,13 +190,15 @@ public class LayoutSetting {
 	
 	public static void addToContentPane() {
 		
+		UserInterface.frame.getContentPane().add(UserInterface.lblFile);	
 		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
 		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
 		UserInterface.frame.getContentPane().add(UserInterface.textField);
 		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
 		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
 		UserInterface.frame.getContentPane().add(UserInterface.lblCommandGuide);		
-		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);	
+		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
+
 	}
 	
 	public static void setShowTaskInfo() {

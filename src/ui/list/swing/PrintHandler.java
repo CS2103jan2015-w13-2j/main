@@ -30,6 +30,7 @@ public class PrintHandler {
 	private static final int COMPLETE_MODE = 3;
 	private static final int EXISTING_FILE_MODE = 4;
 	private static final int printPerPage = 4;
+	private static final int printFilePerPage = 10;
 	
 	
 	/**
@@ -42,11 +43,11 @@ public class PrintHandler {
 	public static void printFilePage(int pageNumber) {
 		PageHandler.setFileCurrentPage(pageNumber);
 		printTaskHeading();
-		int startIndex = pageNumber * printPerPage;
-		int endIndex = startIndex + printPerPage;
-		
+		int startIndex = pageNumber * printFilePerPage;
+		int endIndex = startIndex + printFilePerPage;
+				
 		//not last page
-		if (PageHandler.getCurrentPage()<PageHandler.getFileLastPage()) {
+		if (PageHandler.getFileCurrentPage()<PageHandler.getFileLastPage()) {
 			for (int i=startIndex; i<endIndex; i++) {
 				System.out.println("printing non last page");
 				printFilePaths(i);
@@ -59,6 +60,8 @@ public class PrintHandler {
 				printFilePaths(i);
 			}
 		}
+		
+		refreshPanel();
 	}
 
 
@@ -68,28 +71,6 @@ public class PrintHandler {
 		printTaskHeading();
 		int startIndex = pageNumber * printPerPage;
 		int endIndex = startIndex + printPerPage;
-
-//		//print existing file
-//
-//		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
-//			PageHandler.setFileCurrentPage(0);
-//			//not last page
-//			if (PageHandler.getCurrentPage()<PageHandler.getFileLastPage()) {
-//				for (int i=startIndex; i<endIndex; i++) {
-//					System.out.println("printing non last page");
-//					printFilePaths(i);
-//				}
-//			}
-//			
-//			else {
-//				for (int i=startIndex; i<UserInterface.BTM.getAllFilePath().size(); i++) {
-//					System.out.println("printing last page");
-//					printFilePaths(i);
-//				}
-//			}
-//		}
-
-//		else {
 
 			//not last page
 			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
@@ -103,8 +84,6 @@ public class PrintHandler {
 					printTask(UserInterface.taskList.get(i),i);
 				}
 			}
-
-//		}
 
 		refreshPanel();
 	}
