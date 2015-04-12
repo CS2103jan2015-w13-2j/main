@@ -38,6 +38,7 @@ public class UserInterface {
 	public static JLabel lblDate = new JLabel();
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
+	public static JFrame fileChooserFrame = new FileChooser();
 
 
 
