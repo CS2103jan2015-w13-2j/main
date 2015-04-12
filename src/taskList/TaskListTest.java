@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 
-public class taskListTest {
+public class TaskListTest {
 	//String used to test CE1
 	private static final String TEST_FILENAME = "TestFileName.txt";
 	private static final String CLEAR_COMMAND = "clear";
