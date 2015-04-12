@@ -50,7 +50,7 @@ public class DateParser {
 		}
 	}
 	
-	public String formatDefault(Date date) throws  NullPointerException {
+	public static String formatDefault(Date date) throws  NullPointerException {
 		if (date == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
@@ -58,7 +58,7 @@ public class DateParser {
 		return dateFormat.format(date);
 	}
 	
-	public boolean isSameDay(Date d1, Date d2) throws NullPointerException {
+	public static boolean isSameDay(Date d1, Date d2) throws NullPointerException {
 		if (d1 == null || d2 == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
