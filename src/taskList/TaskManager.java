@@ -686,6 +686,7 @@ public class TaskManager {
 		System.out.println("load file");
 		taskList = fileOperation.getUnfinishedTaskListFromFile();
 		completedTaskList = fileOperation.getFinishedTaskListFromFile();
+		fileList = configurationFileOperation.getHistoryFilePath();
 	}
 	
 	private void saveConfiguration() throws IOException{
