@@ -246,6 +246,7 @@ public class TaskManager {
 		if (mode == DISPLAY_MODE.TODO_TASKLIST) {
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			taskList.remove(removeIndex - 1);
+			System.out.println("here here "+removeIndex);
 			saveFile(); 
 		} else {
 			int indexinTaskList = 0;
@@ -267,7 +268,8 @@ public class TaskManager {
 	 */
 	private void deleteMultiple(String command) throws Exception{
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
-		for (int i = 0; i < deleteIndex.size(); i++){
+		Collections.sort(deleteIndex);
+		for (int i = deleteIndex.size()-1; i >= 0; i--){
 			System.out.println("index for this operation is "+deleteIndex.get(i));
 			delete(deleteIndex.get(i));
 		}
@@ -322,7 +324,8 @@ public class TaskManager {
 	 */
 	private void completeMultiple(String command) throws Exception{
 		ArrayList<Integer> completeIndex = myParser.getIndex(command);
-		for (int i = 0; i < completeIndex.size(); i++){
+		Collections.sort(completeIndex);
+		for (int i = completeIndex.size()-1; i >= 0; i--){
 			complete(completeIndex.get(i));
 		}
 	}	
