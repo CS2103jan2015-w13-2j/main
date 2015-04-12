@@ -43,13 +43,11 @@ public class PageHandler {
 	
 	public static void flipPrevFilePage() {
 		fileCurrentPage--;
-		System.out.println("Flip prev file page " + fileCurrentPage);
 		updateFilePage();
 	}
 	
 	public static void flipNextFilePage() {
 		fileCurrentPage++;
-		System.out.println("Flip next file page " + fileCurrentPage);
 		updateFilePage();
 	}
 	
@@ -68,7 +66,6 @@ public class PageHandler {
 	}
 	
 	public static int getFilePathTotalPage() {
-		System.out.println("path size = " + UserInterface.files.size());
 		int pathSize = UserInterface.files.size();
 		int totalPathPage = (int) Math.ceil(pathSize/printFilePerPage);
 		

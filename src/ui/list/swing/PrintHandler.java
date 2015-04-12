@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
-
 import taskList.Task;
-import taskList.TaskManager;
 
 //@author A0117971Y
 
@@ -23,16 +20,12 @@ import taskList.TaskManager;
 
 public class PrintHandler {
 	
-
-	//mode == 4 means the result shown in screen is all existing file	
 	private static final int ADD_MODE = 1;
 	private static final int MODIFY_MODE = 2;
 	private static final int COMPLETE_MODE = 3;
-	private static final int EXISTING_FILE_MODE = 4;
 	private static final int printPerPage = 4;
 	private static final int printFilePerPage = 10;
-	
-	
+		
 	/**
 	 * This class prints the a page given their page number(including page 0)
 	 * @param pageNumber
@@ -71,7 +64,6 @@ public class PrintHandler {
 		printTaskHeading();
 		int startIndex = pageNumber * printPerPage;
 		int endIndex = startIndex + printPerPage;
-
 			//not last page
 			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
 				for (int i=startIndex; i < endIndex; i++) {

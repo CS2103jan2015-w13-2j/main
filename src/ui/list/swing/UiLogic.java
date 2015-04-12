@@ -18,14 +18,12 @@ public class UiLogic {
 	 * @return
 	 */
 	public static boolean isValidAdd(String input) {
-
 		if (input != null && !input.equals("")) {
 			String[] tokens = input.split(" ");
 			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("add")) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 	
@@ -61,7 +59,6 @@ public class UiLogic {
 				return getOperationIndex(tokens[1], MODIFY_MODE);
 			}
 		}
-
 		return -1;
 	}
 	
@@ -72,7 +69,6 @@ public class UiLogic {
 	 */
 	
 	public static int isValidComplete(String input) {
-
 		String currentInput = input;
 
 		if (currentInput != null && !currentInput.equals("")) {
@@ -83,7 +79,6 @@ public class UiLogic {
 				case "complete": return getOperationIndex(tokens[1],COMPLETE_MODE);
 				default: return -1;
 				}
-
 			}
 		}
 		return -1;
@@ -107,8 +102,7 @@ public class UiLogic {
 				}				
 			}
 		} catch (Exception e) {
-			return -1;
-		
+			return -1;	
 		}
 		return -1;
 	}
@@ -121,7 +115,6 @@ public class UiLogic {
 	 */
 	
 	public static void processTextField() throws NullPointerException, IOException {
-
 		String input = UserInterface.textField.getText();
 		UserInterface.deleteIndex = UiLogic.isValidDeleteIndex(input);
 		UserInterface.completeIndex=UiLogic.isValidComplete(input);
@@ -162,7 +155,6 @@ public class UiLogic {
 		if (UiLogic.isValidAdd(input)) {
 			UserInterface.isAdd = true;
 		}
-		
 		executeAndUpdate(input);	
 		PageHandler.updatePage();
 		UserInterface.display(PageHandler.getCurrentPage());
@@ -181,19 +173,14 @@ public class UiLogic {
 	 * Executes maximize and minimize of window
 	 */
 	public static void processMaxMin() {
-
 		int state = UserInterface.frame.getExtendedState(); // get current state
-
 		if (UserInterface.isMinimized) {
-			
 			//maximize
 			state = state & ~Frame.ICONIFIED; // remove minimized from the state
 			UserInterface.frame.setExtendedState(state);
 			UserInterface.isMinimized = false;
 		}
-		
-		else {	
-			
+		else {		
 			//minimize
 			state = state | Frame.ICONIFIED; // add minimized to the state
 			UserInterface.frame.setExtendedState(state); // set that state

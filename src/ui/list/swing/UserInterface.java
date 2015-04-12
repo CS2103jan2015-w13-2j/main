@@ -21,8 +21,7 @@ import taskList.TaskManager;
 //@author A0117971Y
 public class UserInterface {
 	
-	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo";
-	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
+	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo | finish ";
 	public static final String VIEW_TASK_INFO_MESSAGE = DisplayFormat.getTaskInfoDetails();
 	public static boolean isAdd = false;
 	public static boolean isModify = false;
@@ -33,8 +32,6 @@ public class UserInterface {
 	public static int deleteIndex = -1;	
 	public static int completeIndex = -1;
 	public static boolean isMinimized = false;
-
-
 	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
 	public static JPanel panel = new JPanel();
 	public static JLabel lblBackground = new JLabel("");
@@ -46,10 +43,6 @@ public class UserInterface {
 	public static JLabel lblFile = new JLabel();
 	public static JScrollPane scrollPane = new JScrollPane();
 	public static JTextField textField = new JTextField();
-	public static JFrame fileChooserFrame = new FileChooser();
-
-
-
 
 	/**
 	 * Launch the application.
@@ -86,6 +79,7 @@ public class UserInterface {
 	private void initialize() throws NullPointerException, IOException {		
 		LayoutSetting.setAll();
 		addSystemTrayWindowStateListener();
+		updateAllFiles();
 		display(0);
 	}
 	
@@ -95,7 +89,6 @@ public class UserInterface {
 		lblPageNumber.setText(pageNumber+1 + "");
 		
 		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
-			System.out.println("printing file page " + pageNumber);
 			files = BTM.getAllFilePath();
 			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());
 			
@@ -106,6 +99,7 @@ public class UserInterface {
 			PrintHandler.printPage(pageNumber);
 		}
 	}
+	
 	public static void addSystemTrayWindowStateListener() {
 		frame.addWindowStateListener(new WindowStateListener() {
 			public void windowStateChanged(WindowEvent arg) {
@@ -116,5 +110,10 @@ public class UserInterface {
 	
 	public static void exit() {
 		frame.dispose();
-	}	
+	}
+	
+	private static void updateAllFiles() {
+		files = BTM.getAllFilePath();
+		taskList = BTM.getTasks();	
+	}
 }
