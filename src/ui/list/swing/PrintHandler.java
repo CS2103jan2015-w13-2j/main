@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import taskList.Task;
+import taskList.TaskManager;
 
 //@author A0117971Y
 
@@ -32,11 +33,34 @@ public class PrintHandler {
 	
 	
 	/**
-	 * This class prints the a page given their page number
+	 * This class prints the a page given their page number(including page 0)
 	 * @param pageNumber
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
+	
+	public static void printFilePage(int pageNumber) {
+		PageHandler.setFileCurrentPage(pageNumber);
+		printTaskHeading();
+		int startIndex = pageNumber * printPerPage;
+		int endIndex = startIndex + printPerPage;
+		
+		//not last page
+		if (PageHandler.getCurrentPage()<PageHandler.getFileLastPage()) {
+			for (int i=startIndex; i<endIndex; i++) {
+				System.out.println("printing non last page");
+				printFilePaths(i);
+			}
+		}
+
+		else {
+			for (int i=startIndex; i<UserInterface.BTM.getAllFilePath().size(); i++) {
+				System.out.println("printing last page");
+				printFilePaths(i);
+			}
+		}
+	}
+
 
 	public static void printPage (int pageNumber) throws NullPointerException, IOException {
 				
@@ -45,15 +69,27 @@ public class PrintHandler {
 		int startIndex = pageNumber * printPerPage;
 		int endIndex = startIndex + printPerPage;
 
-		//print existing file
+//		//print existing file
+//
+//		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
+//			PageHandler.setFileCurrentPage(0);
+//			//not last page
+//			if (PageHandler.getCurrentPage()<PageHandler.getFileLastPage()) {
+//				for (int i=startIndex; i<endIndex; i++) {
+//					System.out.println("printing non last page");
+//					printFilePaths(i);
+//				}
+//			}
+//			
+//			else {
+//				for (int i=startIndex; i<UserInterface.BTM.getAllFilePath().size(); i++) {
+//					System.out.println("printing last page");
+//					printFilePaths(i);
+//				}
+//			}
+//		}
 
-		if (UserInterface.BTM.getCurrentMode() == EXISTING_FILE_MODE) {
-			for (int i=startIndex; i<endIndex; i++) {
-				printFilePaths(i);
-			}
-		}
-
-		else {
+//		else {
 
 			//not last page
 			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
@@ -68,7 +104,7 @@ public class PrintHandler {
 				}
 			}
 
-		}
+//		}
 
 		refreshPanel();
 	}

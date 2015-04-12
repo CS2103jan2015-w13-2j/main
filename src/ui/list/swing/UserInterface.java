@@ -17,7 +17,7 @@ public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
-	public static final String VIEW_TASK_INFO_MESSAGE = DisplayFormat.getViewTaskInfo();
+	public static final String VIEW_TASK_INFO_MESSAGE = DisplayFormat.getTaskInfoDetails();
 	public static boolean isAdd = false;
 	public static boolean isModify = false;
 	public static boolean atHelpMenu = false;
@@ -83,9 +83,17 @@ public class UserInterface {
 	public static void display(int pageNumber) throws NullPointerException, IOException {		
 		taskList = BTM.getTasks();	
 		PrintHandler.clearPanel();
-		panel.add(new JLabel(DisplayFormat.getViewTaskInfo()));		
-		lblPageNumber.setText(pageNumber+1 + "");	
-		PrintHandler.printPage(pageNumber);
+		panel.add(new JLabel(DisplayFormat.getTaskInfoDetails()));		
+		lblPageNumber.setText(pageNumber+1 + "");
+		
+		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
+			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());
+			
+		}
+		else {
+			PageHandler.isAtFilePage = false;
+			PrintHandler.printPage(pageNumber);
+		}
 	}
 	
 	public static void exit() {

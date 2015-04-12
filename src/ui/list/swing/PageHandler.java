@@ -7,6 +7,9 @@ public class PageHandler {
 	private static double printPerPage = 4.0;
 	private static int currentPage = 0;
 	private static int lastPage = 0;
+	public static boolean isAtFilePage = false;
+	private static int fileCurrentPage = 0;
+	private static int fileLastPage = 0;
 
 	public static void updatePage() {
 		
@@ -17,6 +20,36 @@ public class PageHandler {
 			currentPage = getLastPage();
 		}			
 	}
+	
+	public static void updateFilePage() {
+		fileLastPage = getFileLastPage();
+		fileCurrentPage = getFileCurrentPage();
+		
+		if (fileLastPage < fileCurrentPage) {
+			fileCurrentPage = getLastPage();
+		}	
+	}
+	
+	public static int getFileCurrentPage() {
+		return fileCurrentPage;
+	}
+	
+	public static void setFileCurrentPage(int page) {
+		if (page <= getFileLastPage()) {
+			fileCurrentPage = page;
+		}
+	}
+	
+	public static void flipPrevFilePage() {
+		fileCurrentPage--;
+		updateFilePage();
+	}
+	
+	public static void flipNextFilePage() {
+		fileCurrentPage++;
+		updateFilePage();
+	}
+	
 	
 	public static void setCurrentPage(int page) {
 		if (page <= getLastPage()) {
@@ -29,6 +62,23 @@ public class PageHandler {
 		int totalPage = (int) Math.ceil(taskSize/printPerPage);
 		
 		return totalPage;
+	}
+	
+	private static int getFilePathTotalPage() {
+		int pathSize = UserInterface.BTM.getAllFilePath().size();
+		int totalPathPage = (int) Math.ceil(pathSize/printPerPage);
+		
+		return totalPathPage;
+	}
+	
+	public static int getFileLastPage() {
+		int totalPage = getFilePathTotalPage();
+		
+		if (totalPage > 0) {
+			return totalPage - 1;
+		}
+		
+		return 0;
 	}
 	
 	public static int getLastPage() {	
