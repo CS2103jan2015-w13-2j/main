@@ -55,7 +55,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		}
 
 		BalloonTipSuggestion.getBalloonTip();		
-		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
+		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
 	}
 
@@ -83,7 +83,7 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		}
 		
 		BalloonTipSuggestion.getBalloonTip();
-		String commandTip = UserInterface.BTL.getCommandTip(inputStream);
+		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
 		setCommandGuideText(commandTip);
 	}
 

@@ -4,7 +4,7 @@ package ui.list.swing;
 
 public class PageHandler {
 	
-	private static double printPerPage = 5.0;
+	private static double printPerPage = 4.0;
 	private static int currentPage = 0;
 	private static int lastPage = 0;
 
@@ -31,8 +31,7 @@ public class PageHandler {
 		return totalPage;
 	}
 	
-	public static int getLastPage() {
-		
+	public static int getLastPage() {	
 		int totalPage = getTotalPage();
 		
 		if (totalPage > 0) {
@@ -49,18 +48,15 @@ public class PageHandler {
 	public static void flipPrevPage() {
 		currentPage--;
 		updatePage();
-		System.out.println("current page = " + currentPage);
 	}
 	
 	public static void flipNextPage() {
 		currentPage++;
 		updatePage();
-		System.out.println("current page = " + currentPage);
 	}
 	
 	public static int getPageOfIndex(int index) {
-		int page = Math.floorDiv(index, (int) printPerPage);
-		
+		int page = index / (int) printPerPage;
 		return page;
 	}
 	

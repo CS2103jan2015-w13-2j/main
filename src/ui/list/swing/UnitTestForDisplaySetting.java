@@ -39,10 +39,10 @@ public class UnitTestForDisplaySetting {
 		"<font size = \"6\" font face = \"Arial\">" + " task4 " + "</font>" + "<br>" + "<font color = #848482>" + " Date: " + test4.getDateString() + "</font>" + "<br>"
 				+ "<font color = #848482>" + "Venue: " + " venue4 "+ "</font>" + "<br>" + "</html>";
 		
-		String output1 = DisplaySetting.getTaskInfoFormat(test1,0);
-		String output2 = DisplaySetting.getTaskInfoFormat(test2,1);
-		String output3 = DisplaySetting.getTaskInfoFormat(test3,2);
-		String output4 = DisplaySetting.getTaskInfoFormat(test4,3);		
+		String output1 = DisplayFormat.getTaskInfoFormat(test1,0);
+		String output2 = DisplayFormat.getTaskInfoFormat(test2,1);
+		String output3 = DisplayFormat.getTaskInfoFormat(test3,2);
+		String output4 = DisplayFormat.getTaskInfoFormat(test4,3);		
 
 		
 		assertEquals(result1,output1);

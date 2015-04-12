@@ -3,6 +3,16 @@ package parser;
 import java.util.ArrayList;
 import parser.Parser.Operation;
 
+//@author A0119503M
+/**
+ * this class is to provide suggestions according to users’ input. 
+ * Specifically, it is to provide suggested operation according to 
+ * users’ unfinished command. Besides, it will provide relevant input tips 
+ * as long as it detects that there is supported operation contained in users’ command.
+ * APIs:
+ * 	findMatch(String): String throws NullPointerException
+ * 	findTips(String): String throws NullPointerException
+ */
 public class UIFeedback {
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	

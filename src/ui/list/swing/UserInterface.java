@@ -2,7 +2,6 @@ package ui.list.swing;
 
 
 import java.awt.EventQueue;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,19 +10,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JTextField;
 import taskList.Task;
-import taskList.TaskList;
+import taskList.TaskManager;
 
 //@author A0117971Y
-
 public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo";
 	public static final String COMMAND_GUIDE_HELP_MESSAGE = "Press esc to return";
-	public static final String VIEW_TASK_INFO_MESSAGE = DisplaySetting.getViewTaskInfo();
+	public static final String VIEW_TASK_INFO_MESSAGE = DisplayFormat.getViewTaskInfo();
 	public static boolean isAdd = false;
 	public static boolean isModify = false;
 	public static boolean atHelpMenu = false;
-	public static TaskList BTL;
+	public static TaskManager BTM;
 	public static ArrayList<Task> taskList;
 	public static int deleteIndex = -1;	
 	public static int completeIndex = -1;
@@ -67,7 +65,7 @@ public class UserInterface {
 	 * @throws NullPointerException 
 	 */
 	public UserInterface() throws NullPointerException, IOException {
-		BTL = new TaskList("default.txt");
+		BTM = new TaskManager();
 		initialize();
 	}
 
@@ -82,9 +80,9 @@ public class UserInterface {
 	}
 	
 	public static void display(int pageNumber) throws NullPointerException, IOException {		
-		taskList = BTL.getTasks();	
+		taskList = BTM.getTasks();	
 		PrintHandler.clearPanel();
-		panel.add(new JLabel(DisplaySetting.getViewTaskInfo()));		
+		panel.add(new JLabel(DisplayFormat.getViewTaskInfo()));		
 		lblPageNumber.setText(pageNumber+1 + "");	
 		PrintHandler.printPage(pageNumber);
 	}

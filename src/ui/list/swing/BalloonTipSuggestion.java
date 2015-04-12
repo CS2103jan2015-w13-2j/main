@@ -33,7 +33,7 @@ public class BalloonTipSuggestion {
     }
     
     public static String getAutoFill() {
-    	return UserInterface.BTL.getAutoFill(TextFieldListener.getInputStream());
+    	return UserInterface.BTM.getAutoFill(TextFieldListener.getInputStream());
     }
 
 }

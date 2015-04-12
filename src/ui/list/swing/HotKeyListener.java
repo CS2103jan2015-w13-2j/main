@@ -22,7 +22,6 @@ public class HotKeyListener extends KeyAdapter {
 					e.printStackTrace();
 				}
 				
-				UserInterface.textField.setText(null);
 
 		}
 		
@@ -50,7 +49,6 @@ public class HotKeyListener extends KeyAdapter {
 				}
 			}
 			
-//			System.out.println("current page = " + UserInterface.currentPage);
 		}
 			
 		
@@ -75,6 +73,11 @@ public class HotKeyListener extends KeyAdapter {
 			PrintHandler.printHelp();
 			UserInterface.atHelpMenu = true;
 			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_HELP_MESSAGE);
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_F2) {
+			System.out.println("F2 pressed");
+			FileChooser.run(new FileChooser(), 250, 110);
 		}
 		
 		else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE && UserInterface.atHelpMenu) {

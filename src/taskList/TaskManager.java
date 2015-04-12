@@ -9,11 +9,13 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
+import storage.ConfigurationFileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
+import parser.DateParser;
 import parser.Parser;
-public class TaskList {
+public class TaskManager {
 	private static final String MESSAGE_EMPTY_FILE = "%s is empty\n";
 	private static final String MESSAGE_ADD_OPERATION = "added to %s: \"%s\"\n";
 	private static final String MESSAGE_DELETE_OPERATION = "deleted from %s: \"%s\"\n";
@@ -28,38 +30,43 @@ public class TaskList {
 
 	private Scanner sc;
 	private String fileName;
-	private JsonStringFileOperation fo;
+	private JsonStringFileOperation fileOperation;
+	private ConfigurationFileOperation configurationFileOperation;
 	private ArrayList<Task> taskList;
 	private ArrayList<Task> completedTaskList;	
 	private ArrayList<Task> searchResult;
+	
 	//mode == 0 means the result shown in screen is taskList,
 	//mode == 1 means the result shown in screen is searchResult
 	//mode == 2 means the result shown in screen is completedTaskList
 	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
+	//mode == 4 means the result shown in screen is all existing file
 	private int mode = 0;
-	private Parser bp;
+	private Parser myParser;
+	
 	private Undo<ArrayList<Task>> undo;
 	private Undo<ArrayList<Task>> undoForCompleted;
 	private ArrayList<String> feedBack = new ArrayList<String>();
-	private String name = TaskList.class.getName(); 
+	private ArrayList<String> fileList = new ArrayList<String>();
+	private String name = TaskManager.class.getName(); 
 	private int lastOperationIndex = -1;
 	private Logger log = Logger.getLogger(name);// <= (2)  
-	private static TaskList sharedInstance; 
+	private static TaskManager sharedInstance; 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
-	public TaskList(String inputFileName){
+	public TaskManager(String inputFileName){
 		mode = 0;
 		fileName = inputFileName;
 		try{
-			fo = new JsonStringFileOperation(fileName);
+			fileOperation = new JsonStringFileOperation(fileName);
 		}catch(Exception e){
 			log.info("There is a file reading error");
 			feedBack.add("Cannot open the file correctly");
 		}
 		feedBack.clear();
 		try{
-			fo = new JsonStringFileOperation(fileName);
-			taskList = fo.getUnfinishedTaskListFromFile();
-			completedTaskList = fo.getFinishedTaskListFromFile();
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
 			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
 			searchResult = new ArrayList<Task>();
 			undo = new Undo<ArrayList<Task>>(taskList);
@@ -69,13 +76,46 @@ public class TaskList {
 			feedBack.add("Cannot open the file correctly");
 		}
 		
-		bp = new Parser();
+		myParser = new Parser();
 		//Add in a initParser() command.
 	}
 	
-	public TaskList getStaredInstance(String inputFileName){
+	public TaskManager(){
+		try{
+			configurationFileOperation = new ConfigurationFileOperation();
+		}catch (Exception e){
+			System.out.println("wrong");
+		}
+		fileName = configurationFileOperation.getLastOpenFilePath();
+		System.out.println("debug "+fileName);
+		fileList = configurationFileOperation.getHistoryFilePath();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+		}catch (Exception e){
+			System.out.println("fuck");
+		}
+		feedBack.clear();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+			taskList = fileOperation.getUnfinishedTaskListFromFile();
+			completedTaskList = fileOperation.getFinishedTaskListFromFile();
+			if (completedTaskList == null) completedTaskList = new ArrayList<Task>();
+			searchResult = new ArrayList<Task>();
+			undo = new Undo<ArrayList<Task>>(taskList);
+			undoForCompleted = new Undo<ArrayList<Task>>(completedTaskList);
+		}catch(Exception e){
+			log.info("There is a command invalid error");
+			feedBack.add("Cannot open the file correctly");
+		}
+		
+		myParser = new Parser();
+		//Add in a initParser() command.
+	}
+	
+	public static TaskManager getSharedInstance(){
 		if (sharedInstance == null) {
-			sharedInstance = new TaskList(inputFileName);
+			sharedInstance = new TaskManager();
+			return sharedInstance;
 		}
 		return sharedInstance;
 	}
@@ -117,64 +157,52 @@ public class TaskList {
 	}
 	
 	public void executeCommand(String command) {
-		switch (bp.getOperation(command)) {
-		case ADD:
-			try {
+		try{
+			switch (myParser.getOperation(command)) {
+		
+			case ADD:
 				add(command);
-			} catch (Exception e) {
-				showMessage(e.getMessage());
-				e.printStackTrace();
-			}
-			break;
-		case DELETE:
-			delete(command);
-			break;
-		case COMPLETE:
-			complete(command);
-			break;
-		case DISPLAY:
-			try{
+				break;
+			case DELETE:
+				deleteMultiple(command);
+				break;
+			case COMPLETE:
+				completeMultiple(command);
+				break;
+			case DISPLAY:
 				display(command);
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-			break;
-		case CLEAR:
-			clear();
-			break;
-		case MODIFY:
-			try {
-				modify(command);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			break;
-		case UNDO:
-			undo();
-			break;
-		case REDO:
-			redo();
-			break;
-		case SORT:
-			try {
+				break;
+			case CLEAR:
+				clear();
+				break;
+			case MODIFY:
+				modifyMultiple(command);
+				break;
+			case UNDO:
+				undo();
+				break;
+			case REDO:
+				redo();
+				break;
+			case SORT:
 				sort(command);
-			} catch (Exception e1 ) {
-				e1.printStackTrace();
-			}
-			break;
-		case SEARCH:
-			try{
+				break;
+			case SEARCH:
 				search(command);
-			} catch (Exception e){
-				e.printStackTrace();
+				break;
+			case EXIT:
+				exit();
+				break;
+			case IMPORT:
+				importFile(command);
+			case EXPORT:
+				exportFile(command);
+			default:
+				assert(false);
+				showMessage("No such command");
 			}
-			break;
-		case EXIT:
-			exit();
-			break;
-		default:
-			assert(false);
-			showMessage("No such command");
+		}catch (Exception e){
+			showMessage(e.getMessage());
 		}
 	}
 	
@@ -184,13 +212,13 @@ public class TaskList {
 	private void add(String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode >= 1) mode = 0;
-		assert(bp.isValid(command));
-		String content = bp.getTitle(command);
+		assert(myParser.isValid(command));
+		String content = myParser.getTitle(command);
 		try{
-			Date date = bp.getDate(command);
+			Date date = myParser.getDate(command);
 			System.out.println(date);
-			Date deadLine = bp.getDeadline(command);
-			String venue = bp.getVenue(command);
+			Date deadLine = myParser.getDeadline(command);
+			String venue = myParser.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION, content);
 			taskList.add(new Task(content,date,deadLine,venue));
 			System.out.println(taskList.get(2).isOutOfDate());
@@ -204,15 +232,10 @@ public class TaskList {
 	/*
 	 * delete content in arraylist, but do not actully store to file
 	 */
-	private void delete(String command) {
+	private void delete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
-		int removeIndex = -1;
-		try {
-			removeIndex = bp.getIndex(command);
-		} catch (IOException e) {
-		
-		}	
+
 		if (removeIndex < 0 || removeIndex > taskList.size()) {
 			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 			return;
@@ -237,33 +260,41 @@ public class TaskList {
 			undo.add(taskList);
 		}
 	}
+	
+	/*
+	 * deleteMultiple use delete functions multiple times to finish the delete function
+	 */
+	private void deleteMultiple(String command) throws Exception{
+		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
+		for (int i = 0; i < deleteIndex.size(); i++){
+			delete(deleteIndex.get(i));
+		}
+	}	
+	
+	
+	
 	/*
 	 * complete content in arraylist, save this task to finished list
 	 */
-	private void complete(String command) {
+	private void complete(int removeIndex) throws IOException {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 		if (mode == 0){
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
+			
 			if (removeIndex < 0 || removeIndex > taskList.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 				return;
 			}
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			Task finishedOne = taskList.remove(removeIndex - 1);
+			
+			//update hasfinished added here		
+			finishedOne.finish();
+			
 			completedTaskList.add(finishedOne);
 			saveFile();
 			undo.add(taskList);
 		}else{
-			String content = "";
-			if (command.indexOf(' ') != -1) {
-				content = command.substring(command.indexOf(' ') + 1);
-			}
-			int removeIndex = Integer.valueOf(content);
 			if (removeIndex < 0 || removeIndex > searchResult.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 				return;
@@ -282,13 +313,27 @@ public class TaskList {
 			undo.add(taskList);
 		}
 	}
+	
+	/*
+	 * complete multiple use complete functions multiple times to finish the delete function
+	 */
+	private void completeMultiple(String command) throws Exception{
+		ArrayList<Integer> completeIndex = myParser.getIndex(command);
+		for (int i = 0; i < completeIndex.size(); i++){
+			complete(completeIndex.get(i));
+		}
+	}	
+	
+	
+	
+	
 	/*
 	 * display the content in arraylist, which is the real-time file content
 	 */
 	private void display(String command) throws NullPointerException, IOException {
 		String type = "unfinished";
 		try {
-			type = bp.getTitle(command);
+			type = myParser.getTitle(command);
 		} catch (Exception e) {
 			
 		}
@@ -306,6 +351,9 @@ public class TaskList {
 				return;
 			}
 			showMessage("Display all Tasks");
+		}else if(type.equals("file")){
+			mode = 3;
+			showMessage("Display all files");
 		}else{
 			mode = 0;
 			if (taskList.size() == 0) {
@@ -324,18 +372,18 @@ public class TaskList {
 	/*
 	 * modify the content in arraylist, which is the real-time file content
 	 */
-	private void modify(String command) throws Exception{
+	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		index-= 2;
 		if (mode > 1) mode = 0;
 		if (mode == 0){
-			assert(bp.isValid(command));
-			String content = bp.getNewTitle(command);
+			assert(myParser.isValid(command));
+			String content = myParser.getNewTitle(command);
 			try{
-				int index = bp.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
-				Date newDate = bp.getDate(command);
-				Date deadLine = bp.getDeadline(command);
-				String newVenue = bp.getVenue(command);
+				Date newDate = myParser.getDate(command);
+				Date deadLine = myParser.getDeadline(command);
+				String newVenue = myParser.getVenue(command);
 				if ((index < 0)||(index > taskList.size())){
 					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
 					return;
@@ -354,14 +402,13 @@ public class TaskList {
 				throw e;
 			}
 		}else{
-			assert(bp.isValid(command));
-			String content = bp.getNewTitle(command);
+			assert(myParser.isValid(command));
+			String content = myParser.getNewTitle(command);
 			try{
-				int index = bp.getIndex(command) - 1;
 				lastOperationIndex = index + 1;
-				Date newDate = bp.getDate(command);
-				Date deadLine = bp.getDeadline(command);
-				String newVenue = bp.getVenue(command);
+				Date newDate = myParser.getDate(command);
+				Date deadLine = myParser.getDeadline(command);
+				String newVenue = myParser.getVenue(command);
 				if ((index < 0)||(index > searchResult.size())){
 					showMessage(MESSAGE_MODIFY_OPERATION_FAILURE);
 					return;
@@ -390,6 +437,18 @@ public class TaskList {
 			}
 		}
 	}	
+	
+	/*
+	 * modify multiple, use modify function several times to finish the modify function
+	*/
+	private void modifyMultiple(String command) throws Exception{
+		ArrayList<Integer> modifyIndex = myParser.getIndex(command);
+		for (int i = 0; i < modifyIndex.size(); i++){
+			modify(modifyIndex.get(i),command);
+		}
+	}	
+	
+	
 	/*
 	 * rodo, return the arrayList before last operation.
 	 */
@@ -418,6 +477,37 @@ public class TaskList {
 			showMessage("no undo operation avaiable");
 		}
 	}	
+	
+	/*
+	 * import, readFile from device, if the file not existed, just create a new file
+	 */
+	private void importFile(String command) throws NullPointerException, IOException{
+		String newFileName = myParser.getTitle(command);
+		fileName = newFileName;
+		if (!fileList.contains(newFileName)){
+			fileList.add(newFileName);
+		}else{
+			mode = 0;
+			loadFile();
+		}
+		saveFile();
+		saveConfiguration();
+	}
+	
+	/*
+	 * export, saveFile to the device and give its a name
+	 */
+	private void exportFile(String command) throws IOException{
+		String newFileName = myParser.getTitle(command);
+		fileName = newFileName;
+		if (!fileList.contains(newFileName)){
+			fileList.add(newFileName);
+		}
+		saveFile();
+		saveConfiguration();
+	}
+	
+	
 	
 	public boolean compareString(String string1, String string2){
 		if (string1 == null){
@@ -498,7 +588,7 @@ public class TaskList {
 	private void sort(String command) throws Exception {
 		String content;
 		try{
-			content = bp.getTitle(command);
+			content = myParser.getTitle(command);
 		}catch(Exception e){
 			content = "time";
 		}
@@ -537,10 +627,10 @@ public class TaskList {
 	private void search(String command) throws NullPointerException, IOException {
 		mode = 1;
 		searchResult.clear();
-		String keyWord = bp.getTitle(command);
+		String keyWord = myParser.getTitle(command);
 		if (keyWord.equals("today")){
 			dateFormat = new SimpleDateFormat ("YYYY-MM-dd");
-			keyWord = dateFormat.format(bp.getDate("add -d today"));
+			keyWord = dateFormat.format(myParser.getDate("add -d today"));
 			System.out.println("today is " + keyWord);
 		}
 		for (int i = 0; i < taskList.size(); i++){
@@ -554,7 +644,7 @@ public class TaskList {
 	/*
 	 * clear all data in arraylist, but do not actully store to file
 	 */
-	private void clear() {
+	private void clear() throws IOException {
 		showMessage(MESSAGE_CLEAR_OPERATION, null);
 		taskList.clear();
 		saveFile();
@@ -565,18 +655,23 @@ public class TaskList {
 	 * exit the program
 	 * close the scanner, store the arraylist in disk to update the file
 	 */
-	private void exit() {
+	private void exit() throws IOException {
 		saveFile();
 		UserInterface.exit();
 		System.exit(0);
 	}
 	
-	private void saveFile(){
-		try{
-			fo.saveToFile(taskList,completedTaskList);
-		}catch(Exception e){
-			feedBack.add("cannot save to file successfully");
-		}
+	private void saveFile() throws IOException{
+			fileOperation.saveToFile(taskList,completedTaskList);
+	}
+	
+	private void loadFile() throws IOException{
+		taskList = fileOperation.getUnfinishedTaskListFromFile();
+		completedTaskList = fileOperation.getFinishedTaskListFromFile();
+	}
+	
+	private void saveConfiguration() throws IOException{
+		configurationFileOperation.saveConfiguration(fileName, fileList);;
 	}
 	
 	public ArrayList<String> getFileContent(){
@@ -644,7 +739,9 @@ public class TaskList {
 		return answers;
 	}
 	
-	public boolean isEqual(TaskList taskList2){
+
+	
+	public boolean isEqual(TaskManager taskList2){
 		if (this.taskList.size() != taskList2.taskList.size()) return false;
 		@SuppressWarnings("unchecked")
 		ArrayList<Task> taskListCopy1 = (ArrayList<Task>) this.taskList.clone();
@@ -667,16 +764,24 @@ public class TaskList {
 	}
 	
 	public String getAutoFill(String command){
-		return bp.autoFill(command);
+		return myParser.autoFill(command);
 	}
 	
 	public String getCommandTip(String command){
-		return bp.privideTips(command);
+		return myParser.provideTips(command);
 	}
 	
 	public int getCurrentMode(){
 		return mode;
 	}
 	
+	public String getCurrentPath(){
+		return  fileName;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getAllFilePath(){
+		return (ArrayList<String>) this.fileList.clone();
+	}
 	
 }
