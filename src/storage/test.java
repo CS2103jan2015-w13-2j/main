@@ -32,8 +32,9 @@ public class test {
 		for(Task i:taskList){
 			System.out.println(i.getContent()+" | "+i.getDateString()+" | "+i.getDeadlineString()+" | "+i.getVenue());
 		}
-		jsto.saveToFile(taskList);
+		jsto.saveToFile(taskList,taskList);
 		taskList = jsto.getUnfinishedTaskListFromFile();
+		
 		for(Task i:taskList){
 			System.out.println(i.getContent()+" | "+i.getDateString()+" | "+i.getDeadlineString()+" | "+i.getVenue());
 		}

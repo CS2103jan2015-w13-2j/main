@@ -28,13 +28,19 @@ public class ConfigurationFileOperation{
 	FileOperation configurationFile;
 	
 	/*
-	 * If the file name is invalid, will throw IOException
+	 * If the file name is invalid or null, throw IOException
+	 * If the file name is a dictionary name, throw IOException
 	 */
 	public ConfigurationFileOperation() throws IOException{
 		configurationFile = new FileOperation(USER_PATH + CONFIGURATION_FILE_NAME);
 		this.converter = new ObjectConverter();
 	}
 	
+	/*
+	 * Return last open file path.
+	 * If there is not configuration file, return the default file path.
+	 * If there is any parsing error, return the default file path.
+	 */
 	public String getLastOpenFilePath() throws IOException {
 		String fileContent = configurationFile.readFile();
 		logger.info(MESSAGE_READ_CONFIGURATION_FILE);
@@ -50,6 +56,12 @@ public class ConfigurationFileOperation{
 		}
 	}
 	
+	/*
+	 * Return used file path list.
+	 * If there is not configuration file, return a list only contained default file path.
+	 * If there is any parsing error, return a list only contained default file path.
+	 * If the file cannot be read, throw IOException.
+	 */
 	public ArrayList<String> getHistoryFilePath() throws IOException {
 		String fileContent = configurationFile.readFile();
 		logger.info(MESSAGE_READ_CONFIGURATION_FILE);
@@ -63,6 +75,11 @@ public class ConfigurationFileOperation{
 		}
 	}
 	
+	/*
+	 * Write the current file path and file path list into configuration file.
+	 * If the file existed, just override it.
+	 * If the file cannot be writed, throw IOException.
+	 */
 	public void saveConfiguration(String fileName, ArrayList<String> filePathList) throws IOException {
 		configurationFile.saveToFile(converter.getJsonStringFromConfiguration(fileName, filePathList));
 		logger.info(MESSAGE_SAVE_CONFIGURATION_FILE);

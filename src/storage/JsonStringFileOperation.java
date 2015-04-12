@@ -32,7 +32,8 @@ public class JsonStringFileOperation{
 	FileOperation tempSavedFile;
 	
 	/*
-	 * If the file name is invalid, will throw IOException
+	 * If the file name is invalid or null, throw IOException
+	 * If the file name is a dictionary name, throw IOException
 	 */
 	public JsonStringFileOperation(String fileName) throws IOException{
 		String tempFileName = generateTempFileName(fileName);
@@ -41,6 +42,11 @@ public class JsonStringFileOperation{
 		this.converter = new ObjectConverter();
 	}
 	
+	/*
+	 * Return unfinished task list which is read from file.
+	 * If there is not configuration file, return the default file path.
+	 * If there is any parsing error, return the default file path.
+	 */
 	public ArrayList<Task> getUnfinishedTaskListFromFile() throws IOException {
 		String jsonString = savedFile.readFile();
 		logger.info(MESSAGE_READ_FILE);
@@ -54,6 +60,11 @@ public class JsonStringFileOperation{
 		
 	}
 	
+	/*
+	 * Return finished task list which is read from file.
+	 * If there is not configuration file, return the default file path.
+	 * If there is any parsing error, return the default file path.
+	 */
 	public ArrayList<Task> getFinishedTaskListFromFile() throws IOException {
 		String jsonString = savedFile.readFile();
 		logger.info(MESSAGE_READ_FILE);
@@ -66,11 +77,21 @@ public class JsonStringFileOperation{
 		}
 	}
 	
+	/*
+	 * Write the unfinished task list into configuration file.
+	 * If the file existed, just override it.
+	 * If the file cannot be wrote, throw IOException.
+	 */
 	public void saveToFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
 		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
+	/*
+	 * Write the unfinished and finished task lists into configuration file.
+	 * If the file existed, just override it.
+	 * If the file cannot be wrote, throw IOException.
+	 */
 	public void saveToFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{		
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
 		logger.info(MESSAGE_SAVE_FILE);
