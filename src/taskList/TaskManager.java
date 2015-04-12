@@ -221,8 +221,9 @@ public class TaskManager {
 			String venue = myParser.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION, content);
 			taskList.add(new Task(content,date,deadLine,venue));
-			System.out.println(taskList.get(2).isOutOfDate());
+			System.out.println(taskList.get(0).isOutOfDate());
 			saveFile();
+			saveConfiguration();
 			undo.add(taskList);
 		}catch (Exception e){
 			throw e;
@@ -772,6 +773,7 @@ public class TaskManager {
 	}
 	
 	public int getCurrentMode(){
+		
 		return mode;
 	}
 	
