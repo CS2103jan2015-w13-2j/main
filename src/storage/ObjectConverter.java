@@ -1,5 +1,6 @@
 package storage;
 
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,10 +32,8 @@ public class ObjectConverter {
 	private static final String KEY_FOR_VENUE = "venue";
 	
 	//private static final Logger logger = Logger.getLogger(LOGGER_NAME);
-	private DateFormat dateFormat;
 	
 	public ObjectConverter(){
-		dateFormat = new SimpleDateFormat(DateParser.FORMAT_DEFAULT);
 	}
 	
 	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList){
@@ -88,7 +87,7 @@ public class ObjectConverter {
 		if(date == null){
 			dateString = null;
 		}else{
-			dateString = dateFormat.format(date);
+			dateString = DateParser.formatDefault(date);
 		}
 		tempJsonTask.put(KEY_FOR_DATE, dateString);
 		
@@ -97,7 +96,7 @@ public class ObjectConverter {
 		if(deadline == null){
 			deadlineString = null;
 		}else{
-			deadlineString = dateFormat.format(deadline);
+			deadlineString = DateParser.formatDefault(deadline);
 		}
 		tempJsonTask.put(KEY_FOR_DEADLINE, deadlineString);
 		
@@ -146,7 +145,7 @@ public class ObjectConverter {
 	}
 	
 	private String getFilePathFromJsonObject(JSONObject jsonObject){
-		String filePath = (String) jsonObject.get(KEY_FOR_FILE_PATH);
+		String filePath = jsonObject.getString(KEY_FOR_FILE_PATH);
 		return filePath;
 	}
 	

@@ -461,7 +461,7 @@ public class TaskManager {
 	/*
 	 * rodo, return the arrayList before last operation.
 	 */
-	private void redo() {
+	void redo() {
 		if (undo.canRedo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.redo();
 			if (undoForCompleted.canRedo()) completedTaskList = (ArrayList<Task>) undoForCompleted.redo();
@@ -475,7 +475,7 @@ public class TaskManager {
 	/*
 	 * undo, return the arrayList before last undo operation.
 	 */
-	private void undo() {
+	void undo() {
 		if (undo.canUndo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.undo();
 			if (undoForCompleted.canUndo()) {
@@ -686,6 +686,7 @@ public class TaskManager {
 		System.out.println("load file");
 		taskList = fileOperation.getUnfinishedTaskListFromFile();
 		completedTaskList = fileOperation.getFinishedTaskListFromFile();
+		fileList = configurationFileOperation.getHistoryFilePath();
 	}
 	
 	private void saveConfiguration() throws IOException{
