@@ -74,7 +74,7 @@ public class UserInterface {
 	 * @throws NullPointerException 
 	 */
 	public UserInterface() throws NullPointerException, IOException {
-		BTM = new TaskManager();
+		BTM = TaskManager.getSharedInstance();
 		initialize();
 	}
 

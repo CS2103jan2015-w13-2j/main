@@ -12,6 +12,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import storage.ConfigurationFileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
+import ui.list.swing.LayoutSetting;
 import ui.list.swing.UserInterface;
 import parser.DateParser;
 import parser.Parser;
@@ -483,7 +484,9 @@ public class TaskManager {
 	}	
 	
 	/*
-	 * import, readFile from device, if the file not existed, just create a new file
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: import file based on given command, if file not exist, create a new file
 	 */
 	private void importFile(String command) throws NullPointerException, IOException{
 		System.out.println("import command");
@@ -501,11 +504,15 @@ public class TaskManager {
 		}
 		saveFile();
 		saveConfiguration();
-		showMessage("import successfully");
+		LayoutSetting.setFilePathLabel();
+		showMessage("Import successfully");
 	}
 	
 	/*
-	 * export, saveFile to the device and give its a name
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: export file based on given command, if file not exist, create a new file.
+	 * If file exist already, just modify the old one
 	 */
 	private void exportFile(String command) throws IOException{
 		System.out.println("export command");
@@ -517,11 +524,16 @@ public class TaskManager {
 		}
 		saveFile();
 		saveConfiguration();
-		showMessage("export successfully");
+		LayoutSetting.setFilePathLabel();
+		showMessage("Export successfully");
 	}
 	
 	
-	
+	/*
+	 * parameters: String string1, String string2
+	 * return: boolean
+	 * Description: check which string is larger
+	 */
 	public boolean compareString(String string1, String string2){
 		if (string1 == null){
 			if (string2 == null) return false;
@@ -533,6 +545,11 @@ public class TaskManager {
 		}
 	}
 	
+	/*
+	 * parameters: Date date1, Date date2
+	 * return: boolean
+	 * Description: check which date is larger
+	 */
 	public boolean compareDate(Date date1, Date date2){
 		if (date1 == null){
 			if (date2 == null) return false;
@@ -544,6 +561,11 @@ public class TaskManager {
 		}
 	}
 	
+	/*
+	 * parameters: Sort_MODE, type
+	 * return: Nothing
+	 * Description: sort the taskList based on given SORT_MDOE
+	 */
 	private void sortTaskList(SORT_MODE type) throws Exception{
 		Task[] taskArray = new Task[taskList.size()];
 		taskList.toArray(taskArray);
@@ -596,7 +618,9 @@ public class TaskManager {
 	
 	
 	/*
-	 * sort operation would sort all the task in terms of their deadline and return the new tasklist
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: sort taskList based on receive command
 	 */
 	private void sort(String command) throws Exception {
 		String content;
@@ -635,16 +659,17 @@ public class TaskManager {
 	}	
 	
 	/*
-	 * search operation would return all the tasks which conform to the sort requirements.
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: search taskList based on receive command
 	 */
 	private void search(String command) throws NullPointerException, IOException {
 		mode = DISPLAY_MODE.SEARCH_LIST;
 		searchResult.clear();
 		String keyWord = myParser.getTitle(command);
 		if (keyWord.equals("today")){
-			dateFormat = new SimpleDateFormat ("YYYY-MM-dd");
+			dateFormat = new SimpleDateFormat (DateParser.FORMAT_DEFAULT);
 			keyWord = dateFormat.format(myParser.getDate("add -d today"));
-			System.out.println("today is " + keyWord);
 		}
 		for (int i = 0; i < taskList.size(); i++){
 			if (taskList.get(i).containKeyWord(keyWord)){
@@ -655,7 +680,9 @@ public class TaskManager {
 	}
 	
 	/*
-	 * clear all data in arraylist, but do not actully store to file
+	 * parameters: String command
+	 * return: Nothing
+	 * Description: delete all tasks inside taskList
 	 */
 	private void clear() throws IOException {
 		showMessage(MESSAGE_CLEAR_OPERATION);
@@ -665,19 +692,31 @@ public class TaskManager {
 	
 	
 	/*
-	 * exit the program
-	 * close the scanner, store the arraylist in disk to update the file
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: save file and exit safely
 	 */
 	private void exit() throws IOException {
 		saveFile();
+		saveConfiguration();
 		UserInterface.exit();
 		System.exit(0);
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: save file
+	 */
 	private void saveFile() throws IOException{
 			fileOperation.saveToFile(taskList,completedTaskList);
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: load file
+	 */
 	private void loadFile() throws IOException{
 		System.out.println("load file");
 		taskList = fileOperation.getUnfinishedTaskListFromFile();
@@ -685,16 +724,32 @@ public class TaskManager {
 		fileList = configurationFileOperation.getHistoryFilePath();
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: save configuration
+	 */
 	private void saveConfiguration() throws IOException{
 		configurationFileOperation.saveConfiguration(fileName, fileList);;
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: Nothing
+	 * Description: There are 5 DISPLAY_MODE, only two of them can accept CRUD operation, if 
+	 * mode is at some one which cannot accept CRUD, change it to TODO_TASKLIST mode.
+	 */
 	private void switchToChangeableMode(){
 		if (mode != DISPLAY_MODE.SEARCH_LIST){
 			mode = DISPLAY_MODE.TODO_TASKLIST;
 		}
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: ArrayList<String>
+	 * Description: return a copy of task content
+	 */
 	public ArrayList<String> getFileContent(){
 		ArrayList<String> content = new ArrayList<String>(); 
 		for (Task task: taskList){
@@ -703,6 +758,11 @@ public class TaskManager {
 		return content;
 	}
 
+	/*
+	 * parameters: Nothing
+	 * return: ArrayList<Task>
+	 * Description: return a copy of taskList based on current DISPLAY_MODE
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<Task> getTasks(){
 		switch (mode){
@@ -731,17 +791,31 @@ public class TaskManager {
 		}
 	}
 		
-	
+	/*
+	 * parameters: Nothing
+	 * return: ArrayList<String>
+	 * Description: return a copy of all feedbacks
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getFeedBacks(){
 		return (ArrayList<String>) feedBack.clone();
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: String
+	 * Description: return last feedBack
+	 */
 	public String getLastFeedBack(){
 		if (feedBack.size() == 0) feedBack.add("No feedback");
 		return feedBack.get(feedBack.size()-1);
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: String
+	 * Description: return all titles in one String, used for unit tests
+	 */
 	public String getAllTitles(){
 		String answer = new String("");
 		if (mode == DISPLAY_MODE.TODO_TASKLIST){
@@ -760,6 +834,11 @@ public class TaskManager {
 		}
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: ArrayList<String>
+	 * Description: return all titles in one arraylist of string, used for unit tests
+	 */
 	public ArrayList<String> getTaskList(){
 		ArrayList<String> answers = new ArrayList<String>();
 		for (int i = 0; i < taskList.size(); i++){
@@ -769,7 +848,11 @@ public class TaskManager {
 	}
 	
 
-	
+	/*
+	 * parameters: TaskManager taskList2
+	 * return: boolean
+	 * Description: check whether two TaskManager is the same. Return a boolean value.
+	 */
 	public boolean isEqual(TaskManager taskList2){
 		if (this.taskList.size() != taskList2.taskList.size()) return false;
 		@SuppressWarnings("unchecked")
@@ -785,30 +868,59 @@ public class TaskManager {
 			}
 		}
 		return true;
-		
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: int
+	 * Description: return last index. For UI to get to know more information
+	 */
 	public int getLastOperationIndex(){
 		return lastOperationIndex;
 	}
 	
+	/*
+	 * parameters: String command
+	 * return: String
+	 * Description: accept a String as a parameter, return the suggested filled up string
+	 */
 	public String getAutoFill(String command){
 		return myParser.autoFill(command);
 	}
 	
+	/*
+	 * parameters: String command
+	 * return: String
+	 * Description: accept a String as a parameter, return the suggested tip
+	 */
 	public String getCommandTip(String command){
 		return myParser.provideTips(command);
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: DISPLAY_MODE
+	 * Description: used for UI to get to know what is shown now
+	 */
 	public DISPLAY_MODE getCurrentMode(){
 		
 		return mode;
 	}
 	
+	/*
+	 * parameters: Nothing
+	 * return: String
+	 * Description: used for UI to get to know what is current path
+	 */
 	public String getCurrentPath(){
 		return  fileName;
 	}
-	
+
+	/*
+	 * parameters: Nothing
+	 * return: ArrayList<String>
+	 * Description: used for UI to get to know all file paths.
+	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getAllFilePath(){
 		return (ArrayList<String>) this.fileList.clone();
