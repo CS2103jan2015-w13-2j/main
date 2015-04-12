@@ -82,14 +82,18 @@ public class TaskManager {
 	
 	public TaskManager(){
 		try{
-			fileName = configurationFileOperation.getLastOpenFilePath();
-			fileList = configurationFileOperation.getHistoryFilePath();
-			fileOperation = new JsonStringFileOperation(fileName);
-		}catch(Exception e){
-			log.info("There is a file reading error");
-			feedBack.add("Cannot open the file correctly");
+			configurationFileOperation = new ConfigurationFileOperation();
+		}catch (Exception e){
+			System.out.println("wrong");
 		}
-		
+		fileName = configurationFileOperation.getLastOpenFilePath();
+		System.out.println("debug "+fileName);
+		fileList = configurationFileOperation.getHistoryFilePath();
+		try{
+			fileOperation = new JsonStringFileOperation(fileName);
+		}catch (Exception e){
+			System.out.println("fuck");
+		}
 		feedBack.clear();
 		try{
 			fileOperation = new JsonStringFileOperation(fileName);
@@ -111,7 +115,7 @@ public class TaskManager {
 	public static TaskManager getSharedInstance(){
 		if (sharedInstance == null) {
 			sharedInstance = new TaskManager();
-
+			return sharedInstance;
 		}
 		return sharedInstance;
 	}
@@ -370,6 +374,7 @@ public class TaskManager {
 	 */
 	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
+		index-= 2;
 		if (mode > 1) mode = 0;
 		if (mode == 0){
 			assert(myParser.isValid(command));
@@ -734,10 +739,7 @@ public class TaskManager {
 		return answers;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ArrayList<String> getAllFilePath(){
-		return (ArrayList<String>) this.fileList.clone();
-	}
+
 	
 	public boolean isEqual(TaskManager taskList2){
 		if (this.taskList.size() != taskList2.taskList.size()) return false;
@@ -773,5 +775,13 @@ public class TaskManager {
 		return mode;
 	}
 	
+	public String getCurrentPath(){
+		return  fileName;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<String> getAllFilePath(){
+		return (ArrayList<String>) this.fileList.clone();
+	}
 	
 }
