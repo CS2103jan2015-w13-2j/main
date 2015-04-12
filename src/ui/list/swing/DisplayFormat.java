@@ -3,6 +3,7 @@ package ui.list.swing;
 import java.io.IOException;
 
 import taskList.Task;
+import taskList.TaskManager.DISPLAY_MODE;
 
 //@author A0117971Y
 
@@ -155,7 +156,7 @@ public class DisplayFormat {
 
 	@SuppressWarnings("finally")
 	public static String getTaskInfoDetails() {
-		int mode = 0;
+		DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
 
 		try {
 			mode = UserInterface.BTM.getCurrentMode();
@@ -165,10 +166,10 @@ public class DisplayFormat {
 //			System.out.println("Continue after catch mode = " + mode);
 			switch (mode) {
 
-			case TASK_INFO_UNCOMPLETED: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
-			case TASK_INFO_SEARCH_RESULT: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
-			case TASK_INFO_COMPLETED: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
-			case TASK_INFO_ALL_TASKS: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
+			case TODO_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+			case SEARCH_LIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+			case FINISHED_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+			case ALL_TASKLIST: return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
 			default: return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
 			
 			}
