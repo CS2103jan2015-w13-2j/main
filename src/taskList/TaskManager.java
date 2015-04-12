@@ -23,7 +23,7 @@ public class TaskManager {
 	private static final String MESSAGE_CLEAR_OPERATION = "all content deleted from %s\n";
 	private static final String MESSAGE_DISPLAY_OPERATION = "%d. %s\n";
 	private static final String MESSAGE_MODIFY_OPERATION = "modify to %s: \"%s\"\n";
-	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify from %s %s\n";
+	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "index is not valid for modify\n";
 	private static final int BY_TIME = 0;
 	private static final int BY_VENUE = 1;
 	private static final int BY_TITLE = 2;
@@ -86,10 +86,10 @@ public class TaskManager {
 		}catch (Exception e){
 			System.out.println("wrong");
 		}
-		fileName = configurationFileOperation.getLastOpenFilePath();
-		System.out.println("debug "+fileName);
-		fileList = configurationFileOperation.getHistoryFilePath();
 		try{
+			fileName = configurationFileOperation.getLastOpenFilePath();
+			System.out.println("debug "+fileName);
+			fileList = configurationFileOperation.getHistoryFilePath();
 			fileOperation = new JsonStringFileOperation(fileName);
 		}catch (Exception e){
 			System.out.println("fuck");
@@ -268,6 +268,7 @@ public class TaskManager {
 	private void deleteMultiple(String command) throws Exception{
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
 		for (int i = 0; i < deleteIndex.size(); i++){
+			System.out.println("hahaha "+deleteIndex.get( i));
 			delete(deleteIndex.get(i));
 		}
 	}	
@@ -375,7 +376,7 @@ public class TaskManager {
 	 */
 	private void modify(int index, String command) throws Exception{
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
-		index-= 2;
+		index-= 1;
 		if (mode > 1) mode = 0;
 		if (mode == 0){
 			assert(myParser.isValid(command));
