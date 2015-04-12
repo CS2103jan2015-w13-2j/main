@@ -237,15 +237,14 @@ public class TaskManager {
 		//User should not modify the completed task, so the mode would be switched to 0 automatically
 		if (mode > 1) mode = 0;
 
-		if (removeIndex < 0 || removeIndex > taskList.size()) {
+		if (removeIndex <= 0 || removeIndex > taskList.size()) {
 			showMessage(MESSAGE_DELETE_OPERATION_FAILURE, "");
 			return;
 		}
 		if (mode == 0) {
 			showMessage(MESSAGE_DELETE_OPERATION, taskList.get(removeIndex - 1).getContent());
 			taskList.remove(removeIndex - 1);
-			saveFile();
-			undo.add(taskList); 
+			saveFile(); 
 		} else {
 			int indexinTaskList = 0;
 			for (int i = 0; i < taskList.size(); i++){
@@ -258,7 +257,6 @@ public class TaskManager {
 			showMessage(MESSAGE_DELETE_OPERATION, searchResult.get(removeIndex - 1).getContent());
 			searchResult.remove(removeIndex - 1);
 			saveFile();
-			undo.add(taskList);
 		}
 	}
 	
@@ -268,9 +266,10 @@ public class TaskManager {
 	private void deleteMultiple(String command) throws Exception{
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
 		for (int i = 0; i < deleteIndex.size(); i++){
-			System.out.println("hahaha "+deleteIndex.get( i));
+			System.out.println("index for this operation is "+deleteIndex.get(i));
 			delete(deleteIndex.get(i));
 		}
+		undo.add(taskList);
 	}	
 	
 	
