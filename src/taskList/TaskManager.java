@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import storage.ConfigurationFileOperation;
+import storage.FileOperation;
 import storage.JsonStringFileOperation;
 import taskList.Task;
 import ui.list.swing.UserInterface;
@@ -197,8 +198,10 @@ public class TaskManager {
 				break;
 			case IMPORT:
 				importFile(command);
+				break;
 			case EXPORT:
 				exportFile(command);
+				break;
 			default:
 				assert(false);
 				showMessage("No such command");
@@ -488,29 +491,37 @@ public class TaskManager {
 	 * import, readFile from device, if the file not existed, just create a new file
 	 */
 	private void importFile(String command) throws NullPointerException, IOException{
+		System.out.println("import command");
 		String newFileName = myParser.getTitle(command);
 		fileName = newFileName;
+		fileOperation = new JsonStringFileOperation(newFileName);
 		if (!fileList.contains(newFileName)){
+			mode = DISPLAY_MODE.TODO_TASKLIST;
 			fileList.add(newFileName);
+			loadFile();
 		}else{
 			mode = DISPLAY_MODE.TODO_TASKLIST;
 			loadFile();
 		}
 		saveFile();
 		saveConfiguration();
+		showMessage("import successfully");
 	}
 	
 	/*
 	 * export, saveFile to the device and give its a name
 	 */
 	private void exportFile(String command) throws IOException{
+		System.out.println("export command");
 		String newFileName = myParser.getTitle(command);
 		fileName = newFileName;
+		fileOperation = new JsonStringFileOperation(newFileName);
 		if (!fileList.contains(newFileName)){
 			fileList.add(newFileName);
 		}
 		saveFile();
 		saveConfiguration();
+		showMessage("export successfully");
 	}
 	
 	
@@ -672,6 +683,7 @@ public class TaskManager {
 	}
 	
 	private void loadFile() throws IOException{
+		System.out.println("load file");
 		taskList = fileOperation.getUnfinishedTaskListFromFile();
 		completedTaskList = fileOperation.getFinishedTaskListFromFile();
 	}
@@ -729,6 +741,7 @@ public class TaskManager {
 	}
 	
 	public String getLastFeedBack(){
+		if (feedBack.size() == 0) feedBack.add("No feedback");
 		return feedBack.get(feedBack.size()-1);
 	}
 	
