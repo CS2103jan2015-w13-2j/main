@@ -67,10 +67,10 @@ public class Task implements Comparable<Task>{
 		this.deadline = deadline;
 		
 		if(date != null)
-			dateString = new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date);
+			dateString = new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.date);
 		
 		if(deadline != null)
-			deadlineString = new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.deadline);
+			deadlineString = new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.deadline);
 		
 		this.venue = venue;
 	}
@@ -166,15 +166,15 @@ public class Task implements Comparable<Task>{
 		if (this.venue != null)
 			answer |= this.venue.contains(keyWord);
 		if (this.date != null)
-			System.out.println("debug time "+ new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date));
+			System.out.println("debug time "+ new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.date));
 		if (this.date != null)
-			answer |= new SimpleDateFormat("YYYY-MM-dd HH:mm").format(this.date).contains(keyWord);
+			answer |= new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.date).contains(keyWord);
 		return answer;
 	}
 	
 	public boolean isTodayTask() throws NullPointerException, IOException{
 		Date today = taskParser.getDate("add -d today");
-		dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+		dateFormat = new SimpleDateFormat(DateParser.FORMAT_DEFAULT);
 		if (date == null) {
 			if (deadline == null)return false;else return (dateFormat.format(date).equals((dateFormat).format(today)));
 		}else
