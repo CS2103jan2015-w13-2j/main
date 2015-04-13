@@ -35,28 +35,15 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		
 		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
-			UserInterface.isModify = true;
-			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
-			
-			try {
-				PrintHandler.printPage(pageOfModify);
-			} catch (NullPointerException | IOException e1) {
-				e1.printStackTrace();
-			}
+			processModify();
 		}
 		
 		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage) {
-			try {
-				PageHandler.updatePage();
-				PrintHandler.printPage(PageHandler.getCurrentPage());
-			} catch (NullPointerException | IOException e1) {
-				e1.printStackTrace();
-			}
-		}
+			processNonModify();
 
-		BalloonTipSuggestion.getBalloonTip();		
-		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
-		setCommandGuideText(commandTip);
+		}
+		
+		setCommandGuideAndTip();
 	}
 
 	@Override
@@ -65,38 +52,54 @@ public class TextFieldListener extends JTextField implements DocumentListener {
 		inputStream = UserInterface.textField.getText();
 		
 		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
-			UserInterface.isModify = true;
-			int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
-			try {
-				PrintHandler.printPage(pageOfModify);
-			} catch (NullPointerException | IOException e1) {
-				e1.printStackTrace();
-			}
+			processModify();
+
 		}
 		
 		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage){
-			try {
-				PrintHandler.printPage(PageHandler.getCurrentPage());
-			} catch (NullPointerException | IOException e1) {
-				e1.printStackTrace();
-			}
+			processNonModify();
+
 		}
 		
-		BalloonTipSuggestion.getBalloonTip();
-		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
-		setCommandGuideText(commandTip);
+		setCommandGuideAndTip();
+
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		// TODO Auto-generated method stub		
+	
+	}
+	
+	private static void processNonModify() {
+		PageHandler.updatePage();
+		print(PageHandler.getCurrentPage());
+	}
+	
+	private static void setCommandGuideAndTip() {
+		BalloonTipSuggestion.getBalloonTip();
+		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
+		setCommandGuideText(commandTip);
+	}
+	
+	private static void processModify() {
+		UserInterface.isModify = true;
+		int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
+		print(pageOfModify);
 	}
 	
 	public static String getInputStream() {
 		return inputStream;
 	}
 	
-	private void setCommandGuideText( String commandTip) {
+	private static void print(int page) {
+		try {
+			PrintHandler.printPage(page);
+		} catch (NullPointerException | IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	private static void setCommandGuideText( String commandTip) {
 		if (commandTip != null) {
 			UserInterface.lblCommandGuide.setText(commandTip);
 		}

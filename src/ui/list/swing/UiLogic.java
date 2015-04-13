@@ -141,7 +141,8 @@ public class UiLogic {
 	private static void processComplete(String input) throws NullPointerException, IOException {
 		System.out.println("is valid complete");
 		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.completeIndex-1));
-		executeAndUpdate(input);	
+		executeAndUpdate(input);
+		UserInterface.completeIndex = -1;
 	}
 	
 	private static void processDelete(String input) throws NullPointerException, IOException {
