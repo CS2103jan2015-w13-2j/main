@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"unfinished taskList":[],"finished taskList":[{"content":"haha"},{"content":"haha"},{"content":"666666"}]}
+=======
+{"unfinished taskList":[{"content":"buy dad's iphone case"},{"date":"2015-04-14 00:00:00","content":"call mum"},{"date":"2015-04-14 14:00:00","content":"call mum"},{"date":"2015-04-14 14:00:00","deadline":"2015-04-20 00:00:00","content":"call mum"},{"date":"2015-04-14 14:00:00","deadline":"2015-04-20 15:00:00","content":"call mum"}],"finished taskList":[{"content":"four"},{"content":"hello"},{"content":"five"},{"content":"six"},{"content":"1000"},{"content":"niine"},{"content":"seven"},{"content":"eight"},{"content":"next"},{"content":"hello"},{"content":"new"},{"content":"three"},{"content":"hello"},{"content":"four"},{"content":"next"},{"content":"three"},{"content":"four"},{"content":"five"},{"content":"next"},{"content":"next"},{"content":"six"},{"content":"next"},{"content":"3"},{"content":"five"},{"content":"complete"},{"content":"complete"}]}
+>>>>>>> f162a49f57d25c6c77a95206f2c14658c8773a49

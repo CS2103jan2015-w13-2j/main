@@ -5,6 +5,12 @@ import java.io.IOException;
 
 //@author A0117971Y
 
+/**
+ * This class provides logic methods
+ * required by UI
+ * @author A0117971Y
+ *
+ */
 public class UiLogic {
 	
 	private static final int DELETE_MODE = 0;
@@ -141,7 +147,8 @@ public class UiLogic {
 	private static void processComplete(String input) throws NullPointerException, IOException {
 		System.out.println("is valid complete");
 		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.completeIndex-1));
-		executeAndUpdate(input);	
+		executeAndUpdate(input);
+		UserInterface.completeIndex = -1;
 	}
 	
 	private static void processDelete(String input) throws NullPointerException, IOException {

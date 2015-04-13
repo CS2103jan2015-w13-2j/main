@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import taskList.Task;
 
 /**
+ * Reading and loading task list in file with JSON format.
  * 
  * @author Huang Weilong A0119392B
  * @version 2015 April 11
@@ -31,9 +32,9 @@ public class JsonStringFileOperation{
 	private FileOperation savedFile;
 	private FileOperation tempSavedFile;
 	
-	/*
-	 * If the file name is invalid or null, throw IOException
-	 * If the file name is a dictionary name, throw IOException
+	/**
+	 * @param fileName
+	 * @throws IOException, If the file name is invalid or null or dictionary name, throw IOException
 	 */
 	public JsonStringFileOperation(String fileName) throws IOException{
 		String tempFileName = generateTempFileName(fileName);
@@ -42,10 +43,11 @@ public class JsonStringFileOperation{
 		this.converter = new ObjectConverter();
 	}
 	
-	/*
+	/**
 	 * Return unfinished task list which is read from file.
-	 * If there is not configuration file, return the default file path.
-	 * If there is any parsing error, return the default file path.
+	 * If there is any parsing error, return the empty task list.
+	 * @return unfinished task list which is read from file.
+	 * @throws IOException, If the file cannot be read, throw IOException.
 	 */
 	public ArrayList<Task> getUnfinishedTaskListFromFile() throws IOException {
 		String jsonString = savedFile.readFile();
@@ -60,10 +62,11 @@ public class JsonStringFileOperation{
 		
 	}
 	
-	/*
+	/**
 	 * Return finished task list which is read from file.
-	 * If there is not configuration file, return the default file path.
-	 * If there is any parsing error, return the default file path.
+	 * If there is any parsing error, return the empty task list.
+	 * @return finished task list which is read from file.
+	 * @throws IOException, If the file cannot be read, throw IOException.
 	 */
 	public ArrayList<Task> getFinishedTaskListFromFile() throws IOException {
 		String jsonString = savedFile.readFile();
@@ -77,42 +80,66 @@ public class JsonStringFileOperation{
 		}
 	}
 	
-	/*
-	 * Write the unfinished task list into configuration file.
+	/**
+	 * Write the unfinished task list into original file.
 	 * If the file existed, just override it.
-	 * If the file cannot be wrote, throw IOException.
+	 * @param unfinishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
 	 */
 	public void saveToFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
 		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
-	/*
-	 * Write the unfinished and finished task lists into configuration file.
+	/**
+	 * Write the unfinished and finished task list into original file.
 	 * If the file existed, just override it.
-	 * If the file cannot be wrote, throw IOException.
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
 	 */
 	public void saveToFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{		
 		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
 		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
+	/**
+	 * Write the unfinished and finished task list into temporary file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
 	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList) throws IOException{
 		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
 		logger.info(MESSAGE_SAVE_TEMP_FILE);
 	}
 	
+	/**
+	 * Write the unfinished and finished task list into temporary file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
 	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{
 		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
 		logger.info(MESSAGE_SAVE_TEMP_FILE);
 	}
 	
+	/**
+	 * replace the original file with the temporary file
+	 * @throws IOException
+	 */
 	public void replaceFileWithTempFile() throws IOException{
 		savedFile.delete();
 		tempSavedFile.renameTo(tempSavedFile);
 		logger.info(MESSAGE_SAVE_FILE);
 	}
 	
+	/**
+	 * @param fileName
+	 * @return the fileName with temporary file extension
+	 */
 	private String generateTempFileName(String fileName){
 		return fileName + TEMP_FILE_EXTENTION;
 	}

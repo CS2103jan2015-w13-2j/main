@@ -1,3 +1,4 @@
+
 package taskList;
 
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.util.Date;
 import parser.DateParser;
 import parser.Parser;
 
+//@author A0119403N
 public class Task implements Comparable<Task>{
 	private String content;
 	private String venue;
@@ -72,6 +74,20 @@ public class Task implements Comparable<Task>{
 		if(deadline != null)
 			deadlineString = new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.deadline);
 		
+		this.venue = venue;
+	}
+	
+	public Task(String content, Date date, Date deadline, String venue, boolean hashFinished){
+		this.content = content;
+		this.date = date;
+		this.deadline = deadline;
+		
+		if(date != null)
+			dateString = new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.date);
+		
+		if(deadline != null)
+			deadlineString = new SimpleDateFormat(DateParser.FORMAT_DEFAULT).format(this.deadline);
+		this.hasFinished = hasFinished;
 		this.venue = venue;
 	}
 	

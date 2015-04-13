@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 /**
+ * Storage of configuration file. 
+ * Read and load .configuration file from user home folder.
+ * Using the JSON format to store data.
  * 
  * @author Huang Weilong A0119392B
  * @version 2015 April 11
@@ -27,19 +30,22 @@ public class ConfigurationFileOperation{
 
 	FileOperation configurationFile;
 	
-	/*
+	/**
 	 * If the file name is invalid or null, throw IOException
 	 * If the file name is a dictionary name, throw IOException
+	 * @throws IOException if there are errors creating configuration file, throw this. 
 	 */
 	public ConfigurationFileOperation() throws IOException{
 		configurationFile = new FileOperation(USER_PATH + CONFIGURATION_FILE_NAME);
 		this.converter = new ObjectConverter();
 	}
 	
-	/*
+	/**
 	 * Return last open file path.
 	 * If there is not configuration file, return the default file path.
 	 * If there is any parsing error, return the default file path.
+	 * @return last opened file path
+	 * @throws IOException, If the file cannot be read, throw IOException.
 	 */
 	public String getLastOpenFilePath() throws IOException {
 		String fileContent = configurationFile.readFile();
@@ -56,11 +62,12 @@ public class ConfigurationFileOperation{
 		}
 	}
 	
-	/*
+	/**
 	 * Return used file path list.
 	 * If there is not configuration file, return a list only contained default file path.
 	 * If there is any parsing error, return a list only contained default file path.
-	 * If the file cannot be read, throw IOException.
+	 * @return history opened file path list
+	 * @throws IOException, If the file cannot be read, throw IOException.
 	 */
 	public ArrayList<String> getHistoryFilePath() throws IOException {
 		String fileContent = configurationFile.readFile();
@@ -75,16 +82,20 @@ public class ConfigurationFileOperation{
 		}
 	}
 	
-	/*
+	/**
 	 * Write the current file path and file path list into configuration file.
 	 * If the file existed, just override it.
-	 * If the file cannot be writed, throw IOException.
+	 * @throws IOException, If the file cannot be written, throw IOException.
 	 */
 	public void saveConfiguration(String fileName, ArrayList<String> filePathList) throws IOException {
 		configurationFile.saveToFile(converter.getJsonStringFromConfiguration(fileName, filePathList));
 		logger.info(MESSAGE_SAVE_CONFIGURATION_FILE);
 	}
 	
+	/**
+	 * @param obj, any object
+	 * @return true if obj is null
+	 */
 	private boolean isNull(Object obj){
 		return (obj == null);
 	}

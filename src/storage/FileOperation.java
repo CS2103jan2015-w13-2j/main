@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 /**
+ * Basic class for this package.
+ * Providing basic functions of file operation.
  * 
  * @author Huang Weilong A0119392B
  * @version 2015 April 11
@@ -30,16 +32,29 @@ public class FileOperation {
 	private static final String EMPTY_STRING = "";
 	private String fileName;
 
+	/**
+	 * @param fileName
+	 * @throws IOException, if filename is not valid, 
+	 */
 	public FileOperation(String fileName) throws IOException {
 		if(isValidFileName(fileName)){
 			this.fileName = fileName;
 		}
 	}
 	
+	/**
+	 * get file name string
+	 * @return filename
+	 */
 	public String getFileName(){
 		return this.fileName;
 	}
 	
+	/**
+	 * Reading file to string.
+	 * @return file content in string without new line char.
+	 * @throws IOException, if there are some errors while reading file, throw IOException.
+	 */
 	public String readFile() throws IOException{
 		if (!(new File(fileName).exists())) {
 			return EMPTY_STRING;
@@ -59,6 +74,11 @@ public class FileOperation {
 		}
 	}
 	
+	/**
+	 * Saving the content to the this file.
+	 * @param filecontent, the conntent will be written to file.
+	 * @throws IOException, if file cannot be written, throw IOException.
+	 */
 	public void saveToFile(String filecontent) throws IOException{
 		try {
 			FileOutputStream fileOutput = new FileOutputStream(fileName, false);
@@ -70,6 +90,11 @@ public class FileOperation {
 		}
 	}
 	
+	/**
+	 * rename the file to another name
+	 * remove the file with new filename and move the old one to new file name
+	 * @param newfile
+	 */
 	public void renameTo(FileOperation newfile){
 		File file = new File(fileName);
 		String newFileName = newfile.getFileName();
@@ -81,7 +106,7 @@ public class FileOperation {
 		}
 	}
 	
-	/*
+	/**
 	 * If the file with fileName exists, delete it.
 	 * Otherwise do nothing. 
 	 */
@@ -92,6 +117,13 @@ public class FileOperation {
 		}
 	}
 	
+	/**
+	 * check whether the filename is valid
+	 * 
+	 * @param fileName
+	 * @return true if filename is valid
+	 * @throws IOException is the file name is null or filename is a dictionary name, will throw IOException.
+	 */
 	private boolean isValidFileName(String fileName) throws IOException{
 		if(fileName == null)
 			throw new IOException(MESSAGE_NULL_FILENAME);

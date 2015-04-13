@@ -7,32 +7,37 @@ import taskList.TaskManager.DISPLAY_MODE;
 
 //@author A0117971Y
 
+/**
+ * This class generates the HTML formatting for items displayed
+ * and returns a string of such formatting
+ * @author A0117971Y
+ *
+ */
+
 public class DisplayFormat {
 	
-	//mode == 0 means the result shown in screen is taskList,
-	//mode == 1 means the result shown in screen is searchResult
-	//mode == 2 means the result shown in screen is completedTaskList
-	//mode == 3 means the result shown in screen is all task (both finished and unfinished)
-
 	private static final String TASK_INFO_UNCOMPLETED_MSG = "Things to do: ";
 	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
 	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
 	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
 	private static final String TASK_INFO_FILE_PATH_MSG = "Existing files: ";
+	private static final String BY_STRING = "  BY: ";
+	private static final String DATE_STRING = "Date: ";
+	private static final String VENUE_STRING = "Venue: ";
+	private static final String TIME_STRING = "Time: ";
+	private static final String EMPTY_STRING = "---";
+	private static final String EMPTY_TIME = "00:00:00";
 	
 	private static StringBuilder data = new StringBuilder();
 	private static final String HTML_OPEN = "<html>";
 	private static final String HTML_CLOSE = "</html>";
 	private static final String HTML_BREAK = "<br>";
-	private static final String HTML_FONT_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"> %s </font>";
-	private static final String HTML_FONT_TASKNAME = "<font size = \"6\" font face = \"Comic Sans Ms\"> %s </font><br>";
+	private static final String HTML_FONT_TASK_HEADER = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"> %s </font> <font size = \"6\" font face = \"Comic Sans Ms\"> %s </font><br>";
 	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232> %s </font>";
-	private static final String HTML_FONT_CLOSE = "</font>";
 	private static final String HTML_FONT_VIEW_TASK_INFO = "<html><font size = \"6\" font face = \"Century Gothic\"><i><u> %s </u></i></font></html>";
 	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000> %s </font>";
 	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000> %s </font>";
-	private static final String HTML_FONT_FINISHED_INDEX = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font>";
-	private static final String HTML_FONT_FINISHED_TASKNAME = "<font size = \"6\" font face = \"Comic Sans Ms\"><s> %s </s></font><br>";
+	private static final String HTML_FONT_FINISHED_TASK_HEADING = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font><font size = \"6\" font face = \"Comic Sans Ms\"><s> %s </s></font><br>";
 	private static final String HTML_FONT_FINISHED_DETAILS = "<font size = \"3\" font color = #363232><s> %s </s></font>";
 	
 	private static String index;
@@ -40,105 +45,159 @@ public class DisplayFormat {
 	private static String date;
 	private static String venue;
 	private static String endDate;
+	private static String time;
+	private static String deadlineTime;
+
 	
 	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
-		
 		clearData();
-		assert(data.length()==0);
 		
 		index = Integer.toString(i+1);
 		taskName = task.getContent();
 		date = task.getDateString();
 		venue = task.getVenue();
-		endDate = task.getDeadlineString();
+		endDate = task.getDeadlineString();		
+		time = getTime(date);
+		date = trimDate(date);
+		deadlineTime = getTime(endDate);
+		endDate = trimDate(endDate);
 		
 		setVenueDate();
-		
 		data.append(HTML_OPEN);
-		data.append(String.format(HTML_FONT_INDEX, index + ". ") + String.format(HTML_FONT_TASKNAME, taskName));
-				
-		if (!date.equals("---") && task.isOutOfDate()) {
-			data.append(String.format(HTML_FONT_OVERDUE, "Date: " + date));
-		}
-		
-		else {
-			data.append(String.format(HTML_FONT_TASK_DETAILS, "Date: " + date));
-
-		}
-		
-		if (endDate != null) {
-			if (task.isOutOfDate()) {
-				data.append(String.format(HTML_FONT_OVERDUE,"  BY: " + endDate));
-			}		
-			else {
-				data.append(String.format(HTML_FONT_TASK_DETAILS, "  BY: " + endDate));	
-			}
-		}
-
-		data.append(HTML_BREAK);		
-		data.append(String.format(HTML_FONT_TASK_DETAILS, "Venue: " + venue));
+		data.append(String.format(HTML_FONT_TASK_HEADER,index+". ", taskName));
+		setDate(task, date);
+		setTime(task,time);
+		setEndDate(task, endDate);
+		setTime(task, deadlineTime);
+		data.append(HTML_BREAK);	
+		setTaskVenue(HTML_FONT_TASK_DETAILS, venue);
 		data.append(HTML_BREAK+HTML_CLOSE);
 		
 		return getData();
+	}
+	
+	private static boolean isEmptyTime(String time) {
+		if (time.trim().equals(EMPTY_TIME)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private static String trimDate(String date) {
+
+		String trimDate = EMPTY_STRING;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			trimDate = date.substring(0, date.indexOf(":")-2);
+			System.out.println("Date Trimmed: " + trimDate);
+		}
+		
+		return trimDate;
+	}
+
+	private static String getTime(String date) {
+		String time = EMPTY_TIME;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			time = date.substring(date.indexOf(":")-2, date.length());	
+		}
+
+		return time;
+	}
+	
+	private static void setTaskVenue(String format, String venue) {
+		data.append(String.format(format,VENUE_STRING + venue));
+	}
+	
+	private static boolean isValidOutOfDate (Task task, String date) throws NullPointerException, IOException {
+		return !date.equals(EMPTY_STRING) && task.isOutOfDate();
+	}
+	
+	private static void setDate(Task task, String date) throws NullPointerException, IOException {
+		if (isValidOutOfDate(task,date)) {
+			data.append(String.format(HTML_FONT_OVERDUE, DATE_STRING + date));
+		}	
+		else {
+			data.append(String.format(HTML_FONT_TASK_DETAILS, DATE_STRING + date));
+
+		}
+	}
+	
+	private static void setTime(Task task, String time) throws NullPointerException, IOException {
+		if (!isEmptyTime(time) && task.isOutOfDate()) {
+			data.append(String.format(HTML_FONT_OVERDUE,TIME_STRING + time ));
+		}
+		
+		else if (!isEmptyTime(time)) {
+			data.append(String.format(HTML_FONT_TASK_DETAILS,TIME_STRING + time ));
+		}
+	}
+	
+	private static void setEndDate (Task task, String endDate) throws NullPointerException, IOException {
+		if (endDate != null && !endDate.equals(EMPTY_STRING)) {
+			if (task.isOutOfDate()) {
+				data.append(String.format(HTML_FONT_OVERDUE, BY_STRING + endDate));
+			}		
+			else {
+				data.append(String.format(HTML_FONT_TASK_DETAILS, BY_STRING + endDate));	
+			}
+		}
 	}
 	
 	public static String getDeletedRowFormat(Task task, int i) throws NullPointerException, IOException {
 		clearData();
-		assert(data.length()==0);
-		
+
 		index = Integer.toString(i+1);
 		taskName = task.getContent();
 		date = task.getDateString();
 		venue = task.getVenue();
-		endDate = task.getDeadlineString();
-		
-		setVenueDate();
-		
-		data.append(HTML_OPEN);
-		data.append(String.format(HTML_FONT_FINISHED_INDEX, index + ". ") + String.format(HTML_FONT_FINISHED_TASKNAME, taskName));
-				
-		if (!date.equals("---") && task.isOutOfDate()) {
-			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
-		}
-		else {
-			data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Date: " + date));
+		endDate = task.getDeadlineString();		
+		time = getTime(date);
+		date = trimDate(date);
+		deadlineTime = getTime(endDate);
+		endDate = trimDate(endDate);
 
-		}
+		setVenueDate();
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_FINISHED_TASK_HEADING, index + ". ", taskName));
+		data.append(String.format(HTML_FONT_FINISHED_DETAILS, DATE_STRING + date));
 		
-		if (endDate != null) {
-			if (task.isOutOfDate()) {
-				data.append(String.format(HTML_FONT_FINISHED_DETAILS,"  BY: " + endDate));
-			}		
-			else {
-				data.append(String.format(HTML_FONT_FINISHED_DETAILS, "  BY: " + endDate));	
+		if (!isEmptyTime(time)) {
+			data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + time));
+		}
+
+		if (endDate != null && !endDate.equals(EMPTY_STRING)) {
+			data.append(String.format(HTML_FONT_FINISHED_DETAILS, BY_STRING + endDate));	
+			
+			if (!isEmptyTime(deadlineTime)) {
+				data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + deadlineTime));	
 			}
 		}
 
 		data.append(HTML_BREAK);		
-		data.append(String.format(HTML_FONT_FINISHED_DETAILS, "Venue: " + venue));
+		setTaskVenue(HTML_FONT_FINISHED_DETAILS,venue);
 		data.append(HTML_BREAK+HTML_CLOSE);
-		
+
 		return getData();
 	}
-	
+
 	public static String getData() {
 		return data.toString();
 	}
 	
 	private static void setVenueDate() {
 		if (venue == null || venue.equals("")) {
-			venue = "---";
+			venue = EMPTY_STRING;
 		}
 		
 		if (date == null || date.equals("")) {
-			date = "---";
+			date = EMPTY_STRING;
 		}
 	}
 	
 	@SuppressWarnings("finally")
 	public static String getTaskInfoDetails() {
 		DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
-
 		try {
 			mode = UserInterface.BTM.getCurrentMode();
 		} catch (Exception e){
@@ -156,9 +215,9 @@ public class DisplayFormat {
 				case FILE_PATH: PageHandler.isAtFilePage = true; 
 					return String.format(HTML_FONT_VIEW_TASK_INFO, TASK_INFO_FILE_PATH_MSG);
 
-			default: PageHandler.isAtFilePage = false; 
-			return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
-
+				default: PageHandler.isAtFilePage = false; 
+				
+				return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
 			}
 		}
 	}
@@ -166,7 +225,7 @@ public class DisplayFormat {
 	public static String getPathInfoFormat(String path, int index) {
 		clearData();
 		data.append(HTML_OPEN);
-		data.append(String.format(HTML_FONT_INDEX, (index+1) + ". ") + String.format(HTML_FONT_TASKNAME, path));
+		data.append(String.format(HTML_FONT_TASK_HEADER,(index+1)+". ", path));
 		data.append(HTML_CLOSE);
 		
 		return data.toString();
@@ -176,9 +235,7 @@ public class DisplayFormat {
 		clearData();
 		
 		data.append(HTML_OPEN);
-		data.append(HTML_FONT_FEEDBACK_GUIDE_INFO);
-		data.append(UserInterface.BTM.getLastFeedBack());	
-		data.append(HTML_FONT_CLOSE);
+		data.append(String.format(HTML_FONT_FEEDBACK_GUIDE_INFO, UserInterface.BTM.getLastFeedBack()));
 		data.append(HTML_CLOSE);
 		
 		return data.toString();
@@ -187,5 +244,4 @@ public class DisplayFormat {
 	public static void clearData() {
 		data.setLength(0);
 	}
-
 }
