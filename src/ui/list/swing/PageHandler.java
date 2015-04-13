@@ -2,6 +2,12 @@ package ui.list.swing;
 
 //@author A0117971Y
 
+/**
+ * Handles the navigation of pages
+ * @author A0117971Y
+ *
+ */
+
 public class PageHandler {
 	
 	private static double printPerPage = 4.0;
@@ -13,6 +19,9 @@ public class PageHandler {
 
 	public static boolean isAtFilePage = false;
 
+	/**
+	 * This method ensures that the tasks page do not go out of bound
+	 */
 	public static void updatePage() {
 		lastPage = getLastPage();
 		currentPage = getCurrentPage();		
@@ -22,6 +31,9 @@ public class PageHandler {
 		}			
 	}
 	
+	/**
+	 * This method ensures that the file page do not go out of bound
+	 */
 	public static void updateFilePage() {
 		fileLastPage = getFileLastPage();
 		fileCurrentPage = getFileCurrentPage();
@@ -30,6 +42,10 @@ public class PageHandler {
 			fileCurrentPage = getLastPage();
 		}	
 	}
+	
+	/**
+	 * @return currentPage user is at when viewing files
+	 */
 	
 	public static int getFileCurrentPage() {
 		return fileCurrentPage;
@@ -58,12 +74,21 @@ public class PageHandler {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return total pages of tasks
+	 */
 	public static int getTotalPage() {
 		int taskSize = UserInterface.taskList.size();	
 		int totalPage = (int) Math.ceil(taskSize/printPerPage);
 		
 		return totalPage;
 	}
+	
+	/**
+	 * 
+	 * @return total pages of files
+	 */
 	
 	public static int getFilePathTotalPage() {
 		int pathSize = UserInterface.files.size();
@@ -105,6 +130,12 @@ public class PageHandler {
 		currentPage++;
 		updatePage();
 	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return page number of a task is residing in
+	 */
 	
 	public static int getPageOfIndex(int index) {
 		int page = index / (int) printPerPage;

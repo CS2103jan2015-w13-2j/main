@@ -19,6 +19,12 @@ import taskList.Task;
 import taskList.TaskManager;
 
 //@author A0117971Y
+
+/**
+ * Main class that displays and update tasks. 
+ * @author A0117971Y
+ *
+ */
 public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo | finish ";

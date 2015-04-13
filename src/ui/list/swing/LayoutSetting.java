@@ -25,6 +25,11 @@ import net.java.balloontip.styles.EdgedBalloonStyle;
 
 //@author A0117971Y
 
+/**
+ * Sets the layout of the UI's frame and labels
+ * @author A0117971Y
+ *
+ */
 public class LayoutSetting {
 	
 	private static HotKeyListener hotKeyListener = new HotKeyListener();

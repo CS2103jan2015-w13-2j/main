@@ -5,6 +5,12 @@ import java.io.IOException;
 
 //@author A0117971Y
 
+/**
+ * This class provides logic methods
+ * required by UI
+ * @author A0117971Y
+ *
+ */
 public class UiLogic {
 	
 	private static final int DELETE_MODE = 0;

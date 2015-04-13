@@ -6,6 +6,11 @@ import java.io.IOException;
 
 //@author A0117971Y
 
+/**
+ * Listens for hotkey and process it accordingly
+ * @author A0117971Y
+ *
+ */
 public class HotKeyListener extends KeyAdapter {
 	
 	private static final String INVALID = "invalid";
