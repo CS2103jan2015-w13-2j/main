@@ -13,7 +13,6 @@ import java.util.logging.Logger;
  * Basic class for this package.
  * Providing basic functions of file operation.
  * 
- * @author Huang Weilong A0119392B
  * @version 2015 April 11
  */
 public class FileOperation {

@@ -10,7 +10,6 @@ import taskList.Task;
 /**
  * Reading and loading task list in file with JSON format.
  * 
- * @author Huang Weilong A0119392B
  * @version 2015 April 11
  */
 public class JsonStringFileOperation{

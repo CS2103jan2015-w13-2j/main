@@ -14,7 +14,6 @@ import taskList.Task;
 /**
  * Converting between JSON format string and objects
  * 
- * @author Huang Weilong A0119392B
  * @version 2015 April 11
  */
 public class ObjectConverter {

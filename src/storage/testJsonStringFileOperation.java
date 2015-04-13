@@ -18,7 +18,6 @@ import taskList.Task;
 
 /**
  * 
- * @author Huang Weilong A0119392B
  * @version 2015 April 11
  */
 public class testJsonStringFileOperation {
