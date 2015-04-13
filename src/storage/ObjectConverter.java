@@ -27,6 +27,8 @@ public class ObjectConverter {
 	private static final String KEY_FOR_DATE = "date";
 	private static final String KEY_FOR_DEADLINE = "deadline";
 	private static final String KEY_FOR_VENUE = "venue";
+	private static final String KEY_FOR_FINISH = "finish";
+	private static final String VALUE_FOR_FINISHED = "finished";
 	
 	//private static final Logger logger = Logger.getLogger(LOGGER_NAME);
 	
@@ -114,6 +116,10 @@ public class ObjectConverter {
 		tempJsonTask.put(KEY_FOR_DEADLINE, deadlineString);
 		
 		tempJsonTask.put(KEY_FOR_VENUE, task.getVenue());
+		
+		if(task.hasFinished()){
+			tempJsonTask.put(KEY_FOR_FINISH, VALUE_FOR_FINISHED);
+		}
 		
 		return tempJsonTask;
 	}
@@ -242,9 +248,10 @@ public class ObjectConverter {
 		String date = getDateString(jsonTask);
 		String deadline = getDeadlineString(jsonTask);
 		String venue = getVenue(jsonTask);
+		Boolean finish = getFinished(jsonTask);
 		
 		assert content != null;
-		return new Task(content, date, deadline, venue);
+		return new Task(content, date, deadline, venue, finish);
 	}
 	
 	/**
@@ -296,6 +303,19 @@ public class ObjectConverter {
 		}catch(JSONException notFound){
 			//showMessageNotFound(KEY_FOR_VENUE);
 			return null;
+		}
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for finish status, if not existed, return null
+	 */
+	private boolean getFinished(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_FINISH).equals(VALUE_FOR_FINISHED);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_VENUE);
+			return false;
 		}
 	}
 	
