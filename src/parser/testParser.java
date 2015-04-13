@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import parser.Parser.Operation;
 
+//@author A0119503M
 public class testParser {
 	
 	private static final String EXCEPTION_NOTITLE = "no title inputed";
@@ -24,15 +25,15 @@ public class testParser {
 	private static final String FAIL_EXCEPTION = "unexpected exception";
 	
 	private static final String FEEDBACK_ADD = 
-			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
-	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
+			"Tip: add <task> -d<time> -v<venue> to add task with date & venue";
+	private static final String FEEDBACK_DELETE = "Tip: delete <index> to delete a task";
 	private static final String FEEDBACK_MODIFY = 
-			"Tip: modify<index> <new title> -d<new time> -v<new venue> to modify task";
-	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
-	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
-	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
-	private static final String FEEDBACK_IMPORT = "Tip: import<index/path> to import a schedule file";
-	private static final String FEEDBACK_EXPORT = "Tip: export<index/path> to save schedul to a file";
+			"Tip: modify <index> <new title> -d<new time> -v<new venue> to modify task";
+	private static final String FEEDBACK_SORT = "Tip: sort <time/venue/title> to sort tasks";
+	private static final String FEEDBACK_SEARCH = "Tip: search <title/time/venue> to search tasks";
+	private static final String FEEDBACK_COMPLETE = "Tip: complete <index> to mark a task completed";
+	private static final String FEEDBACK_IMPORT = "Tip: import <index/path> to import a schedule file";
+	private static final String FEEDBACK_EXPORT = "Tip: export <index/path> to save schedul to a file";
 	
 	private boolean testBoolean;
 	private Operation testOperation;
@@ -58,9 +59,9 @@ public class testParser {
 			assertTrue(e instanceof NullPointerException);
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
 		}
-		testOperation = p.getOperation("");
+		testOperation = p.getOperation("   ");
 		assertEquals(Operation.UNKNOW, testOperation);
-		testOperation = p.getOperation("add aaaaaa");
+		testOperation = p.getOperation("     add    aaaaaa");
 		assertEquals(Operation.ADD, testOperation);	
 	}
 	
@@ -102,7 +103,6 @@ public class testParser {
 			assertEquals(temp, testArrayList);
 		} catch (Exception e) {
 			fail(FAIL_EXCEPTION);
-			e.printStackTrace();
 		}
 		try {
 			testArrayList = p.getIndex("modify -d the day after tomorrow");
@@ -127,11 +127,9 @@ public class testParser {
 			assertEquals("go to school", testString);
 			testString = p.getNewTitle("modify 8   -d tomorrow");
 			assertEquals(null, testString);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 	}
 	
 	@Test
@@ -144,12 +142,17 @@ public class testParser {
 			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
 		}
 		try {
+			testString = p.getTitle("add    -v dummy place");
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NOTITLE));
+		}
+		try {
 			testString = p.getTitle("add testtask -v school");
 			assertEquals("testtask", testString);
-			testString = p.getTitle("add    -v dummy place");
-			assertEquals(null, testString);
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(FAIL_EXCEPTION);
 		}
 	}
 	
@@ -184,6 +187,7 @@ public class testParser {
 			assertEquals(sdf.parse("2015-12-10 13:00"), testDate);
 		} catch (Exception e) {
 			e.printStackTrace();
+			fail(FAIL_EXCEPTION);
 		}
 	}
 	
@@ -202,7 +206,7 @@ public class testParser {
 			testDate = p.getDeadline("add testTask -dd 2015-12-10 13:00");
 			assertEquals(sdf.parse("2015-12-10 13:00"), testDate);
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(FAIL_EXCEPTION);
 		}
 	}
 	

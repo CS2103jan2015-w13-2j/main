@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
+//@author A0119392B
 /**
  * Basic class for this package.
  * Providing basic functions of file operation.

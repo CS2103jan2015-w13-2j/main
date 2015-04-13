@@ -14,9 +14,9 @@ import com.joestelmach.natty.*;
  * Another function of this class is to format a Date type data to a default String format. 
  * Finally, it is able to carry various comparisons between two Date type data.
  * APIs:
- * getDate(String): Date throws NullPointerException, IOException
- * formatDefault(Date): String throws NullPointerException
- * isSameDay(Date, Date): boolean throws NullPointerException
+ *  getDate(String): Date throws NullPointerException, IOException
+ *  formatDefault(Date): String throws NullPointerException
+ *  isSameDay(Date, Date): boolean throws NullPointerException
  */
 public class DateParser {
 	public static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";

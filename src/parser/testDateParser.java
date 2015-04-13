@@ -11,9 +11,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+//@author A0119503M
 public class testDateParser {
 	
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String FAIL_NOEXCEPTION = "no exception thrown";
+	private static final String FAIL_EXCEPTION = "unexpected exception";
 	
 	private Date output;
 	private Boolean booleanOutput;
@@ -30,7 +33,7 @@ public class testDateParser {
 	public void testNullInput() {
 		try{
 			output = dp.getDate(null);
-			fail("No exception thrown.");
+			fail(FAIL_NOEXCEPTION);
 		}catch(Exception ex){
 			assertTrue(ex instanceof NullPointerException);
 			assertTrue(ex.getMessage().contains(EXCEPTION_NULLPOINTER));
@@ -42,11 +45,10 @@ public class testDateParser {
 		try {
 			output = dp.getDate("");
 			assertEquals(null, output);
-		} catch (NullPointerException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+			e.printStackTrace();
+		} 
 	}
 	
 	@Test
@@ -57,11 +59,9 @@ public class testDateParser {
 			output = dp.getDate(dateString);
 			dateString = "2015-3-1";
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 		
 		try {
 			sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,11 +69,9 @@ public class testDateParser {
 			output = dp.getDate(dateString);
 			dateString = "2012-2-29";
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 	}
 	
 	@Test
@@ -81,7 +79,7 @@ public class testDateParser {
 		try {
 			dateString = "2018-13-29";
 			output = dp.getDate(dateString);
-			fail("No exception thrown.");
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception ex) {
 			assertTrue(ex instanceof IOException);
 			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
@@ -93,7 +91,7 @@ public class testDateParser {
 		try {
 			dateString = "2018-5-32";
 			output = dp.getDate(dateString);
-			fail("No exception thrown.");
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception ex) {
 			assertTrue(ex instanceof IOException);
 			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
@@ -108,11 +106,9 @@ public class testDateParser {
 			dateString = "2015-4-25";
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 		
 		//test date only string yyyy/MM/dd
 		try {
@@ -120,11 +116,9 @@ public class testDateParser {
 			dateString = "2015/4/25";
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 		
 		//test date only string MM/dd/yyyy
 		try {
@@ -132,11 +126,9 @@ public class testDateParser {
 			dateString = "4/25/2015";
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 	}
 	
 	@Test
@@ -146,11 +138,9 @@ public class testDateParser {
 			dateString = "2015-4-25 13:00";
 			output = dp.getDate(dateString);
 			assertEquals(sdf.parse(dateString), output);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 	}
 	
 	@Test
@@ -158,7 +148,7 @@ public class testDateParser {
 		try {
 			dateString = "2015-4-25 13:60";
 			output = dp.getDate(dateString);
-			fail("no exception thrown");
+			fail(FAIL_NOEXCEPTION);
 		} catch (Exception e) {
 			assertTrue(e instanceof IOException);
 			assertTrue(e.getMessage().contains("the date format you entered is incorrect"));
@@ -170,15 +160,15 @@ public class testDateParser {
 		try {
 			Date d1 = dp.getDate("2015-4-25 13:40");
 			Date d2 = dp.getDate("2015-4-25 12:00");
-			booleanOutput = dp.isSameDay(d1, d2);
+			booleanOutput = DateParser.isSameDay(d1, d2);
 			assertEquals(true, booleanOutput);
 			d1 = dp.getDate("2015-4-26 13:30");
 			d2 = dp.getDate("2015-4-25 12:00");
-			booleanOutput = dp.isSameDay(d1, d2);
+			booleanOutput = DateParser.isSameDay(d1, d2);
 			assertEquals(false, booleanOutput);
-		} catch (NullPointerException | IOException e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
 	}
 	
 	@After

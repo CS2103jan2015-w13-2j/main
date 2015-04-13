@@ -61,6 +61,7 @@ public class Parser {
 	private static final Pattern REGEX_NUMBERS = Pattern.compile(".*[^0-9].*");
 	private static final Pattern REGEX_COMMA = Pattern.compile(",");
 	private static final Pattern REGEX_SPACE = Pattern.compile(" ");
+	private static final String ELIMINATE_SPACE = " {2,}";
 	
 	private static Hashtable<String, Operation> featureList = null; 
 	private static DateParser dateParser = null;
@@ -80,10 +81,7 @@ public class Parser {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		if (operation.indexOf(' ') != -1) {
-			operation = operation.substring(0, operation.indexOf(' '));
-		}
-		operation = operation.trim();
+		operation = getOperationString(operation);
 		Operation operationIndex = getOperationIndex(operation);
 		if (operationIndex == null) {
 			return Operation.UNKNOW;
@@ -95,7 +93,7 @@ public class Parser {
 	public boolean isValid(String operation) throws NullPointerException {
 		boolean result = false;
 		try {
-			result = checker.isValidFormat(operation);
+			result = checker.isValidFormat(eliminateSpace(operation));
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
@@ -153,6 +151,7 @@ public class Parser {
 		}
 		assert(getOperation(operation) == Operation.ADD ||
 				getOperation(operation) == Operation.SEARCH);
+		operation = eliminateSpace(operation);
 		int start = operation.indexOf(' ') + 1;
 		if (start >= operation.length() || start == 0) {
 			logIOException(EXCEPTION_NOTITLE);
@@ -172,7 +171,12 @@ public class Parser {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		return getContent("-v", operation);
+		String result = getContent("-v", operation);
+		if (result == null) {
+			return null;
+		} else {
+			return eliminateSpace(result);
+		}
 	}
 	
 	public Date getDate(String operation) throws NullPointerException, IOException {
@@ -211,37 +215,51 @@ public class Parser {
 	
 	public String provideTips(String operation) throws NullPointerException {
 		String result = null;
+		String operationName = null;
 		try {
+			operationName = getOperationString(operation);
 			Operation operationType = getOperation(operation);
 			result = feedback.findTips(operationType);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
-		return result;
+		if (result == null) {
+			return null;
+		} else {
+			return "Tip: " + operationName + result;
+		}
 	}
 	
-	private String eliminateSpace(String str) {
+	public static String eliminateSpace(String str) {
 		if (str == null) return "";
 		assert(str != null);
-		if (str.equals("")) {
-			return str;
+		String temp = str.replaceAll(ELIMINATE_SPACE, " ");
+		if (temp.equals(" ") || temp.equals("")) {
+			return temp;
 		}
 		int start = 0;
-		while (str.charAt(start) == ' ') {
-			if (start < str.length()) {
+		if (temp.charAt(start) == ' ') {
 				start++;
-			}
 		}
-		int end = str.length() - 1;
-		while (str.charAt(end) == ' ') {
-			if (end > 0) {
+		int end = temp.length() - 1;
+		if (temp.charAt(end) == ' ') {
 				end--;
-			}
 		}
-		return str.substring(start, end+1);
-		
+		return temp.substring(start, end+1);
 	}	
-
+	
+	private String getOperationString(String operation) {
+		assert(operation != null);
+		String temp = eliminateSpace(operation);
+		String[] temps = REGEX_SPACE.split(temp);
+		for(int i = 0; i< temps.length; i++) {
+			if (temps[i] != null) {
+				return temps[i];
+			}
+		} 
+		return "";
+	}
+	
 	private Operation getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);
@@ -271,7 +289,6 @@ public class Parser {
 			tempIndex = -1;
 		}
 		return tempIndex;
-		
 	}
 	
 	private void initFeatureList() {
@@ -310,7 +327,11 @@ public class Parser {
 		if (end == FAIL) {
 			end = operation.length();
 		}
-		return operation.substring(begin, end);
+		if (begin <= end) {
+			return operation.substring(begin, end);
+		} else {
+			return null;
+		}
 	}
 	
 	private boolean isInOptions(String operationType) {
@@ -329,7 +350,8 @@ public class Parser {
 		int temp = operation.indexOf(operationType);
 		boolean isFound = false;
 		while (temp != -1 && !isFound) {
-			if (operation.charAt(temp+operationType.length()) == ' ') {
+			if (temp+operationType.length() == operation.length()||
+					operation.charAt(temp+operationType.length()) == ' ') {
 				isFound = true;
 			} else {
 				temp = operation.indexOf(operationType, temp + 1);
