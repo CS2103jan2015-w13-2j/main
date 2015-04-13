@@ -2,6 +2,12 @@ package ui.list.swing;
 
 //@author A0117971Y
 
+/**
+ * This class manages the text field history
+ * Note: Text field history will be stored from start of application to end.
+ * History will not be saved upon exit. Empty input will not be stored.
+ * Author: A0117971Y
+ */
 import java.util.Stack;
 
 public class TextFieldHistory {
@@ -10,7 +16,7 @@ public class TextFieldHistory {
 	private final static String UNABLE_TO_OBTAIN_LAST_HISTORY = "invalid";
 	
 	public static void updateHistory(String input) {
-		if (!input.isEmpty()) {
+		if (!input.trim().isEmpty() || input == null) {
 			while (!temp.isEmpty()) {
 				history.push(temp.pop());
 			}

@@ -20,10 +20,15 @@ import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+/**
+ * This class bring the application to system tray
+ * upon minimize
+ * @author A0117971Y
+ *
+ */
 public class SystemTray_TaskBuddy {
 	private static TrayIcon trayIcon;
 	private static SystemTray tray;
-	
 	private static final String MAIN_FRAME_NAME = "TaskBuddy";
 	private static final String SYSTEMTRAY_MENU_OPEN = "Open Application";
 	private static final String SYSTEMTRAY_MENU_EXIT = "Exit Application";

@@ -2,16 +2,21 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.Timer;
+
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
@@ -20,6 +25,11 @@ import net.java.balloontip.styles.EdgedBalloonStyle;
 
 //@author A0117971Y
 
+/**
+ * Sets the layout of the UI's frame and labels
+ * @author A0117971Y
+ *
+ */
 public class LayoutSetting {
 	
 	private static HotKeyListener hotKeyListener = new HotKeyListener();
@@ -36,8 +46,19 @@ public class LayoutSetting {
 	public static void setFrame() {
 		UserInterface.frame.setBounds(100, 100, 653, 582);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		UserInterface.frame.setResizable(false);
 		UserInterface.frame.getContentPane().setLayout(null);
 		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
+		setFrameBottomRight();
+	}
+	
+	private static void setFrameBottomRight() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+        int x = (int) rect.getMaxX() - UserInterface.frame.getWidth();
+        int y = (int) rect.getMaxY() - UserInterface.frame.getHeight();
+        UserInterface.frame.setLocation(x,y);
 	}
 	
 	public static void setPanels() {	

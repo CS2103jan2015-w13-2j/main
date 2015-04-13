@@ -1,3 +1,4 @@
+
 package taskList;
 
 
@@ -15,6 +16,7 @@ import ui.list.swing.LayoutSetting;
 import ui.list.swing.UserInterface;
 import parser.DateParser;
 import parser.Parser;
+//@author A0119403N
 public class TaskManager {
 	private static final String MESSAGE_EMPTY_FILE = "No related file found";
 	private static final String MESSAGE_ADD_OPERATION = "Add new task successfully";
@@ -23,6 +25,8 @@ public class TaskManager {
 	private static final String MESSAGE_CLEAR_OPERATION = "all content has been deleted";
 	private static final String MESSAGE_MODIFY_OPERATION = "Modify successfully \n";
 	private static final String MESSAGE_MODIFY_OPERATION_FAILURE = "Index is not valid for modify\n";
+	private static final String MESSAGE_COMPLETE_OPERATION = "Complete operation successfully";
+	private static final String MESSAGE_COMPLETE_OPERATION_FAILURE = "Index is not valid for complete operation";
 	public enum SORT_MODE {
 		BY_TIME,BY_VENUE,BY_TITLE
 	}
@@ -72,7 +76,6 @@ public class TaskManager {
 		}
 		
 		myParser = new Parser();
-		//Add in a initParser() command.
 	}
 
 	/*
@@ -277,10 +280,10 @@ public class TaskManager {
 		if (mode == DISPLAY_MODE.TODO_TASKLIST){
 			
 			if (removeIndex < 0 || removeIndex > taskList.size()) {
-				showMessage(MESSAGE_DELETE_OPERATION_FAILURE);
+				showMessage(MESSAGE_COMPLETE_OPERATION_FAILURE);
 				return;
 			}
-			showMessage(MESSAGE_DELETE_OPERATION);
+			showMessage(MESSAGE_COMPLETE_OPERATION);
 			Task finishedOne = taskList.remove(removeIndex - 1);
 			
 			//update hasfinished added here		
@@ -288,7 +291,6 @@ public class TaskManager {
 			
 			completedTaskList.add(finishedOne);
 			saveFile();
-			undo.add(taskList);
 		}else{
 			if (removeIndex < 0 || removeIndex > searchResult.size()) {
 				showMessage(MESSAGE_DELETE_OPERATION_FAILURE);
@@ -305,7 +307,6 @@ public class TaskManager {
 			showMessage(MESSAGE_DELETE_OPERATION);
 			searchResult.remove(removeIndex - 1);
 			saveFile();
-			undo.add(taskList);
 		}
 	}
 	
@@ -320,6 +321,7 @@ public class TaskManager {
 		for (int i = completeIndex.size()-1; i >= 0; i--){
 			complete(completeIndex.get(i));
 		}
+		undo.add(taskList);
 	}	
 	
 	
@@ -395,7 +397,6 @@ public class TaskManager {
 				taskList.add(index, newTask);
 				showMessage(MESSAGE_MODIFY_OPERATION);
 				saveFile();
-				undo.add(taskList);
 			}catch (Exception e){
 				throw e;
 			}
@@ -429,7 +430,6 @@ public class TaskManager {
 				searchResult.add(newTask);
 				showMessage(MESSAGE_MODIFY_OPERATION);
 				saveFile();
-				undo.add(taskList);
 			}catch (Exception e){
 				throw e;
 			}
@@ -446,6 +446,7 @@ public class TaskManager {
 		for (int i = 0; i < modifyIndex.size(); i++){
 			modify(modifyIndex.get(i),command);
 		}
+		undo.add(taskList);
 	}	
 	
 	
@@ -488,16 +489,24 @@ public class TaskManager {
 	 * Description: import file based on given command, if file not exist, create a new file
 	 */
 	private void importFile(String command) throws NullPointerException, IOException{
-		System.out.println("import command");
+		boolean isInteger;
+		ArrayList<Integer> index = null;
 		String newFileName = myParser.getTitle(command);
-		fileName = newFileName;
-		fileOperation = new JsonStringFileOperation(newFileName);
+		try{
+			index = myParser.getIndex(command);
+			isInteger = true;
+		}catch (Exception e){
+			isInteger = false;
+		}
+		if (isInteger){
+			if (index.get(0)<= fileList.size()) newFileName = fileList.get(index.get(0)-1);
+		}
 		if (!fileList.contains(newFileName)){
-			mode = DISPLAY_MODE.TODO_TASKLIST;
-			fileList.add(newFileName);
-			System.out.println("fafaaf");
-			loadFile();
+			showMessage("No such file");
+			return;
 		}else{
+			fileName = newFileName;
+			fileOperation = new JsonStringFileOperation(newFileName);
 			mode = DISPLAY_MODE.TODO_TASKLIST;
 			loadFile();
 		}

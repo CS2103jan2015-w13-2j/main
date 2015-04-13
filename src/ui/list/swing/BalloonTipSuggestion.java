@@ -3,6 +3,13 @@ package ui.list.swing;
 
 //@author A0117971Y
 
+/**
+ * This class shows the BalloonTip suggestion for auto-fill
+ * Auto-fill is obtained from logic (TaskManager)
+ * @author A0117971Y
+ *
+ */
+
 public class BalloonTipSuggestion {
 	
     private static void setBalloonTipSuggestion() {
