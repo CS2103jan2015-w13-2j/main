@@ -45,6 +45,7 @@ public class UIFeedback {
 		if (str == null) {
 			throw new NullPointerException(EXCEPTION_NULLPOINTER);
 		}
+		str = Parser.eliminateSpace(str);
 		ArrayList<String> matchResult = searchAllKeyword(str);
 		if (matchResult.size() != 1) {
 			return null;

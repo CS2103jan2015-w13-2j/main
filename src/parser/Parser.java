@@ -230,19 +230,7 @@ public class Parser {
 		}
 	}
 	
-	private String getOperationString(String operation) {
-		assert(operation != null);
-		String temp = eliminateSpace(operation);
-		String[] temps = REGEX_SPACE.split(temp);
-		for(int i = 0; i< temps.length; i++) {
-			if (temps[i] != null) {
-				return temps[i];
-			}
-		} 
-		return "";
-	}
-	
-	private String eliminateSpace(String str) {
+	public static String eliminateSpace(String str) {
 		if (str == null) return "";
 		assert(str != null);
 		String temp = str.replaceAll(ELIMINATE_SPACE, " ");
@@ -259,7 +247,19 @@ public class Parser {
 		}
 		return temp.substring(start, end+1);
 	}	
-
+	
+	private String getOperationString(String operation) {
+		assert(operation != null);
+		String temp = eliminateSpace(operation);
+		String[] temps = REGEX_SPACE.split(temp);
+		for(int i = 0; i< temps.length; i++) {
+			if (temps[i] != null) {
+				return temps[i];
+			}
+		} 
+		return "";
+	}
+	
 	private Operation getOperationIndex(String operation) {
 		assert(operation != null);
 		return featureList.get(operation);
