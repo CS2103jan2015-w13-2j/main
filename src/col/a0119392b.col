@@ -1,0 +1,108 @@
+//@author: a0119392b
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\ConfigurationFileOperation.java
+	 */
+
+/**
+ * Storage of configuration file. 
+ * Read and load .configuration file from user home folder.
+ * Using the JSON format to store data.
+ * 
+	// End of segment: E:\cs2103final\src\storage\ConfigurationFileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\FileOperation.java
+	 */
+
+/**
+ * Basic class for this package.
+ * Providing basic functions of file operation.
+ * 
+	// End of segment: E:\cs2103final\src\storage\FileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\JsonStringFileOperation.java
+	 */
+
+/**
+ * Reading and loading task list in file with JSON format.
+ * 
+	// End of segment: E:\cs2103final\src\storage\JsonStringFileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\ObjectConverter.java
+	 */
+
+/**
+ * Converting between JSON format string and objects
+ * 
+	// End of segment: E:\cs2103final\src\storage\ObjectConverter.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\testConfigurationFileOperation.java
+	 */
+
+/**
+ * 
+	// End of segment: E:\cs2103final\src\storage\testConfigurationFileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\testFileOperation.java
+	 */
+
+/**
+ * 
+	// End of segment: E:\cs2103final\src\storage\testFileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\testJsonStringFileOperation.java
+	 */
+
+
+/**
+ * 
+	// End of segment: E:\cs2103final\src\storage\testJsonStringFileOperation.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\storage\testObjectConverter.java
+	 */
+
+/**
+ * 
+	// End of segment: E:\cs2103final\src\storage\testObjectConverter.java
+
+
+
+
+

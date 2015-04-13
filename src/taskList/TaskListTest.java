@@ -11,7 +11,7 @@ import org.junit.Test;
 //@author A0119403N
 public class TaskListTest {
 	//String used to test CE1
-	private static final String TEST_FILENAME = "TestFileName.txt";
+	private static final String TEST_FILENAME = "CaoShengze.txt";
 	private static final String CLEAR_COMMAND = "clear";
 	private static final String DISPLAY_COMMAND = "display";
 	private static final String ADD_COMMAND_1 = "add jumped over the moon";
@@ -318,9 +318,9 @@ public class TaskListTest {
 		taskList.redo();
 		assertEquals("undo test", exceptedList, taskList.getTaskList());
 		
-		TaskManager taskList2 = new TaskManager("Another File");
+		TaskManager taskList2 = new TaskManager();
 		taskList2.executeCommand("import "+args[0]);
-		assertEquals("undo test", exceptedList, taskList2.getTaskList());
+		assertEquals("undo test", true, taskList.getAllTitles().equals(taskList2.getAllTitles()));
 		
 	}
 	
@@ -369,17 +369,14 @@ public class TaskListTest {
 		taskList.redo();
 		assertEquals("undo test", exceptedList, taskList.getTaskList());
 		
-		TaskManager taskList2 = new TaskManager("Another File");
-		taskList.executeCommand("export anotherfile");
-		taskList2.executeCommand("import anotherfile");
-		assertEquals("undo test", exceptedList, taskList2.getTaskList());
+		TaskManager taskList2 = new TaskManager();
+		taskList.executeCommand("export CaoShengze.txt");
+		taskList2.executeCommand("import CaoShengze.txt");
+		assertEquals("undo test", true, taskList.getAllTitles().equals(taskList2.getAllTitles()));
 		
 	}
 	private void testOneCommand(String description, String expected, String command, TaskManager taskList) throws NullPointerException, IOException {
 		taskList.executeCommand(command);
-		System.out.println("Debug");
-		System.out.println(expected);
-		System.out.println(taskList.getAllTitles());
 		assertEquals(description, expected, taskList.getAllTitles()); 
 	}
 	

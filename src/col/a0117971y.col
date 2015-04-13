@@ -1,0 +1,1989 @@
+//@author: a0117971y
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\BalloonTipSuggestion.java
+	 */
+
+
+/**
+ * This class shows the BalloonTip suggestion for auto-fill
+ * Auto-fill is obtained from logic (TaskManager)
+	// End of segment: E:\cs2103final\src\ui\list\swing\BalloonTipSuggestion.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\BalloonTipSuggestion.java
+	 */
+
+ *
+ */
+
+public class BalloonTipSuggestion {
+	
+    private static void setBalloonTipSuggestion() {
+    	
+    	String autoFill = getAutoFill();
+    	
+        if (autoFill != null) {
+        LayoutSetting.showBalloonTipSuggestion(autoFill);
+        
+        }         
+        else {
+        	LayoutSetting.closeBalloonTip();
+        }
+    }
+
+    public static void getBalloonTip() {
+    	String inputStream = TextFieldListener.getInputStream();
+
+    	if (inputStream.length() == 0) {
+    		LayoutSetting.closeBalloonTip();
+    	}
+    	else {
+    		setBalloonTipSuggestion();
+    	}
+    }
+  
+    public static String getAutoFill() {
+    	return UserInterface.BTM.getAutoFill(TextFieldListener.getInputStream());
+    }
+
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\BalloonTipSuggestion.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\DateTimeSetting.java
+	 */
+
+
+/**
+ * This class formats the date and time string
+ * and returns a readable format
+	// End of segment: E:\cs2103final\src\ui\list\swing\DateTimeSetting.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\DateTimeSetting.java
+	 */
+
+ *
+ */
+
+public class DateTimeSetting {
+	
+	private static final String EMPTY_TIME = "00:00:00";
+	private static final String EMPTY_STRING = "---";	
+
+	
+	static boolean isEmptyTime(String time) {
+		if (time.trim().equals(EMPTY_TIME)) {
+			return true;
+		}
+		return false;
+	}
+	
+	static String getTime(Task task) {
+		String time = trimTime(task.getDateString());
+		
+		return time;
+	}
+	
+	static String getDate(Task task) {
+		String date = trimDate(task.getDateString());
+		
+		return date;
+	}
+	
+	static String getEndDate(Task task) {
+		String endDate = trimDate(task.getDeadlineString());
+		
+		return endDate;
+	}
+	
+	static String getEndTime(Task task) {
+		String endTime = trimTime(task.getDeadlineString());
+		
+		return endTime;
+	}
+	
+	private static String trimDate(String date) {
+
+		String trimDate = EMPTY_STRING;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			trimDate = date.substring(0, date.indexOf(":")-2);
+			System.out.println("Date Trimmed: " + trimDate);
+		}
+		
+		return trimDate;
+	}
+	
+	private static String trimTime(String date) {
+		String time = EMPTY_TIME;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			time = date.substring(date.indexOf(":")-2, date.length());	
+			return timeFormat(time);
+		}
+
+		return time;
+	}
+	
+	static String dateFormat (String date) {
+		String formattedDay = EMPTY_STRING;
+		
+		if (!date.equals(EMPTY_STRING)) {
+			String tokens[] = date.split("-");
+			String year = tokens[0];
+			String mth = tokens[1];
+			String day = tokens[2];
+			
+			switch (mth) {
+			case "01": mth = "Jan"; break;
+			case "02": mth = "Feb"; break;
+			case "03": mth = "Mar"; break;
+			case "04": mth = "April"; break;
+			case "05": mth = "May"; break;
+			case "06": mth = "Jun"; break;
+			case "07": mth = "July"; break;
+			case "08": mth = "Aug"; break;
+			case "09": mth = "Sept"; break;
+			case "10": mth = "Oct"; break;
+			case "11": mth = "Nov"; break;
+			case "12": mth = "Dec"; break;				
+			}
+			
+			formattedDay = day+ " " + mth + " " + year;
+		}
+		
+		return formattedDay;
+	}
+	
+	private static String timeFormat(String time) {
+		if (!isEmptyTime(time)) {
+			String tokens[] = time.split(":");
+			String hrs = tokens[0];
+			String min = tokens[1];
+			String day;
+			int newHr = 0;
+			
+			if (Integer.parseInt(hrs) >= 12) {
+				newHr = Integer.parseInt(hrs);
+				day = "PM";
+
+				if (newHr > 12) {
+					newHr = newHr - 12;
+				}
+			}
+			
+			else {
+				newHr = Integer.parseInt(hrs);
+				day = "AM";
+			}
+			
+			return newHr + ":" + min + day;
+		}
+		return time;
+	}
+	
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\DateTimeSetting.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\DisplayFormat.java
+	 */
+
+
+/**
+ * This class generates the HTML formatting for items displayed
+ * and returns a string of such formatting
+	// End of segment: E:\cs2103final\src\ui\list\swing\DisplayFormat.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\DisplayFormat.java
+	 */
+
+ *
+ */
+
+public class DisplayFormat {
+	
+	private static final String TASK_INFO_UNCOMPLETED_MSG = "Things to do: ";
+	private static final String TASK_INFO_SEARCH_RESULT_MSG = "Search results: ";
+	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
+	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
+	private static final String TASK_INFO_FILE_PATH_MSG = "Existing files: ";
+	private static final String DATE_STRING = "<b> Date: </b>";
+	private static final String END_STRING = "<b>End: </b>";
+	private static final String START_STRING = "<b>Start: </b>";
+	private static final String VENUE_STRING = "<b>Venue: </b>";
+	private static final String TIME_STRING = "<b>Time: </b>";
+	private static final String EMPTY_STRING = "---";	
+	private static StringBuilder data = new StringBuilder();
+	private static final String HTML_OPEN = "<html>";
+	private static final String HTML_CLOSE = "</html>";
+	private static final String HTML_BREAK = "<br>";
+	private static final String HTML_FONT_TASK_HEADER = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"> %s </font> <font size = \"6\" font face = \"Comic Sans Ms\"> %s </font><br>";
+	private static final String HTML_FONT_TASK_DETAILS = "<font size = \"3\" font color = #363232> %s </font>";
+	private static final String HTML_FONT_VIEW_TASK_INFO = "<html><font size = \"6\" font face = \"Century Gothic\"><i><u> %s </u></i></font></html>";
+	private static final String HTML_FONT_FEEDBACK_GUIDE_INFO = "<font color = #008000> %s </font>";
+	private static final String HTML_FONT_OVERDUE = "<font size = \"3\" font color = #FF0000> %s </font>";
+	private static final String HTML_FONT_FINISHED_TASK_HEADING = "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\"><s> %s </s></font><font size = \"6\" font face = \"Comic Sans Ms\"><s> %s </s></font><br>";
+	private static final String HTML_FONT_FINISHED_DETAILS = "<font size = \"3\" font color = #363232><s> %s </s></font>";
+	
+	private static String index;
+	private static String taskName;
+	private static String date;
+	private static String venue;
+	private static String endDate;
+	private static String time;
+	private static String endTime;
+
+	
+	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
+		clearData();
+		
+		getAllInfo(task, i);
+
+		setVenueDate();
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_TASK_HEADER,index+". ", taskName));
+		
+		if (isValidOutOfDate(task,date, endDate))  {
+			setDateTime(task, date, endDate, time, endTime, HTML_FONT_OVERDUE );
+		}
+		
+		else {
+			setDateTime(task, date, endDate, time, endTime, HTML_FONT_TASK_DETAILS );
+		}
+		
+		data.append(HTML_BREAK);	
+		setTaskVenue(HTML_FONT_TASK_DETAILS, venue);
+		data.append(HTML_BREAK+HTML_CLOSE);
+		
+		return getData();
+	}
+	
+	private static void getAllInfo(Task task, int i) {
+		index = Integer.toString(i+1);
+		taskName = task.getContent();
+		date = DateTimeSetting.getDate(task);
+		endDate = DateTimeSetting.getEndDate(task);
+		time = DateTimeSetting.getTime(task);
+		endTime = DateTimeSetting.getEndTime(task);
+		venue = task.getVenue();
+	}
+
+	private static void setTaskVenue(String format, String venue) {
+		data.append(String.format(format,VENUE_STRING + venue));
+	}
+	
+	private static boolean isValidOutOfDate (Task task, String date, String endDate) throws NullPointerException, IOException {
+		return (!date.equals(EMPTY_STRING) || !endDate.equals(EMPTY_STRING)) && task.isOutOfDate();
+	}
+	
+	private static void setDateTime(Task task, String date, String endDate, String time, String endTime, String format) throws NullPointerException, IOException {	
+		date = DateTimeSetting.dateFormat(date);
+		endDate = DateTimeSetting.dateFormat(endDate);
+			
+			if (date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING)) {
+				data.append(String.format(format, DATE_STRING + date));
+			}
+			
+			else if (!date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING))  {
+				data.append(String.format(format, START_STRING + date));
+					
+				if (!DateTimeSetting.isEmptyTime(time)) {
+						data.append(String.format(format, TIME_STRING + time));
+					}
+			}
+			
+			else if (date.equals(EMPTY_STRING) && !endDate.equals(EMPTY_STRING)) {
+				data.append((String.format(format, END_STRING + endDate)));
+				
+				if (!DateTimeSetting.isEmptyTime(endTime))
+					data.append((String.format(format, TIME_STRING + endTime)));
+
+			}
+			
+			else {
+				data.append(String.format(format, START_STRING + date));	
+				
+				if (!DateTimeSetting.isEmptyTime(time)) {
+					data.append(String.format(format, TIME_STRING + time));
+				}
+				
+				data.append((String.format(format, END_STRING + endDate)));
+				
+				if (!DateTimeSetting.isEmptyTime(endTime))
+					data.append((String.format(format, TIME_STRING + endTime)));
+			}
+		}	
+
+
+	public static String getDeletedRowFormat(Task task, int i) throws NullPointerException, IOException {
+		clearData();
+		getAllInfo(task, i);
+		setVenueDate();
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_FINISHED_TASK_HEADING, index + ". ", taskName));
+		setDateTime(task, date, endDate, time, endTime, HTML_FONT_FINISHED_DETAILS );
+		data.append(HTML_BREAK);		
+		setTaskVenue(HTML_FONT_FINISHED_DETAILS,venue);
+		data.append(HTML_BREAK+HTML_CLOSE);
+
+		return getData();
+	}
+
+	public static String getData() {
+		return data.toString();
+	}
+	
+	private static void setVenueDate() {
+		if (venue == null || venue.equals("")) {
+			venue = EMPTY_STRING;
+		}
+		
+		if (date == null || date.equals("")) {
+			date = EMPTY_STRING;
+		}
+	}
+	
+	@SuppressWarnings("finally")
+	public static String getTaskInfoDetails() {
+		DISPLAY_MODE mode = DISPLAY_MODE.TODO_TASKLIST;
+		try {
+			mode = UserInterface.BTM.getCurrentMode();
+		} catch (Exception e){
+			e.printStackTrace();
+		} finally {
+			switch (mode) {
+				case TODO_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_UNCOMPLETED_MSG);
+				case SEARCH_LIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_SEARCH_RESULT_MSG);
+				case FINISHED_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_COMPLETED_MSG);
+				case ALL_TASKLIST: PageHandler.isAtFilePage = false; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO,TASK_INFO_ALL_TASKS_MSG);
+				case FILE_PATH: PageHandler.isAtFilePage = true; 
+					return String.format(HTML_FONT_VIEW_TASK_INFO, TASK_INFO_FILE_PATH_MSG);
+
+				default: PageHandler.isAtFilePage = false; 
+				
+				return String.format(HTML_FONT_VIEW_TASK_INFO,"undefined!");
+			}
+		}
+	}
+	
+	public static String getPathInfoFormat(String path, int index) {
+		clearData();
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_TASK_HEADER,(index+1)+". ", path));
+		data.append(HTML_CLOSE);
+		
+		return data.toString();
+	}
+	
+	public static String getFeedbackGuideInfo() {
+		clearData();
+		
+		data.append(HTML_OPEN);
+		data.append(String.format(HTML_FONT_FEEDBACK_GUIDE_INFO, UserInterface.BTM.getLastFeedBack()));
+		data.append(HTML_CLOSE);
+		
+		return data.toString();
+	}
+	
+	public static void clearData() {
+		data.setLength(0);
+	}
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\DisplayFormat.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\HotKeyListener.java
+	 */
+
+
+/**
+ * Listens for hotkey and process it accordingly
+	// End of segment: E:\cs2103final\src\ui\list\swing\HotKeyListener.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\HotKeyListener.java
+	 */
+
+ *
+ */
+public class HotKeyListener extends KeyAdapter {
+	
+	private static final String INVALID = "invalid";
+	
+	public void keyPressed(KeyEvent arg1) {
+
+		if(arg1.getKeyCode() == KeyEvent.VK_ENTER) {
+			enterHandler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_TAB) {
+			tabHandler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_LEFT) {
+			leftKeyHandler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_RIGHT) {
+			rightKeyHandler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_F1) {
+			F1Handler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_ESCAPE && UserInterface.atHelpMenu) {
+			escHandler();
+		}
+		//detect ctrl+m
+		else if ((arg1.getKeyCode() == KeyEvent.VK_M) && ((arg1.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+			ctrlMHandler();
+		}
+
+		else if (arg1.getKeyCode() == KeyEvent.VK_UP) {
+			upKeyHandler();
+		}
+		
+		else if (arg1.getKeyCode() == KeyEvent.VK_DOWN) {
+			downKeyHandler();
+		}
+	}
+	
+	private static boolean canPressLeftTaskPage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getCurrentPage() > 0;
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean notAtFilePage = !PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && notAtFilePage;
+	}
+	
+	private static boolean canPressLeftFilePage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage =  PageHandler.getFileCurrentPage() > 0;
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean isAtFilePage = PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && isAtFilePage;
+	}
+	
+	private static void leftKeyHandler() {
+		if (canPressLeftTaskPage()) {
+			PageHandler.flipPrevPage();
+			try {
+				UserInterface.display(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		else if (canPressLeftFilePage()) {
+			PageHandler.flipPrevFilePage();
+			try {
+				UserInterface.display(PageHandler.getFileCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static boolean canPressRightTaskPage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getCurrentPage() < PageHandler.getLastPage();
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean notAtFilePage = !PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && notAtFilePage;
+	}
+	
+	private static boolean canPressRightFilePage() {
+		boolean checkTextField = UserInterface.textField.getText().isEmpty();
+		boolean checkCurrentPage = PageHandler.getFileCurrentPage()<PageHandler.getFileLastPage();
+		boolean notAtHelpMenu = !UserInterface.atHelpMenu;
+		boolean isAtFilePage = PageHandler.isAtFilePage;
+		
+		return checkTextField && checkCurrentPage && notAtHelpMenu && isAtFilePage;
+	}
+	
+	private static void rightKeyHandler() {		
+		if (canPressRightTaskPage()) {
+			PageHandler.flipNextPage();
+			try {
+				UserInterface.display(PageHandler.getCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		else if (canPressRightFilePage()) {
+			PageHandler.flipNextFilePage();
+			try {
+				UserInterface.display(PageHandler.getFileCurrentPage());
+			} catch (NullPointerException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private static void F1Handler() {
+		PrintHandler.printHelp();
+		UserInterface.atHelpMenu = true;
+	}
+	
+	private static void escHandler() {
+		UserInterface.atHelpMenu = false;
+		LayoutSetting.setShowTaskInfo();
+		try {
+			UserInterface.display(PageHandler.getCurrentPage());
+		} catch (NullPointerException | IOException e) {
+			e.printStackTrace();
+		}
+		UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+	}
+	
+	private static void ctrlMHandler() {
+		UiLogic.processMaxMin();
+	}
+	
+	private static void upKeyHandler() {
+		String history = TextFieldHistory.getLastHistory();
+		if (!history.equals(INVALID)) {
+			UserInterface.textField.setText(history);
+		}
+	}
+	
+	private static void downKeyHandler() {
+		String history = TextFieldHistory.getForwardHistory();
+		if (!history.equals(INVALID)) {
+			UserInterface.textField.setText(history);
+		}
+	}
+	
+	private static void tabHandler() {
+		if (BalloonTipSuggestion.getAutoFill() != null) {
+			UserInterface.textField.setText(BalloonTipSuggestion.getAutoFill() + " ");
+		}
+	}
+	
+	private static void enterHandler() {
+		try {
+			UiLogic.processTextField();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\HotKeyListener.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\LayoutSetting.java
+	 */
+
+
+/**
+ * Sets the layout of the UI's frame and labels
+	// End of segment: E:\cs2103final\src\ui\list\swing\LayoutSetting.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\LayoutSetting.java
+	 */
+
+ *
+ */
+public class LayoutSetting {
+	
+	private static HotKeyListener hotKeyListener = new HotKeyListener();
+	private static 	BalloonTip suggestion;
+	
+	public static void setFrameListener() {
+		UserInterface.frame.addKeyListener(hotKeyListener);
+	}
+		
+	public static void setTextFieldListener() {
+		UserInterface.textField.addKeyListener(hotKeyListener);
+	}
+	
+	public static void setFrame() {
+		UserInterface.frame.setBounds(100, 100, 653, 582);
+		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		UserInterface.frame.setResizable(false);
+		UserInterface.frame.getContentPane().setLayout(null);
+		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
+		setFrameBottomRight();
+	}
+	
+	private static void setFrameBottomRight() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+        int x = (int) rect.getMaxX() - UserInterface.frame.getWidth();
+        int y = (int) rect.getMaxY() - UserInterface.frame.getHeight();
+        UserInterface.frame.setLocation(x,y);
+	}
+	
+	public static void setPanels() {	
+		UserInterface.panel.setLayout(new BoxLayout(UserInterface.panel, BoxLayout.Y_AXIS));
+	}
+	
+	public static void setBackgroundLabel() {	
+		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
+		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
+		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+	}
+	
+	public static void setDateLabel() {
+		UserInterface.lblDate.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblDate.setBounds(350, 540, 270, 16);
+	}
+	
+	public static void setHelpInfoLabel() {
+		UserInterface.frame.requestFocus();
+		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
+		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_Help.png")));
+		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
+	}
+	
+	public static void setFilePathLabel() {
+		UserInterface.lblFile.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblFile.setBounds(20,540,500,16);
+		UserInterface.lblFile.setText("Current File: " + UserInterface.BTM.getCurrentPath());
+	}
+	
+	public static void setHelpLabel() {
+		UserInterface.lblHelp.setFont(new Font("Century Gothic", Font.ITALIC, 16));
+		UserInterface.lblHelp.setBounds(537, 30, 72, 20);
+	}
+	
+	public static void setStatusMessageLabel() {
+		UserInterface.lblStatusMessage.setFont(new Font("Century Gothic", Font.ITALIC, 14));
+		UserInterface.lblStatusMessage.setBounds(59, 440, 537, 29);
+	}
+	
+	public static void setPageLabel() {
+		UserInterface.lblPageNumber.setForeground(Color.GRAY);
+		UserInterface.lblPageNumber.setBounds(581, 504, 28, 23);
+	}
+	
+	public static void setCommandGuideLabel() {
+		UserInterface.lblCommandGuide.setFont(new Font("Century Gothic", Font.ITALIC, 14));
+		UserInterface.lblCommandGuide.setBounds(59, 498, 520, 29);
+	}
+	
+	public static void setLabels() {
+		setBackgroundLabel();
+		setDateLabel();
+		setCommandGuideLabel();
+		setPageLabel();
+		setStatusMessageLabel();
+		setHelpLabel();
+		setFilePathLabel();
+	}
+	
+	public static void setScrollPane() {
+		UserInterface.scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		UserInterface.scrollPane.setBounds(76, 62, 525, 381);
+		UserInterface.frame.getContentPane().add(UserInterface.scrollPane);
+		UserInterface.scrollPane.setViewportView(UserInterface.panel);		
+	}
+	
+	public static void setTextField() {
+		UserInterface.textField.getDocument().addDocumentListener(new TextFieldListener());
+		UserInterface.textField.requestFocusInWindow();		
+		UserInterface.textField.setBounds(59, 466, 520, 36);
+		UserInterface.textField.setColumns(10);
+		UserInterface.textField.setFocusTraversalKeysEnabled(false);
+	}
+	
+	public static void setBalloonTipStyle() {
+		BalloonTipStyle style = new EdgedBalloonStyle(new Color(224,224,224), Color.BLACK);
+		 suggestion = new BalloonTip(UserInterface.textField, new JLabel() ,style,Orientation.LEFT_ABOVE, AttachLocation.ALIGNED, 15, 7, false);
+	}
+	
+	public static void showBalloonTipSuggestion(String guess) {
+		suggestion.setTextContents("press tab to \""+ guess + "\"");
+		suggestion.setVisible(true);
+	}
+	
+	public static void closeBalloonTip() {
+		suggestion.setVisible(false);
+	}
+	
+	public static void getTodayDate() {	
+		
+		Timer SimpleTimer = new Timer(1000, new ActionListener(){
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String dayOfWeek = getDayOfWeek();
+		        UserInterface.lblDate.setText(dayOfWeek + ", " + java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));	        
+		    }
+
+		});
+		SimpleTimer.start();
+	}
+	
+	private static String getDayOfWeek() {
+		String dayOfWeekString = "";
+		Calendar calendar = Calendar.getInstance();
+		int dayOfWeekInt = calendar.get(Calendar.DAY_OF_WEEK);
+
+		switch (dayOfWeekInt) {
+			case Calendar.MONDAY: dayOfWeekString = "Monday"; 
+				break; 
+			case Calendar.TUESDAY: dayOfWeekString = "Tuesday";
+				break; 
+			case Calendar.WEDNESDAY: dayOfWeekString = "Wednesday"; 
+				break; 
+			case Calendar.THURSDAY: dayOfWeekString = "Thursday";
+				break; 
+			case Calendar.FRIDAY: dayOfWeekString = "Friday"; 
+				break; 
+			case Calendar.SATURDAY: dayOfWeekString = "Saturday"; 
+				break; 
+			case Calendar.SUNDAY: dayOfWeekString = "Sunday"; 
+				break; 
+		}
+		
+		return dayOfWeekString;
+	}
+	
+	public static void addToContentPane() {	
+		UserInterface.frame.getContentPane().add(UserInterface.lblFile);	
+		UserInterface.frame.getContentPane().add(UserInterface.lblHelp);
+		UserInterface.frame.getContentPane().add(UserInterface.lblDate);
+		UserInterface.frame.getContentPane().add(UserInterface.textField);
+		UserInterface.frame.getContentPane().add(UserInterface.lblStatusMessage);
+		UserInterface.frame.getContentPane().add(UserInterface.lblPageNumber);
+		UserInterface.frame.getContentPane().add(UserInterface.lblCommandGuide);		
+		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
+	}
+	
+	public static void setShowTaskInfo() {
+		setBalloonTipStyle();
+		suggestion.setVisible(false);
+		setFrame();
+		setPanels();
+		setScrollPane();
+		addToContentPane();
+		setLabels();
+		setTextField();
+	}
+
+	public static void setAll() {
+		setBalloonTipStyle();
+		suggestion.setVisible(false);
+		setFrameListener();
+		setTextFieldListener();
+		setShowTaskInfo();
+		getTodayDate();
+	}
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\LayoutSetting.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\PageHandler.java
+	 */
+
+
+/**
+ * Handles the navigation of pages
+	// End of segment: E:\cs2103final\src\ui\list\swing\PageHandler.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\PageHandler.java
+	 */
+
+ *
+ */
+
+public class PageHandler {
+	
+	private static double printPerPage = 4.0;
+	private static double printFilePerPage = 10.0;
+	private static int currentPage = 0;
+	private static int lastPage = 0;
+	private static int fileCurrentPage = 0;
+	private static int fileLastPage = 0;
+
+	public static boolean isAtFilePage = false;
+
+	/**
+	 * This method ensures that the tasks page do not go out of bound
+	 */
+	public static void updatePage() {
+		lastPage = getLastPage();
+		currentPage = getCurrentPage();		
+		
+		if (lastPage < currentPage || UserInterface.isAdd) {
+			currentPage = getLastPage();
+		}			
+	}
+	
+	/**
+	 * This method ensures that the file page do not go out of bound
+	 */
+	public static void updateFilePage() {
+		fileLastPage = getFileLastPage();
+		fileCurrentPage = getFileCurrentPage();
+		
+		if (fileLastPage < fileCurrentPage) {
+			fileCurrentPage = getLastPage();
+		}	
+	}
+	
+	/**
+	 * @return currentPage user is at when viewing files
+	 */
+	
+	public static int getFileCurrentPage() {
+		return fileCurrentPage;
+	}
+	
+	public static void setFileCurrentPage(int page) {
+		if (page <= getFileLastPage()) {
+			fileCurrentPage = page;
+		}
+	}
+	
+	public static void flipPrevFilePage() {
+		fileCurrentPage--;
+		updateFilePage();
+	}
+	
+	public static void flipNextFilePage() {
+		fileCurrentPage++;
+		updateFilePage();
+	}
+	
+	
+	public static void setCurrentPage(int page) {
+		if (page <= getLastPage()) {
+			currentPage = page;
+		}
+	}
+	
+	/**
+	 * 
+	 * @return total pages of tasks
+	 */
+	public static int getTotalPage() {
+		int taskSize = UserInterface.taskList.size();	
+		int totalPage = (int) Math.ceil(taskSize/printPerPage);
+		
+		return totalPage;
+	}
+	
+	/**
+	 * 
+	 * @return total pages of files
+	 */
+	
+	public static int getFilePathTotalPage() {
+		int pathSize = UserInterface.files.size();
+		int totalPathPage = (int) Math.ceil(pathSize/printFilePerPage);
+		
+		return totalPathPage;
+	}
+	
+	public static int getFileLastPage() {
+		int totalPage = getFilePathTotalPage();
+		
+		if (totalPage > 0) {
+			return totalPage - 1;
+		}
+		
+		return 0;
+	}
+	
+	public static int getLastPage() {	
+		int totalPage = getTotalPage();
+		
+		if (totalPage > 0) {
+			return totalPage - 1;
+		}
+		
+		return 0;
+	}
+	
+	public static int getCurrentPage() {
+		return currentPage;
+	}
+	
+	public static void flipPrevPage() {
+		currentPage--;
+		updatePage();
+	}
+	
+	public static void flipNextPage() {
+		currentPage++;
+		updatePage();
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return page number of a task is residing in
+	 */
+	
+	public static int getPageOfIndex(int index) {
+		int page = index / (int) printPerPage;
+		return page;
+	}
+	
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\PageHandler.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\PrintHandler.java
+	 */
+
+
+/**
+ * This class handles all printing methods
+	// End of segment: E:\cs2103final\src\ui\list\swing\PrintHandler.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\PrintHandler.java
+	 */
+
+ *
+ */
+
+public class PrintHandler {
+	
+	private static final int ADD_MODE = 1;
+	private static final int MODIFY_MODE = 2;
+	private static final int COMPLETE_MODE = 3;
+	private static final int printPerPage = 4;
+	private static final int printFilePerPage = 10;
+	private static final int INVALID = -1;
+		
+	/**
+	 * This class prints the a page given their page number(including page 0)
+	 * @param pageNumber
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	
+	public static void printFilePage(int pageNumber) {
+		PageHandler.setFileCurrentPage(pageNumber);
+		printTaskHeading();
+		int startIndex = pageNumber * printFilePerPage;
+		int endIndex = startIndex + printFilePerPage;
+				
+		//not last page
+		if (PageHandler.getFileCurrentPage()<PageHandler.getFileLastPage()) {
+			for (int i=startIndex; i<endIndex; i++) {
+				printFilePaths(i);
+			}
+		}
+
+		else {
+			for (int i=startIndex; i<UserInterface.BTM.getAllFilePath().size(); i++) {
+				printFilePaths(i);
+			}
+		}
+		
+		refreshPanel();
+	}
+
+
+	public static void printPage (int pageNumber) throws NullPointerException, IOException {			
+		PageHandler.setCurrentPage(pageNumber);		
+		printTaskHeading();
+		int startIndex = pageNumber * printPerPage;
+		int endIndex = startIndex + printPerPage;
+			//not last page
+			if (PageHandler.getCurrentPage()<PageHandler.getLastPage()) {
+				for (int i=startIndex; i < endIndex; i++) {
+					printTask(UserInterface.taskList.get(i),i);
+				}
+			}
+			//last page
+			else {
+				for (int i=startIndex; i<UserInterface.taskList.size(); i++) {
+					printTask(UserInterface.taskList.get(i),i);
+				}
+			}
+
+		refreshPanel();
+	}
+	
+	/**
+	 * Prints task heading
+	 */
+	
+	public static void printTaskHeading() {
+		clearPanel();		
+		String taskHeading = DisplayFormat.getTaskInfoDetails();		
+		UserInterface.panel.add(new JLabel(taskHeading));	
+	}
+	
+	/**
+	 * Prints an individual task
+	 * @param task
+	 * @param index
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	public static void printTask (Task task, int index) throws NullPointerException, IOException {		
+		String str = DisplayFormat.getTaskInfoFormat(task, index);
+		String labelText = String.format("<html><div WIDTH=%d>%s</div><html>", 500, str);
+		
+		// to highlight added task
+		if (index+1 == UserInterface.taskList.size() && UserInterface.isAdd) {			
+			printHighlightRow(labelText,ADD_MODE);
+		}
+		
+		//highlight modifying task
+		else if (index+1 == UiLogic.isValidModifyListener() && UserInterface.isModify) {
+			printHighlightRow(labelText, MODIFY_MODE);
+		}
+		
+		//highlight completed task
+		else if ( (UserInterface.completeIndex != INVALID && index+1 == UserInterface.completeIndex) || task.hasFinished()) {
+			printHighlightRow(labelText,COMPLETE_MODE);
+		}
+		//strike off deleted task
+		else if (UserInterface.deleteIndex != INVALID && index+1==UserInterface.deleteIndex) {
+			printDeletedRow(task,index);
+		}
+		
+		else {
+			UserInterface.panel.add(new JLabel(labelText));
+		}
+		
+		refreshPanel();
+	}
+	
+	public static void printFilePaths(int i) {
+		ArrayList<String> paths = UserInterface.BTM.getAllFilePath();
+		String labelText;
+
+		labelText = DisplayFormat.getPathInfoFormat(paths.get(i), i);
+		UserInterface.panel.add(new JLabel(labelText));
+
+
+	}
+	
+	/**
+	 * Prints highlighted tasks used in add, modify, complete functions
+	 * @param labelText
+	 * @param mode
+	 */
+	
+	private static void printHighlightRow(String labelText, int mode) {
+		
+		if (mode == ADD_MODE) {
+			
+			JLabel addedRow = new JLabel(labelText);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.darkGray), "newly added");
+			title.setTitleJustification(TitledBorder.CENTER);
+			addedRow.setBorder(BorderFactory.createTitledBorder(title));
+			UserInterface.panel.add(addedRow);
+			UserInterface.isAdd = false;
+		}
+		
+		else if (mode == MODIFY_MODE) {
+			JLabel modifyRow = new JLabel(labelText);
+			modifyRow.setOpaque(true);
+			modifyRow.setBackground(Color.yellow);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.yellow), "modifying");
+			title.setTitleJustification(TitledBorder.CENTER);
+			modifyRow.setBorder(BorderFactory.createTitledBorder(title));
+			UserInterface.panel.add(modifyRow);
+			UserInterface.isModify = false;
+		}
+		
+		else if (mode == COMPLETE_MODE) {
+			JLabel finishedRow = new JLabel(labelText);
+			TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.green),"COMPLETED");
+			title.setTitleJustification(TitledBorder.CENTER);
+			finishedRow.setBorder(BorderFactory.createTitledBorder(title));
+			UserInterface.panel.add(finishedRow);
+		}
+	}
+	
+	/**
+	 * Prints deleted task with a strike formatting
+	 * @param task
+	 * @param index
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	
+	private static void printDeletedRow(Task task, int index) throws NullPointerException, IOException {
+		String labelText = DisplayFormat.getDeletedRowFormat(task, index);
+		UserInterface.panel.add(new JLabel(labelText));
+		UserInterface.deleteIndex = INVALID;
+	}
+	
+	/**
+	 * Prints status message after user execute command
+	 */
+	public static void printStatusMessage() {
+		UserInterface.lblCommandGuide.setText(DisplayFormat.getFeedbackGuideInfo());
+		resetGuide();
+	}
+	
+	public static void printHelp() {
+		UserInterface.frame.getContentPane().removeAll();
+		LayoutSetting.setHelpInfoLabel();
+		refreshFrame();
+	}
+	
+	private static void refreshPanel() {
+		UserInterface.panel.revalidate();
+		UserInterface.panel.repaint();
+	}
+
+	private static void refreshFrame() {
+		UserInterface.frame.revalidate();
+		UserInterface.frame.repaint();
+	}
+	
+	public static void clearPanel() {
+		UserInterface.panel.removeAll();
+		refreshPanel();
+	}
+	
+	/**
+	 * Set timer of 3000millis for statusMessage to switch back to commandGuide message
+	 */
+	public static void resetGuide() {
+	     Timer timer = new Timer();
+	     timer.schedule(new TimerTask() {
+	         @Override
+	         public void run() {
+	             UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+	         }
+	     }, 3000);
+	 }
+
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\PrintHandler.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\SystemTray_TaskBuddy.java
+	 */
+
+
+import java.awt.AWTException;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JFrame;
+
+/**
+ * This class bring the application to system tray
+ * upon minimize
+	// End of segment: E:\cs2103final\src\ui\list\swing\SystemTray_TaskBuddy.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\SystemTray_TaskBuddy.java
+	 */
+
+ *
+ */
+public class SystemTray_TaskBuddy {
+	private static TrayIcon trayIcon;
+	private static SystemTray tray;
+	private static final String MAIN_FRAME_NAME = "TaskBuddy";
+	private static final String SYSTEMTRAY_MENU_OPEN = "Open Application";
+	private static final String SYSTEMTRAY_MENU_EXIT = "Exit Application";
+	
+	public static void Minimise(WindowEvent arg) {
+		
+		Image image = Toolkit.getDefaultToolkit().getImage(
+				UserInterface.class.getClass().getResource("/ui/images/TaskBuddy_Icon.png"));
+		PopupMenu popup = new PopupMenu();
+		trayIcon = new TrayIcon(image, MAIN_FRAME_NAME, popup);
+		trayIcon.setImageAutoSize(true);
+
+		if(SystemTray.isSupported()){
+			System.out.println("SystemTray supported");
+			tray = SystemTray.getSystemTray();
+			
+			MenuItem popupItemOpen = new MenuItem(SYSTEMTRAY_MENU_OPEN);
+			popup.add(popupItemOpen);
+			/*This listener opens up the main Window*/
+			popupItemOpen.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					openMainFrame();
+				}
+			});
+			addTrayIconMouseListener();
+			
+			MenuItem popupItemExit = new MenuItem(SYSTEMTRAY_MENU_EXIT);
+			popup.add(popupItemExit);
+			/*This listener when pressed directly exit the application*/
+			popupItemExit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					exitMainFrame();
+				}
+			});
+		}
+		else{
+			System.out.println("system tray not supported");
+		}
+		
+		// Pass the 'iconified' parameter to minimise the frame
+		if(arg.getNewState() == Frame.ICONIFIED){
+			try{
+				tray.add(trayIcon);
+				UserInterface.frame.setVisible(false);
+				System.out.println("added to System Tray");
+			} catch (AWTException ex){
+				System.out.println("unable to add to System Tray");
+			}
+		}
+	}
+	
+	/**
+	 * This operation adds listener to the tray icon
+	 * to maximize the program when mouse is double clicked
+	 */
+	private static void addTrayIconMouseListener() {
+		trayIcon.addMouseListener(new MouseAdapter() {
+			boolean isAlreadyOneClick;
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+			    if (isAlreadyOneClick) {
+			    	openMainFrame();
+			        System.out.println("double click");
+			        isAlreadyOneClick = false;
+			    } else {
+			        isAlreadyOneClick = true;
+			        Timer t = new Timer("doubleclickTimer", false);
+			        t.schedule(new TimerTask() {
+
+			            @Override
+			            public void run() {
+			                isAlreadyOneClick = false;
+			            }
+			        }, 500);
+			    }
+			}
+		});
+	}
+
+	/**
+	 * This operation maximize the main frame
+	 */
+	public static void openMainFrame() {
+		UserInterface.frame.setVisible(true);
+		UserInterface.frame.setExtendedState(JFrame.NORMAL);
+		tray.remove(trayIcon);
+		System.out.println("Tray icon removed");
+	}
+	
+	/**
+	 * This operation closes the main frame when
+	 * the "Exit" menu on the SystemTray is pressed
+	 */
+	private static void exitMainFrame() {
+		System.out.println("Exiting......");
+		System.exit(0);
+	}
+	
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\SystemTray_TaskBuddy.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\TextFieldHistory.java
+	 */
+
+
+/**
+ * This class manages the text field history
+ * Note: Text field history will be stored from start of application to end.
+ * History will not be saved upon exit. Empty input will not be stored.
+ * Author: A0117971Y
+ */
+import java.util.Stack;
+
+public class TextFieldHistory {
+	private static Stack<String> history = new Stack<String> ();
+	private static Stack<String> temp = new Stack<String>();
+	private final static String UNABLE_TO_OBTAIN_LAST_HISTORY = "invalid";
+	
+	public static void updateHistory(String input) {
+		if (!input.trim().isEmpty() || input == null) {
+			while (!temp.isEmpty()) {
+				history.push(temp.pop());
+			}
+			history.push(input);	
+		}
+	}
+	
+	public static String getLastHistory() {		
+		if (!history.isEmpty()) {
+			temp.push(history.pop());
+			System.out.println(temp.peek());
+			return temp.peek();
+		}
+		return UNABLE_TO_OBTAIN_LAST_HISTORY;
+	}
+	
+	public static String getForwardHistory() {	
+		if (!temp.isEmpty()) {
+			history.push(temp.pop());
+			if (!temp.isEmpty()) {
+			System.out.println(temp.peek());
+			return temp.peek();
+			}
+		}
+		return "";
+	}
+	
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\TextFieldHistory.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+	 */
+
+
+import java.io.IOException;
+
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+	 */
+
+
+/**
+ * This class listens for changes in the text field
+ * It will then process modify and non modify commands seperately
+ * modify operations will be called even before user presses enter.
+	// End of segment: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+	 */
+
+ *
+ */
+
+@SuppressWarnings("serial")
+public class TextFieldListener extends JTextField implements DocumentListener {
+	
+	private static String inputStream = "";
+	private static final int INVALID_SYNTAX = -1;
+	
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		inputStream = UserInterface.textField.getText();
+		
+		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
+			processModify();
+		}
+		
+		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage) {
+			processNonModify();
+
+		}
+		
+		setCommandGuideAndTip();
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		
+		inputStream = UserInterface.textField.getText();
+		
+		if (UiLogic.isValidModifyListener() != INVALID_SYNTAX) {
+			processModify();
+
+		}
+		
+		else if (!inputStream.isEmpty() && !PageHandler.isAtFilePage){
+			processNonModify();
+
+		}
+		
+		setCommandGuideAndTip();
+
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+	
+	}
+	
+	private static void processNonModify() {
+		PageHandler.updatePage();
+		print(PageHandler.getCurrentPage());
+	}
+	
+	private static void setCommandGuideAndTip() {
+		BalloonTipSuggestion.getBalloonTip();
+		String commandTip = UserInterface.BTM.getCommandTip(inputStream);
+		setCommandGuideText(commandTip);
+	}
+	
+	private static void processModify() {
+		UserInterface.isModify = true;
+		int pageOfModify = PageHandler.getPageOfIndex(UiLogic.isValidModifyListener()-1);
+		print(pageOfModify);
+	}
+	
+	public static String getInputStream() {
+		return inputStream;
+	}
+	
+	private static void print(int page) {
+		try {
+			PrintHandler.printPage(page);
+		} catch (NullPointerException | IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	private static void setCommandGuideText( String commandTip) {
+		if (commandTip != null) {
+			UserInterface.lblCommandGuide.setText(commandTip);
+		}
+		
+		else {
+			UserInterface.lblCommandGuide.setText(UserInterface.COMMAND_GUIDE_DEFAULT_MESSAGE);
+		}
+	}
+}
+	// End of segment: E:\cs2103final\src\ui\list\swing\TextFieldListener.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\UiLogic.java
+	 */
+
+
+/**
+ * This class provides logic methods
+ * required by UI
+	// End of segment: E:\cs2103final\src\ui\list\swing\UiLogic.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\UiLogic.java
+	 */
+
+ *
+ */
+public class UiLogic {
+	
+	private static final int DELETE_MODE = 0;
+	private static final int MODIFY_MODE = 1;
+	private static final int COMPLETE_MODE = 2;
+
+	
+	/**
+	 * Checks if its a valid add operation
+	 * @param input by user
+	 * @return
+	 */
+	public static boolean isValidAdd(String input) {
+		if (input != null && !input.equals("")) {
+			String[] tokens = input.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("add")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if input is a valid delete command
+	 * @param input, input is the text field stream
+	 * @return index of delete operation, return -1 if invalid
+	 */
+	
+	public static int isValidDeleteIndex(String input) {
+		String currentInput = input;
+
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("delete")) {
+				return getOperationIndex(tokens[1], DELETE_MODE);
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Check if input is a valid modify command while user is typing
+	 * @return index of modify operation, -1 if invalid
+	 */
+	
+	public static int isValidModifyListener() {
+		String currentInput = TextFieldListener.getInputStream();
+
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2 && tokens[0].toLowerCase().equals("modify")) {
+				return getOperationIndex(tokens[1], MODIFY_MODE);
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Check if input is a valid complete command
+	 * @param input
+	 * @return index of complete operation, -1 if invalid
+	 */
+	
+	public static int isValidComplete(String input) {
+		String currentInput = input;
+
+		if (currentInput != null && !currentInput.equals("")) {
+			String[] tokens = currentInput.split(" ");
+			if (tokens.length >= 2) {
+				switch (tokens[0].toLowerCase()) {
+				case "finish": return getOperationIndex(tokens[1],COMPLETE_MODE);
+				case "complete": return getOperationIndex(tokens[1],COMPLETE_MODE);
+				default: return -1;
+				}
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * 
+	 * @param index
+	 * @param mode
+	 * @return index of operation performed
+	 */
+	private static int getOperationIndex(String index, int mode) {
+		try {
+			int operationIndex = Integer.parseInt(index);
+			if (operationIndex <= UserInterface.taskList.size()) {
+				
+				switch (mode) {
+				case COMPLETE_MODE: UserInterface.completeIndex = operationIndex; return operationIndex;
+				case DELETE_MODE: UserInterface.deleteIndex = operationIndex; return operationIndex;
+				case MODIFY_MODE: return operationIndex;				
+				}				
+			}
+		} catch (Exception e) {
+			return -1;	
+		}
+		return -1;
+	}
+	
+	
+	/**
+	 * Processes text field after user pressed enter
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	
+	public static void processTextField() throws NullPointerException, IOException {
+		String input = UserInterface.textField.getText();
+		UserInterface.deleteIndex = UiLogic.isValidDeleteIndex(input);
+		UserInterface.completeIndex=UiLogic.isValidComplete(input);
+	
+		//valid delete
+		if ( UserInterface.deleteIndex != -1) {
+			processDelete(input);
+		}
+		
+		else if (UserInterface.completeIndex != -1) {
+			processComplete(input);
+		}
+
+		else {
+			processNonDelete(input);
+		}
+		
+		TextFieldHistory.updateHistory(input);	
+		UserInterface.textField.setText(null);
+		PrintHandler.printStatusMessage();
+		UserInterface.isAdd = false;
+	}
+	
+	private static void processComplete(String input) throws NullPointerException, IOException {
+		System.out.println("is valid complete");
+		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.completeIndex-1));
+		executeAndUpdate(input);
+		UserInterface.completeIndex = -1;
+	}
+	
+	private static void processDelete(String input) throws NullPointerException, IOException {
+		System.out.println("is valid delete");
+		PrintHandler.printPage(PageHandler.getPageOfIndex( UserInterface.deleteIndex-1));
+		executeAndUpdate(input);	
+	}
+	
+	private static void processNonDelete(String input) throws NullPointerException, IOException {
+		if (UiLogic.isValidAdd(input)) {
+			UserInterface.isAdd = true;
+		}
+		executeAndUpdate(input);	
+		PageHandler.updatePage();
+		UserInterface.display(PageHandler.getCurrentPage());
+	}
+	
+	/**
+	 * Executes command in program logic and updates tasklist
+	 * @param input
+	 */
+	private static void executeAndUpdate(String input) {
+		UserInterface.BTM.executeCommand(input);
+		UserInterface.taskList =  UserInterface.BTM.getTasks();		
+	}
+	
+	/**
+	 * Executes maximize and minimize of window
+	 */
+	public static void processMaxMin() {
+		int state = UserInterface.frame.getExtendedState(); // get current state
+		if (UserInterface.isMinimized) {
+			//maximize
+			state = state & ~Frame.ICONIFIED; // remove minimized from the state
+			UserInterface.frame.setExtendedState(state);
+			UserInterface.isMinimized = false;
+		}
+		else {		
+			//minimize
+			state = state | Frame.ICONIFIED; // add minimized to the state
+			UserInterface.frame.setExtendedState(state); // set that state
+			UserInterface.isMinimized = true;
+		}
+	}
+}
+
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\UiLogic.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\UnitTestForDisplaySetting.java
+	 */
+
+
+/**
+ * Unit Tests to check the accuracy of HTML formatting generated
+ */
+
+/*
+ * Testing of GUI interface can be done by performing black-box testing. That is, just running the program without looking at any code.
+ * In order to be Effective and Efficient, we have to make use of some testing heuristics such as Equivalence partitioning, boundary value analysis (bva)
+ * and combining multiple inputs.
+ * 
+ * For testing of GUI, the most relevant testing heuristics would be combining of multiple inputs.
+ * Because user are required to enter task description, task date(optional), task venue (optional), etc...
+ * We can test input in such a way that only one invalid input per case 
+ * e.g. add <valid task name> -d <invalid date> -v <valid venue> or "add <valid task name> -d <valid date> -v <invalid venue>
+ * In this case, we need to consider the factor, whether the entire operation will be voided or only valid input will be registered. 
+ * 
+ */
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
+import taskList.Task;
+
+public class UnitTestForDisplaySetting {
+
+	@Test
+	public void test() throws NullPointerException, IOException {
+//		fail("Not yet implemented");
+		
+		Task test1 = new Task("task1","2015/03/24", "", "venue1");
+		Task test2 = new Task("task2");
+		Task test3 = new Task("task3", "2015/03/24", "", null);
+		Task test4 = new Task("task4", "","","venue4");
+		
+		
+		
+		String result1 = "<html>" + "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">" + "1. " + "</font>" + 
+		"<font size = \"6\" font face = \"Arial\">" + " task1 " + "</font>" + "<br>" + "<font color = #848482>" + " Date: " + test1.getDateString() + "</font>" + "<br>"
+				+ "<font color = #848482>" + "Venue: " + " venue1"+ "</font>" + "<br>" + "</html>";
+		
+		String result2 = "<html>" + "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">" + "2. " + "</font>" + 
+		"<font size = \"6\" font face = \"Arial\">" + " task2 " + "</font>" + "<br>" + "<font color = #848482>" + " Date: " + test2.getDateString() + "</font>" + "<br>"
+				+ "<font color = #848482>" + "Venue: "+ " null" + "</font>" + "<br>" + "</html>";
+		
+		String result3 = "<html>" + "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">" + "3. " + "</font>" + 
+		"<font size = \"6\" font face = \"Arial\">" + " task3 " + "</font>" + "<br>" + "<font color = #848482>" + " Date: " + test3.getDateString() + "</font>" + "<br>"
+				+ "<font color = #848482>" + "Venue: " + " null "+ "</font>" + "<br>" + "</html>";
+		
+		String result4 = "<html>" + "<font size = \"6\" color = \"#9F000F\" font face = \"Impact\">" + "4. " + "</font>" + 
+		"<font size = \"6\" font face = \"Arial\">" + " task4 " + "</font>" + "<br>" + "<font color = #848482>" + " Date: " + test4.getDateString() + "</font>" + "<br>"
+				+ "<font color = #848482>" + "Venue: " + " venue4 "+ "</font>" + "<br>" + "</html>";
+		
+		String output1 = DisplayFormat.getTaskInfoFormat(test1,0);
+		String output2 = DisplayFormat.getTaskInfoFormat(test2,1);
+		String output3 = DisplayFormat.getTaskInfoFormat(test3,2);
+		String output4 = DisplayFormat.getTaskInfoFormat(test4,3);		
+
+		
+		assertEquals(result1,output1);
+		assertEquals(result2,output2);
+		assertEquals(result3,output3);
+		assertEquals(result4,output4);
+
+		
+		
+	}
+
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\UnitTestForDisplaySetting.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\UserInterface.java
+	 */
+
+
+/**
+ * Main class that displays and update tasks. 
+	// End of segment: E:\cs2103final\src\ui\list\swing\UserInterface.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\ui\list\swing\UserInterface.java
+	 */
+
+ *
+ */
+public class UserInterface {
+	
+	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo | finish ";
+	public static String VIEW_TASK_INFO_MESSAGE = "Things to do: ";
+	public static boolean isAdd = false;
+	public static boolean isModify = false;
+	public static boolean atHelpMenu = false;
+	public static TaskManager BTM;
+	public static ArrayList<Task> taskList;
+	public static ArrayList<String> files;
+	public static int deleteIndex = -1;	
+	public static int completeIndex = -1;
+	public static boolean isMinimized = false;
+	public static final JFrame frame = new JFrame("TaskBuddy - Your best personal assistant");
+	public static JPanel panel = new JPanel();
+	public static JLabel lblBackground = new JLabel("");
+	public static JLabel lblCommandGuide = new JLabel(COMMAND_GUIDE_DEFAULT_MESSAGE);
+	public static JLabel lblStatusMessage = new JLabel("");
+	public static JLabel lblPageNumber = new JLabel("");
+	public static JLabel lblHelp = new JLabel("F1 - Help");
+	public static JLabel lblDate = new JLabel();
+	public static JLabel lblFile = new JLabel();
+	public static JScrollPane scrollPane = new JScrollPane();
+	public static JTextField textField = new JTextField();
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			@SuppressWarnings("unused")
+			public void run() {
+				try {
+					UserInterface window = new UserInterface();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 * @throws IOException 
+	 * @throws NullPointerException 
+	 */
+	public UserInterface() throws NullPointerException, IOException {
+		BTM = TaskManager.getSharedInstance();
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 * @throws IOException 
+	 * @throws NullPointerException 
+	 */
+	private void initialize() throws NullPointerException, IOException {		
+		LayoutSetting.setAll();
+		addSystemTrayWindowStateListener();
+		updateAllFiles();
+		display(0);
+	}
+	
+	public static void display(int pageNumber) throws NullPointerException, IOException {		
+		PrintHandler.clearPanel();
+		panel.add(new JLabel(DisplayFormat.getTaskInfoDetails()));		
+		lblPageNumber.setText(pageNumber+1 + "");
+		
+		if (TaskManager.DISPLAY_MODE.FILE_PATH == UserInterface.BTM.getCurrentMode()) {
+			files = BTM.getAllFilePath();
+			PrintHandler.printFilePage(PageHandler.getFileCurrentPage());			
+		}
+		else {
+			PageHandler.isAtFilePage = false;
+			taskList = BTM.getTasks();	
+			PrintHandler.printPage(pageNumber);
+		}
+	}
+	
+	public static void addSystemTrayWindowStateListener() {
+		frame.addWindowStateListener(new WindowStateListener() {
+			public void windowStateChanged(WindowEvent arg) {
+				SystemTray_TaskBuddy.Minimise(arg);
+			}
+		});
+	}
+	
+	public static void exit() {
+		frame.dispose();
+	}
+	
+	private static void updateAllFiles() {
+		files = BTM.getAllFilePath();
+		taskList = BTM.getTasks();	
+	}
+}
+
+	// End of segment: E:\cs2103final\src\ui\list\swing\UserInterface.java
+
+
+
+
+

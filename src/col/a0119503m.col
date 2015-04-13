@@ -1,0 +1,1306 @@
+//@author: a0119503m
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\DateParser.java
+	 */
+
+/**
+ * this class is to translate the date string which users input to a standard Date type. 
+ * To support various date format, this class use an external library called ‘Natty Date Parser’. 
+ * Another function of this class is to format a Date type data to a default String format. 
+ * Finally, it is able to carry various comparisons between two Date type data.
+ * APIs:
+ *  getDate(String): Date throws NullPointerException, IOException
+ *  formatDefault(Date): String throws NullPointerException
+ *  isSameDay(Date, Date): boolean throws NullPointerException
+ */
+public class DateParser {
+	public static final String FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
+	private static final String FORMAT_DAY = "yyyy-MM-dd";
+
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String EXCEPTION_DATEFORMAT = "the date format you entered is incorrect";
+	
+	private String[] dateIndicators = {"/", "-"};
+	private String[] timeIndicators = {".", ":"};
+	
+	private com.joestelmach.natty.Parser dateParser = null;
+	
+	public DateParser(){
+		dateParser = new com.joestelmach.natty.Parser();
+	}
+	
+	public Date getDate(String dateString) throws NullPointerException, IOException {
+		if (dateString == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		checkDateFormat(dateString);
+		checkTimeFormat(dateString);
+		List<DateGroup> groups =  dateParser.parse(dateString);
+		if (groups.isEmpty()) {
+			return null;
+		} else {
+			dateString = appendTime(dateString);
+			groups =  dateParser.parse(dateString);
+			return groups.get(0).getDates().get(0);
+		}
+	}
+	
+	public static String formatDefault(Date date) throws  NullPointerException {
+		if (date == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DEFAULT);
+		return dateFormat.format(date);
+	}
+	
+	public static boolean isSameDay(Date d1, Date d2) throws NullPointerException {
+		if (d1 == null || d2 == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DAY);
+		String day1 = dateFormat.format(d1);
+		String day2 = dateFormat.format(d2);
+		return day1.equals(day2);
+	}
+	
+	private String appendTime(String dateString) {
+		String temp = dateString;
+		if (notContainsTime(dateString)) {
+			temp = dateString + " 00:00";
+		}
+		return temp;
+	}
+	
+	private boolean notContainsTime(String dateString) {
+		return !(dateString.contains(".")||dateString.contains(":"));
+	}
+	
+	private void checkDateFormat(String dateString) throws IOException {
+		assert(dateString != null);
+		String year = null;
+		String month = null;
+		String day = null;
+		year = getDateElement(0, dateString);
+		if (year == null) {
+			return;
+		}
+		if (year.length() != 4) {
+			year = getDateElement(2, dateString);
+			month = getDateElement(0, dateString);
+			day = getDateElement(1, dateString);
+		} else {
+			month = getDateElement(1, dateString);
+			day = getDateElement(2, dateString);
+		}
+		if (day != null && Integer.parseInt(day) > 31 
+		 || day != null && Integer.parseInt(day) < 1  
+		 || month != null && Integer.parseInt(month) > 12 
+		 || month != null && Integer.parseInt(month) < 1) {
+			throw new IOException(EXCEPTION_DATEFORMAT);
+		}
+	}
+	
+	private void checkTimeFormat(String dateString) throws IOException {
+		assert(dateString != null);
+		String hour = null;
+		String min = null;
+		String sec = null;
+		hour = getTimeElement(0, dateString);
+		min = getTimeElement(1, dateString);
+		sec = getTimeElement(2, dateString);
+		if (isTimeIllegal(hour, min, sec)) {
+			throw new IOException(EXCEPTION_DATEFORMAT);
+		}
+	}
+
+	private boolean isTimeIllegal(String hor, String min, String sec) {
+		boolean horIllegal = hor != null && Integer.parseInt(hor) > 23 ||
+							 hor !=null && Integer.parseInt(hor) < 0;
+		boolean minIllegal = min != null && Integer.parseInt(min) > 59 || 
+							 min != null && Integer.parseInt(min) < 0;
+		boolean secIllegal = sec != null && Integer.parseInt(sec) > 59 ||
+							 sec != null && Integer.parseInt(sec) < 0;
+		return horIllegal || minIllegal || secIllegal;
+	}
+	
+	private String getDateElement(int intendedPotion, String dateString) {
+		assert(dateString != null);
+		int start = 0;
+		int end = 0;
+		for (String temp: dateIndicators) {
+			if (dateString.contains(temp)) {
+				int count = 0;
+				start = -1;
+				while (count < intendedPotion) {
+					count++;
+					start = dateString.indexOf(temp, start + 1);
+				}
+				end = dateString.indexOf(temp, start + 1);
+				if (end == -1) {
+					end = dateString.indexOf(" ", start + 1);
+				}
+				if (end == -1) {
+					end = dateString.length();
+				}
+				break;
+			}
+		}
+		if (start == end) {
+			return null;
+		} else {
+			return dateString.substring(start + 1, end);
+		}
+	}
+	
+	private String getTimeElement(int intendedPotion, String dateString) {
+		assert(dateString != null);
+		int start = 0;
+		int end = 0;
+		for (String temp: timeIndicators) {
+			if (dateString.contains(temp)) {
+				int count = 0;
+				start = getNearestSpaceBefore(dateString, temp);
+				if (start == -1) {
+					start = 0;
+				}
+				while (count < intendedPotion) {
+					count++;
+					start = dateString.indexOf(temp, start + 1);
+				}
+				if (start == -1) {
+					return null;
+				}
+				end = dateString.indexOf(temp, start + 1);
+				if (end == -1) {
+					end = dateString.indexOf(" ", start + 1);
+				}
+				if (end == -1) {
+					end = dateString.length();
+				}
+				break;
+			}
+		}
+		if (start == end) {
+			return null;
+		} else {
+			return dateString.substring(start + 1, end);
+		}
+	}
+	//return the index of the nearest space in str which is before the first someString
+	private int getNearestSpaceBefore(String str, String someString) {
+		assert(str != null);
+		assert(someString != null);
+		int index = str.indexOf(someString);
+		while (index != -1 && str.charAt(index) != ' ') {
+			index--;
+		}
+		return index;
+	}
+}
+
+	// End of segment: E:\cs2103final\src\parser\DateParser.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\FormatChecker.java
+	 */
+
+/**
+ * this class is to check whether the format of users’ command is defined. 
+ * Specifically, it is to check whether the operation type is supported 
+ * and the arguments are correct.
+ * APIs:
+ *  isValidFormat(String): boolean throws NullPointerException
+ *  isArgumentsFormatCorrect: boolean throws NullPointerException
+ */
+public class FormatChecker {
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
+	private static final int FAIL = -1;
+	private static final String[] OPTIONS = {"-v", "-d", "-dd", "-c"};
+	
+	public boolean isValidFormat(String operation) throws NullPointerException {
+		if (operation == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		} 
+		if (operation.indexOf(' ') != -1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isArgumentsFormatCorrect(String operation) throws NullPointerException {
+		if (operation == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		return isArgumentsAllCorrect(operation);
+	}
+	
+	private boolean isArgumentsAllCorrect(String operation) {
+		assert(operation != null);
+		int[] operationCount = new int[OPTIONS.length];
+		for (int i = 0; i < OPTIONS.length; i++) {
+			operationCount[i] = 0;
+		}
+		
+		String temp = null;
+		int start = operation.indexOf(" -");
+		
+		while (start != FAIL) {
+			int end = operation.indexOf(" ", start+1);
+			if (end == FAIL) {
+				end = operation.length();
+			}
+			temp = operation.substring(start + 1, end);
+			if (!isInOptions(temp)) {
+				return false;
+			} else {
+				int index = indexInArray(OPTIONS, temp);
+				assert (index != FAIL);
+				operationCount[index]++;
+			}
+			start = operation.indexOf(" -", end);
+		}
+		return isSmallerThanOne(operationCount);
+	}
+	
+	private int indexInArray(String[] strs, String str) {
+		assert(strs != null && str != null);
+		int i = 0;
+		while (i < strs.length) {
+			if (strs[i].equals(str)) {
+				return i;
+			} else {
+				i++;
+			}
+		}
+		return FAIL;
+	}
+	
+	private boolean isSmallerThanOne(int[] array) {
+		for(int x: array) {
+			if (x > 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean isInOptions(String operationType) {
+		assert(operationType != null);
+		for (String temp : OPTIONS) {
+			if (temp.equals(operationType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+}
+
+	// End of segment: E:\cs2103final\src\parser\FormatChecker.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\Parser.java
+	 */
+
+/**
+ * This class supports main functions to understand users' command, 
+ * the controller can call these functions to get the operation type 
+ * as well as various contents of users' commands.
+ * APIs:
+ * 	getOperation(String): Operation throws NullPointerException
+ *  isValid(String): boolean throws NullPointerException
+ * 	isArgumentsCorrect(String): boolean throws NullPointerException
+ * 	getIndex(String): int throws IOException
+ *  getNewTitle(String): String throws NullPointerException, IOException
+ *  getTitle(String): String throws NullPointerException, IOException
+ * 	getVenue(String): String throws NullPointerException
+ *  getDate(String): Date throws NullPointerException, IOException
+ *  getDeadline(String): Date throws NullPointerException, IOException
+ *  autoFill(String): String throws NullPointerException
+ *  provideTips(String): String throws NullPointerException
+ */
+public class Parser {
+	private static final String EXCEPTION_NOTITLE = "no title inputed";
+	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
+	private static final String EXCEPTION_NOINDEX = "you must enter an index";
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
+	private static final int LARGE_CONSTANT = 500;
+	private static final int FAIL = -1;
+	
+	public enum Operation {
+		UNKNOW, ADD, DELETE, CLEAR, DISPLAY, EXIT,
+		MODIFY, UNDO, REDO, SORT, SEARCH, COMPLETE,
+		IMPORT, EXPORT
+	}
+	
+	private static final String[] KEYWORD_ADD = {"add", "insert"};
+	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
+	private static final String[] KEYWORD_CLEAR = {"clear", "claen"};
+	private static final String[] KEYWORD_DISPLAY = {"display", "ls", "show"};
+	private static final String[] KEYWORD_EXIT = {"exit", "quit"};
+	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
+	private static final String[] KEYWORD_UNDO = {"undo"};
+	private static final String[] KEYWORD_REDO = {"redo"};
+	private static final String[] KEYWORD_SORT = {"sort"};
+	private static final String[] KEYWORD_SEARCH = {"find", "search"};
+	private static final String[] KEYWORD_COMPLETE = {"finish", "complete"};
+	private static final String[] KEYWORD_IMPORT = {"import", "load"};
+	private static final String[] KEYWORD_EXPORT = {"export", "save"};
+	
+	private static final String[] OPTIONS = {"-v", "-d", "-dd"};
+	
+	private static final Pattern REGEX_NUMBERS = Pattern.compile(".*[^0-9].*");
+	private static final Pattern REGEX_COMMA = Pattern.compile(",");
+	private static final Pattern REGEX_SPACE = Pattern.compile(" ");
+	private static final String ELIMINATE_SPACE = " {2,}";
+	
+	private static Hashtable<String, Operation> featureList = null; 
+	private static DateParser dateParser = null;
+	private static FormatChecker checker = null;
+	private static UIFeedback feedback = null; 
+	private static String name = Parser.class.getName(); 
+	private static Logger logger = Logger.getLogger(name);
+	
+	public Parser() {
+		initFeatureList();
+		dateParser = new DateParser();
+		checker = new FormatChecker();
+		feedback = new UIFeedback();
+	}
+
+	public Operation getOperation(String operation) throws NullPointerException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		operation = getOperationString(operation);
+		Operation operationIndex = getOperationIndex(operation);
+		if (operationIndex == null) {
+			return Operation.UNKNOW;
+		} else {
+			return operationIndex;
+		}
+	}
+	
+	public boolean isValid(String operation) throws NullPointerException {
+		boolean result = false;
+		try {
+			result = checker.isValidFormat(eliminateSpace(operation));
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
+		}
+		return result;
+	}
+	
+	public boolean isArgumentsCorrect(String operation) throws NullPointerException {
+		boolean result = false;
+		try {
+			result = checker.isArgumentsFormatCorrect(operation);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
+		}
+		return result;
+	}
+
+	public ArrayList<Integer> getIndex(String operation) throws IOException {
+		assert(getOperation(operation) == Operation.MODIFY ||
+				getOperation(operation) == Operation.DELETE);
+		String temp = getTitle(operation);
+		Matcher m;
+		if (temp == "" || temp == null) {
+			logIOException(EXCEPTION_NOINDEX);
+		}
+		String[] temps = REGEX_SPACE.split(temp);
+		String[] tempGroup = REGEX_COMMA.split(temps[0]);
+		ArrayList<Integer> indexGroup = new ArrayList<Integer>();
+		for (String str : tempGroup) {
+			m = REGEX_NUMBERS.matcher(str);
+			if (m.matches()) {
+				logIOException(EXCEPTION_INDEXILLEGAL);
+			} else {
+				indexGroup.add(Integer.valueOf(str));
+			}
+		}
+		return indexGroup;
+	}
+	
+	public String getNewTitle(String operation) throws NullPointerException, 
+	IOException {
+		assert(getOperation(operation) == Operation.MODIFY);
+		String temp = getTitle(operation);
+		String[] temps = temp.split(" ");
+		if (temps.length < 2) {
+			return null;
+		} else {
+			return combineString(temps);
+		}
+	}
+
+	public String getTitle(String operation) throws NullPointerException, 
+	IOException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		assert(getOperation(operation) == Operation.ADD ||
+				getOperation(operation) == Operation.SEARCH);
+		operation = eliminateSpace(operation);
+		int start = operation.indexOf(' ') + 1;
+		if (start >= operation.length() || start == 0) {
+			logIOException(EXCEPTION_NOTITLE);
+		}
+		int end = getFirstOptionIndex(operation);
+		if (end == -1) {
+			end = operation.length();
+		}
+		if (start >= end) {
+			logIOException(EXCEPTION_NOTITLE);
+		}
+		String temp = operation.substring(start, end);
+		return eliminateSpace(temp);
+	}
+
+	public String getVenue(String operation) throws NullPointerException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		String result = getContent("-v", operation);
+		if (result == null) {
+			return null;
+		} else {
+			return eliminateSpace(result);
+		}
+	}
+	
+	public Date getDate(String operation) throws NullPointerException, IOException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		String dateString = getContent("-d", operation);
+		if (dateString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(dateString);
+		}
+	}
+	
+	public Date getDeadline(String operation) throws NullPointerException, IOException {
+		if (operation == null) {
+			logNullPointer(EXCEPTION_NULLPOINTER);
+		}
+		String deadLineString = getContent("-dd", operation);
+		if (deadLineString == null) {
+			return null;
+		} else {
+			return dateParser.getDate(deadLineString);
+		}
+	}
+	
+	public String autoFill(String str) throws NullPointerException {
+		String result = null;
+		try {
+			result = feedback.findMatch(str);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
+		}
+		return result;
+	}
+	
+	public String provideTips(String operation) throws NullPointerException {
+		String result = null;
+		String operationName = null;
+		try {
+			operationName = getOperationString(operation);
+			Operation operationType = getOperation(operation);
+			result = feedback.findTips(operationType);
+		} catch (NullPointerException e) {
+			logNullPointer(e.getMessage());
+		}
+		if (result == null) {
+			return null;
+		} else {
+			return "Tip: " + operationName + result;
+		}
+	}
+	
+	public static String eliminateSpace(String str) {
+		if (str == null) return "";
+		assert(str != null);
+		String temp = str.replaceAll(ELIMINATE_SPACE, " ");
+		if (temp.equals(" ") || temp.equals("")) {
+			return temp;
+		}
+		int start = 0;
+		if (temp.charAt(start) == ' ') {
+				start++;
+		}
+		int end = temp.length() - 1;
+		if (temp.charAt(end) == ' ') {
+				end--;
+		}
+		return temp.substring(start, end+1);
+	}	
+	
+	private String getOperationString(String operation) {
+		assert(operation != null);
+		String temp = eliminateSpace(operation);
+		String[] temps = REGEX_SPACE.split(temp);
+		for(int i = 0; i< temps.length; i++) {
+			if (temps[i] != null) {
+				return temps[i];
+			}
+		} 
+		return "";
+	}
+	
+	private Operation getOperationIndex(String operation) {
+		assert(operation != null);
+		return featureList.get(operation);
+	}
+	
+	//combine the array of String from the second element onwards
+	private String combineString(String[] temps) {
+		String str = "";
+		temps[0] = "";
+		for (int i = 1; i < temps.length; i++) {
+			str = str + temps[i] + " ";
+		}
+		return str.substring(0, str.length()-1);
+	}
+	
+	private int getFirstOptionIndex(String operation) {
+		assert(operation != null);
+		int tempIndex = LARGE_CONSTANT;
+		int temp = 0;
+		for (int i = 0; i < OPTIONS.length; i++) {
+			temp = operation.indexOf(OPTIONS[i]);
+			if (temp > 0) {
+				tempIndex = Math.min(temp, tempIndex);
+			}
+		}
+		if (tempIndex == LARGE_CONSTANT) {
+			tempIndex = -1;
+		}
+		return tempIndex;
+	}
+	
+	private void initFeatureList() {
+		featureList = new Hashtable<String, Operation>();
+		addSelectedFeature(KEYWORD_ADD, Operation.ADD);
+		addSelectedFeature(KEYWORD_DELETE, Operation.DELETE);
+		addSelectedFeature(KEYWORD_CLEAR, Operation.CLEAR);
+		addSelectedFeature(KEYWORD_DISPLAY, Operation.DISPLAY);
+		addSelectedFeature(KEYWORD_EXIT, Operation.EXIT);
+		addSelectedFeature(KEYWORD_MODIFY, Operation.MODIFY);
+		addSelectedFeature(KEYWORD_UNDO, Operation.UNDO);
+		addSelectedFeature(KEYWORD_REDO, Operation.REDO);
+		addSelectedFeature(KEYWORD_REDO, Operation.REDO);
+		addSelectedFeature(KEYWORD_SORT, Operation.SORT);
+		addSelectedFeature(KEYWORD_SEARCH, Operation.SEARCH);
+		addSelectedFeature(KEYWORD_COMPLETE, Operation.COMPLETE);
+		addSelectedFeature(KEYWORD_IMPORT, Operation.IMPORT);
+		addSelectedFeature(KEYWORD_EXPORT, Operation.EXPORT);
+	}
+	
+	private void addSelectedFeature(String[] keyword, Operation operation) {
+		assert(keyword != null);
+		assert(operation != null);
+		for (int i = 0; i < keyword.length; i++) {
+			featureList.put(keyword[i], operation);
+		}
+	}
+	
+	private String getContent(String operationType, String operation) {
+		assert(isInOptions(operationType));
+		assert(operation != null);
+		int operationIndex = findType(operationType, operation);
+		if (operationIndex == FAIL) return null;
+		int begin = operationIndex + operationType.length() + 1;
+		int end = operation.indexOf(" -", begin);
+		if (end == FAIL) {
+			end = operation.length();
+		}
+		if (begin <= end) {
+			return operation.substring(begin, end);
+		} else {
+			return null;
+		}
+	}
+	
+	private boolean isInOptions(String operationType) {
+		for (String temp : OPTIONS) {
+			if (temp.equals(operationType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//return the index of an certain exact operation type
+	private int findType(String operationType, String operation) {
+		assert(isInOptions(operationType));
+		assert(operation != null);
+		int temp = operation.indexOf(operationType);
+		boolean isFound = false;
+		while (temp != -1 && !isFound) {
+			if (temp+operationType.length() == operation.length()||
+					operation.charAt(temp+operationType.length()) == ' ') {
+				isFound = true;
+			} else {
+				temp = operation.indexOf(operationType, temp + 1);
+			}
+		}
+		if (isFound) {
+			return temp;
+		} else {
+			return FAIL;
+		}
+	}
+	
+	private void logNullPointer(String msg) throws NullPointerException {
+		logger.log(Level.WARNING, msg);
+		throw new NullPointerException(msg);
+	}
+	
+	private void logIOException(String msg) throws IOException {
+		logger.log(Level.WARNING, msg);
+		throw new IOException(msg);
+	}
+}
+
+	// End of segment: E:\cs2103final\src\parser\Parser.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\TestChecker.java
+	 */
+
+public class TestChecker {
+	private static final String EXCEPTION_NOTITLE = "no title inputed";
+	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
+	private static final String EXCEPTION_NOINDEX = "you must enter an index";
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String FAIL = "no exception thrown";
+	
+	FormatChecker check;
+	boolean result;
+	
+	@Before
+	public void initChecker() {
+		check = new FormatChecker();
+	}
+	
+	@Test
+	public void test1() {
+		result = check.isArgumentsFormatCorrect("");
+		assertEquals(true, result);
+	}
+	
+	@Test
+	public void test2() {
+		result = check.isArgumentsFormatCorrect("add -d -d");
+		assertEquals(false, result);
+	}
+	
+	@Test
+	public void test3() {
+		result = check.isArgumentsFormatCorrect("add -d -vv");
+		assertEquals(false, result);
+	}
+	
+	@Test
+	public void test4() {
+		result = check.isArgumentsFormatCorrect("add -d -v -dd");
+		assertEquals(true, result);
+	}
+	
+	@Test
+	public void test5() {
+		try {
+			result = check.isArgumentsFormatCorrect(null);
+			fail(FAIL);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+	}
+	
+	@After
+	public void cleanUp() {
+		check = null;
+	}
+}
+
+	// End of segment: E:\cs2103final\src\parser\TestChecker.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\testDateParser.java
+	 */
+
+public class testDateParser {
+	
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String FAIL_NOEXCEPTION = "no exception thrown";
+	private static final String FAIL_EXCEPTION = "unexpected exception";
+	
+	private Date output;
+	private Boolean booleanOutput;
+	private DateParser dp;
+	private SimpleDateFormat sdf;
+	private String dateString;
+	
+	@Before
+	public void initDateParser(){
+		dp = new DateParser();
+	}
+	
+	@Test
+	public void testNullInput() {
+		try{
+			output = dp.getDate(null);
+			fail(FAIL_NOEXCEPTION);
+		}catch(Exception ex){
+			assertTrue(ex instanceof NullPointerException);
+			assertTrue(ex.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+	}
+	
+	@Test
+	public void testEmptyInput() {
+		try {
+			output = dp.getDate("");
+			assertEquals(null, output);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+			e.printStackTrace();
+		} 
+	}
+	
+	@Test
+	public void testFlatYear() {
+		try {
+			sdf = new SimpleDateFormat("yyyy-MM-dd");
+			dateString = "2015-2-29";
+			output = dp.getDate(dateString);
+			dateString = "2015-3-1";
+			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+		
+		try {
+			sdf = new SimpleDateFormat("yyyy-MM-dd");
+			dateString = "2012-2-29";
+			output = dp.getDate(dateString);
+			dateString = "2012-2-29";
+			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+	}
+	
+	@Test
+	public void testMonthIllegal() {
+		try {
+			dateString = "2018-13-29";
+			output = dp.getDate(dateString);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception ex) {
+			assertTrue(ex instanceof IOException);
+			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
+		}
+	}
+	
+	@Test
+	public void testDayIllegal() {
+		try {
+			dateString = "2018-5-32";
+			output = dp.getDate(dateString);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception ex) {
+			assertTrue(ex instanceof IOException);
+			assertTrue(ex.getMessage().contains("the date format you entered is incorrect"));
+		}
+	}
+	
+	@Test
+	public void testDateOnly() {
+		//test date only string yyyy-MM-dd
+		try {
+			sdf = new SimpleDateFormat("yyyy-MM-dd");
+			dateString = "2015-4-25";
+			output = dp.getDate(dateString);
+			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+		
+		//test date only string yyyy/MM/dd
+		try {
+			sdf = new SimpleDateFormat("yyyy/MM/dd");
+			dateString = "2015/4/25";
+			output = dp.getDate(dateString);
+			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+		
+		//test date only string MM/dd/yyyy
+		try {
+			sdf = new SimpleDateFormat("MM/dd/yyyy");
+			dateString = "4/25/2015";
+			output = dp.getDate(dateString);
+			assertEquals(sdf.parse(dateString), sdf.parse(sdf.format(output)));
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+	}
+	
+	@Test
+	public void testDateAndTime() {
+		try {
+			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			dateString = "2015-4-25 13:00";
+			output = dp.getDate(dateString);
+			assertEquals(sdf.parse(dateString), output);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+	}
+	
+	@Test
+	public void testMinuteIllegal() {
+		try {
+			dateString = "2015-4-25 13:60";
+			output = dp.getDate(dateString);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains("the date format you entered is incorrect"));
+		}
+	}
+	
+	@Test
+	public void testIsSameDay() {
+		try {
+			Date d1 = dp.getDate("2015-4-25 13:40");
+			Date d2 = dp.getDate("2015-4-25 12:00");
+			booleanOutput = DateParser.isSameDay(d1, d2);
+			assertEquals(true, booleanOutput);
+			d1 = dp.getDate("2015-4-26 13:30");
+			d2 = dp.getDate("2015-4-25 12:00");
+			booleanOutput = DateParser.isSameDay(d1, d2);
+			assertEquals(false, booleanOutput);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+	}
+	
+	@After
+	public void cleanUp() {
+		dp = null;
+	}
+}
+
+	// End of segment: E:\cs2103final\src\parser\testDateParser.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\testParser.java
+	 */
+
+public class testParser {
+	
+	private static final String EXCEPTION_NOTITLE = "no title inputed";
+	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
+	private static final String EXCEPTION_NOINDEX = "you must enter an index";
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	private static final String FAIL_NOEXCEPTION = "no exception thrown";
+	private static final String FAIL_EXCEPTION = "unexpected exception";
+	
+	private static final String FEEDBACK_ADD = 
+			"Tip: add <task> -d<time> -v<venue> to add task with date & venue";
+	private static final String FEEDBACK_DELETE = "Tip: delete <index> to delete a task";
+	private static final String FEEDBACK_MODIFY = 
+			"Tip: modify <index> <new title> -d<new time> -v<new venue> to modify task";
+	private static final String FEEDBACK_SORT = "Tip: sort <time/venue/title> to sort tasks";
+	private static final String FEEDBACK_SEARCH = "Tip: search <title/time/venue> to search tasks";
+	private static final String FEEDBACK_COMPLETE = "Tip: complete <index> to mark a task completed";
+	private static final String FEEDBACK_IMPORT = "Tip: import <index/path> to import a schedule file";
+	private static final String FEEDBACK_EXPORT = "Tip: export <index/path> to save schedul to a file";
+	
+	private boolean testBoolean;
+	private Operation testOperation;
+	private int testNumber;
+	private String testString;
+	private Date testDate;
+	private ArrayList<Integer> testArrayList;
+	private Parser p;
+	SimpleDateFormat sdf;
+	
+	@Before
+	public void initParser() {
+		p = new Parser();
+		sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	}
+	
+	@Test
+	public void testGetOperation() {
+		try {
+			testOperation = p.getOperation(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testOperation = p.getOperation("   ");
+		assertEquals(Operation.UNKNOW, testOperation);
+		testOperation = p.getOperation("     add    aaaaaa");
+		assertEquals(Operation.ADD, testOperation);	
+	}
+	
+	@Test
+	public void testIsArgumentsCorrect() {
+		try {
+			testBoolean = p.isArgumentsCorrect(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -v school");
+		assertEquals(true, testBoolean);
+		testBoolean = p.isArgumentsCorrect("add have lessons at 5-505 -d this afternoon");
+		assertEquals(true, testBoolean);
+		testBoolean = p.isArgumentsCorrect("add this is for fun -cs dou wo");
+		assertEquals(false, testBoolean);
+		testBoolean = p.isArgumentsCorrect("add have lessons -d tomorrow -d this Monday");
+		assertEquals(false, testBoolean);
+	}
+	
+	@Test
+	public void testGetIndex() {
+		try {
+			testArrayList = p.getIndex(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		try {
+			testArrayList = p.getIndex("modify 4,5,6,7 -d the day after tomorrow");
+			ArrayList<Integer> temp = new ArrayList<Integer>();
+			temp.add(4);
+			temp.add(5);
+			temp.add(6);
+			temp.add(7);
+			assertEquals(temp, testArrayList);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		}
+		try {
+			testArrayList = p.getIndex("modify -d the day after tomorrow");
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NOTITLE));
+		}
+	}
+	
+	@Test
+	public void testGetNewTitle() {
+		try {
+			testString = p.getNewTitle(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		try {
+			testString = p.getNewTitle("modify 8 go to school -d tomorrow");
+			assertEquals("go to school", testString);
+			testString = p.getNewTitle("modify 8   -d tomorrow");
+			assertEquals(null, testString);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		} 
+	}
+	
+	@Test
+	public void testGetTitle() {
+		try {
+			testString = p.getTitle(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		try {
+			testString = p.getTitle("add    -v dummy place");
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof IOException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NOTITLE));
+		}
+		try {
+			testString = p.getTitle("add testtask -v school");
+			assertEquals("testtask", testString);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		}
+	}
+	
+	@Test
+	public void testGetVenue() {
+		try {
+			testString = p.getVenue(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testString = p.getVenue("add testTask -v icube");
+		assertEquals("icube", testString);
+		testString = p.getVenue("add test Task");
+		assertEquals(null, testString);
+	}
+	
+	@Test
+	public void testGetDate() {
+		try {
+			testDate = p.getDate(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		try {
+			testDate = p.getDate("add testTask -d");
+			assertEquals(null, testDate);
+			testDate = p.getDate("add testTask -d 2015-12-10 13:00");
+			assertEquals(sdf.parse("2015-12-10 13:00"), testDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(FAIL_EXCEPTION);
+		}
+	}
+	
+	@Test
+	public void testGetDeadline() {
+		try {
+			testDate = p.getDeadline(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		try {
+			testDate = p.getDeadline("add testTask -dd");
+			assertEquals(null, testDate);
+			testDate = p.getDeadline("add testTask -dd 2015-12-10 13:00");
+			assertEquals(sdf.parse("2015-12-10 13:00"), testDate);
+		} catch (Exception e) {
+			fail(FAIL_EXCEPTION);
+		}
+	}
+	
+	@Test
+	public void testAutoFill() {
+		try {
+			testString = p.autoFill(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testString = p.autoFill("a");
+		assertEquals("add", testString);
+		testString = p.autoFill("z");
+		assertEquals(null, testString);
+		testString = p.autoFill("s");
+		assertEquals(null, testString);
+	}
+	
+	@Test
+	public void testProvideTips() {
+		try {
+			testString = p.provideTips(null);
+			fail(FAIL_NOEXCEPTION);
+		} catch (Exception e) {
+			assertTrue(e instanceof NullPointerException);
+			assertTrue(e.getMessage().contains(EXCEPTION_NULLPOINTER));
+		}
+		testString = p.provideTips("someknownmethod jajod");
+		assertEquals(null, testString);
+		testString = p.provideTips("add go ");
+		assertEquals(FEEDBACK_ADD, testString);
+	}
+	
+	@After
+	public void cleanUp() {
+		p = null;
+		sdf = null;
+	}
+	
+}
+
+	// End of segment: E:\cs2103final\src\parser\testParser.java
+
+
+
+
+
+	/**
+	 * origin: E:\cs2103final\src\parser\UIFeedback.java
+	 */
+
+/**
+ * this class is to provide suggestions according to users’ input. 
+ * Specifically, it is to provide suggested operation according to 
+ * users’ unfinished command. Besides, it will provide relevant input tips 
+ * as long as it detects that there is supported operation contained in users’ command.
+ * APIs:
+ * 	findMatch(String): String throws NullPointerException
+ * 	findTips(String): String throws NullPointerException
+ */
+public class UIFeedback {
+	private static final String EXCEPTION_NULLPOINTER = "The command is null";
+	
+	private static final String FEEDBACK_ADD = 
+			" <task> -d<time> -v<venue> to add task with date & venue";
+	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
+	private static final String FEEDBACK_MODIFY = 
+			" <index> <new title> -d<new time> -v<new venue> to modify task";
+	private static final String FEEDBACK_SORT = " <time/venue/title> to sort tasks";
+	private static final String FEEDBACK_SEARCH = " <title/time/venue> to search tasks";
+	private static final String FEEDBACK_COMPLETE = " <index> to mark a task completed";
+	private static final String FEEDBACK_IMPORT = " <index/path> to import a schedule file";
+	private static final String FEEDBACK_EXPORT = " <index/path> to save schedul to a file";
+	
+	private static final String[] KEYWORD_ADD = {"add", "insert"};
+	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
+	private static final String[] KEYWORD_CLEAR = {"clear", "claen"};
+	private static final String[] KEYWORD_DISPLAY = {"display", "ls", "show"};
+	private static final String[] KEYWORD_EXIT = {"exit", "quit"};
+	private static final String[] KEYWORD_MODIFY = {"modify", "update"};
+	private static final String[] KEYWORD_UNDO = {"undo"};
+	private static final String[] KEYWORD_REDO = {"redo"};
+	private static final String[] KEYWORD_SORT = {"sort"};
+	private static final String[] KEYWORD_SEARCH = {"find", "search"};
+	private static final String[] KEYWORD_COMPLETE = {"finish", "complete"};
+	private static final String[] KEYWORD_IMPORT = {"import", "load"};
+	private static final String[] KEYWORD_EXPORT = {"export", "save"};
+	
+	public String findMatch(String str) throws NullPointerException {
+		if (str == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		str = Parser.eliminateSpace(str);
+		ArrayList<String> matchResult = searchAllKeyword(str);
+		if (matchResult.size() != 1) {
+			return null;
+		} else { 
+			return matchResult.get(0);
+		}
+	}
+	
+	public String findTips(Operation operation) throws NullPointerException {
+		if (operation == null) {
+			throw new NullPointerException(EXCEPTION_NULLPOINTER);
+		}
+		String feedback;
+		Operation temp = operation;
+		switch (temp) {
+		case ADD:
+			feedback = FEEDBACK_ADD;
+			break;
+		case DELETE:
+			feedback = FEEDBACK_DELETE;
+			break;
+		case MODIFY:
+			feedback = FEEDBACK_MODIFY;
+			break;
+		case SORT:
+			feedback = FEEDBACK_SORT;
+			break;
+		case SEARCH:
+			feedback = FEEDBACK_SEARCH;
+			break;
+		case COMPLETE:
+			feedback = FEEDBACK_COMPLETE;
+			break;
+		case IMPORT:
+			feedback = FEEDBACK_IMPORT;
+			break;
+		case EXPORT:
+			feedback = FEEDBACK_EXPORT;
+			break;
+		default:
+			feedback = null;
+			break;
+		}
+		return feedback;
+	}
+	
+	private ArrayList<String> searchAllKeyword(String str) {
+		ArrayList<String> tempList = new ArrayList<String>();
+		ArrayList<String> resultList = new ArrayList<String>();
+		tempList.add(searchKeyword(str, KEYWORD_ADD));
+		tempList.add(searchKeyword(str, KEYWORD_DELETE));
+		tempList.add(searchKeyword(str, KEYWORD_CLEAR));
+		tempList.add(searchKeyword(str, KEYWORD_DISPLAY));
+		tempList.add(searchKeyword(str, KEYWORD_EXIT));
+		tempList.add(searchKeyword(str, KEYWORD_MODIFY));
+		tempList.add(searchKeyword(str, KEYWORD_UNDO));
+		tempList.add(searchKeyword(str, KEYWORD_REDO));
+		tempList.add(searchKeyword(str, KEYWORD_SORT));
+		tempList.add(searchKeyword(str, KEYWORD_SEARCH));
+		tempList.add(searchKeyword(str, KEYWORD_COMPLETE));
+		tempList.add(searchKeyword(str, KEYWORD_IMPORT));
+		tempList.add(searchKeyword(str, KEYWORD_EXPORT));
+		for (int i = 0; i < tempList.size(); i++) {
+			if (tempList.get(i) != null) {
+				resultList.add(tempList.get(i));
+			}
+		}
+		return resultList;
+	}
+	
+	private String searchKeyword(String str, String[] keyword) {
+		for (String temp:keyword) {
+			if (temp.startsWith(str)) {
+				return temp;
+			}
+		}
+		return null;
+	}
+
+}
+
+	// End of segment: E:\cs2103final\src\parser\UIFeedback.java
+
+
+
+
+
