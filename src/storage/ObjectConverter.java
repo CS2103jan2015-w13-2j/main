@@ -1,11 +1,7 @@
 package storage;
 
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +11,7 @@ import parser.DateParser;
 import taskList.Task;
 
 /**
+ * Converting between JSON format string and objects
  * 
  * @author Huang Weilong A0119392B
  * @version 2015 April 11
@@ -36,6 +33,11 @@ public class ObjectConverter {
 	public ObjectConverter(){
 	}
 	
+	/**
+	 * encode unfinishedTaskList with JSON format to a string
+	 * @param unfinishedTaskList
+	 * @return result JSON string
+	 */
 	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList){
 		JSONObject jsonObject = new JSONObject();
 		JSONArray taskArray = new JSONArray();
@@ -51,6 +53,12 @@ public class ObjectConverter {
 		return jsonObject.toString();
 	}
 	
+	/**
+	 * encode unfinishedTaskList and finishedTaskList with JSON format to a string
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @return result JSON string
+	 */
 	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList){
 		JSONObject jsonObject = new JSONObject();
 		JSONArray taskArray = new JSONArray();
@@ -76,12 +84,17 @@ public class ObjectConverter {
 		return jsonObject.toString();
 	}
 
-	private JSONObject getTaskFromJsonObject(Task tempTask) {
+	/**
+	 * Converting task object to JSON object
+	 * @param task
+	 * @return the result JSON object
+	 */
+	private JSONObject getTaskFromJsonObject(Task task) {
 		JSONObject tempJsonTask = new JSONObject();
 		
-		tempJsonTask.put(KEY_FOR_CONTENT, tempTask.getContent());
+		tempJsonTask.put(KEY_FOR_CONTENT, task.getContent());
 		
-		Date date = tempTask.getDate();
+		Date date = task.getDate();
 		
 		String dateString;
 		if(date == null){
@@ -91,7 +104,7 @@ public class ObjectConverter {
 		}
 		tempJsonTask.put(KEY_FOR_DATE, dateString);
 		
-		Date deadline = tempTask.getDeadline();
+		Date deadline = task.getDeadline();
 		String deadlineString;
 		if(deadline == null){
 			deadlineString = null;
@@ -100,11 +113,17 @@ public class ObjectConverter {
 		}
 		tempJsonTask.put(KEY_FOR_DEADLINE, deadlineString);
 		
-		tempJsonTask.put(KEY_FOR_VENUE, tempTask.getVenue());
+		tempJsonTask.put(KEY_FOR_VENUE, task.getVenue());
 		
 		return tempJsonTask;
 	}
 	
+	/**
+	 * encode fileName and filePathList with JSON format to a string
+	 * @param fileName
+	 * @param filePathList
+	 * @return result JSON string
+	 */
 	public String getJsonStringFromConfiguration(String fileName, ArrayList<String> filePathList){
 		JSONObject jsonObject = new JSONObject();
 		
@@ -119,16 +138,31 @@ public class ObjectConverter {
 		return jsonObject.toString();
 	}
 	
+	/**
+	 * converting JSON string to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
 	public String getFilePathFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
 		return getFilePathFromJsonObject(jsonObject);
 	}
 	
+	/**
+	 * converting JSON string to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
 	public ArrayList<String> getFilePathListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
 		return getFilePathListFromJsonObject(jsonObject);
 	}
 	
+	/**
+	 * converting JSON object to file path list object
+	 * @param jsonObject
+	 * @return history opened file path
+	 */
 	private ArrayList<String> getFilePathListFromJsonObject(JSONObject jsonObject){
 		ArrayList<String> filePathList = new ArrayList<String>();
 		JSONArray jsonStringArray = jsonObject.getJSONArray(KEY_FOR_FILE_PATH_LIST);
@@ -144,23 +178,43 @@ public class ObjectConverter {
 		return filePathList;
 	}
 	
+	/**
+	 * converting JSON object to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
 	private String getFilePathFromJsonObject(JSONObject jsonObject){
 		String filePath = jsonObject.getString(KEY_FOR_FILE_PATH);
 		return filePath;
 	}
 	
+	/**
+	 * converting JSON string to unfinished task list object
+	 * @param jsonString
+	 * @return unfinished task list object
+	 */
 	public ArrayList<Task> getUnfinishedTaskListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
 		return getTaskListFromJsonObject(jsonObject, KEY_FOR_UNFINISHED_TASKLIST);
 	}
 	
+	/**
+	 * converting JSON string to finished task list object
+	 * @param jsonString
+	 * @return finished task list object
+	 */
 	public ArrayList<Task> getFinishedTaskListFromJsonString(String jsonString){
 		JSONObject jsonObject = new JSONObject(jsonString);
 		return getTaskListFromJsonObject(jsonObject, KEY_FOR_FINISHED_TASKLIST);
 	}
 	
+	/**
+	 * Converting JSON object to task list object
+	 * @param jsonObject
+	 * @param keyForTaskList
+	 * @return required task list with the key keyForTaskList
+	 */
 	private ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject, String keyForTaskList){
-		
 		Task tempTask;
 		ArrayList<Task> taskList = new ArrayList<Task>();
 		
@@ -171,15 +225,7 @@ public class ObjectConverter {
 		}
 		
 		for(int i = 0; i < jsonTaskArray.length(); i++){
-			JSONObject jsonTask = (JSONObject) jsonTaskArray.get(i);
-			
-			String content = getContent(jsonTask);
-			String date = getDateString(jsonTask);
-			String deadline = getDeadlineString(jsonTask);
-			String venue = getVenue(jsonTask);
-			
-			assert content != null;
-			tempTask = new Task(content, date, deadline, venue);
+			tempTask = getTask((JSONObject) jsonTaskArray.get(i));
 			
 			taskList.add(tempTask);
 		}
@@ -187,7 +233,24 @@ public class ObjectConverter {
 		return taskList;
 	}
 	
-
+	/**
+	 * @param jsonTask
+	 * @return return the task object
+	 */
+	private Task getTask(JSONObject jsonTask) {
+		String content = getContent(jsonTask);
+		String date = getDateString(jsonTask);
+		String deadline = getDeadlineString(jsonTask);
+		String venue = getVenue(jsonTask);
+		
+		assert content != null;
+		return new Task(content, date, deadline, venue);
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for content, if not existed, return null
+	 */
 	private String getContent(JSONObject jsonTask) {
 		try{
 			return jsonTask.getString(KEY_FOR_CONTENT);
@@ -196,7 +259,11 @@ public class ObjectConverter {
 			return null;
 		}
 	}
-
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for date, if not existed, return null
+	 */
 	private String getDateString(JSONObject jsonTask) {
 		try{
 			return jsonTask.getString(KEY_FOR_DATE);
@@ -206,6 +273,10 @@ public class ObjectConverter {
 		}
 	}
 
+	/**
+	 * @param jsonTask
+	 * @return the string for deadline, if not existed, return null
+	 */
 	private String getDeadlineString(JSONObject jsonTask) {
 		try{
 			return jsonTask.getString(KEY_FOR_DEADLINE);
@@ -214,7 +285,11 @@ public class ObjectConverter {
 			return null;
 		}
 	}
-
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for venue, if not existed, return null
+	 */
 	private String getVenue(JSONObject jsonTask) {
 		try{
 			return jsonTask.getString(KEY_FOR_VENUE);
