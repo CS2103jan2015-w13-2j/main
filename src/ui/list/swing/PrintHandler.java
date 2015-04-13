@@ -110,7 +110,7 @@ public class PrintHandler {
 		}
 		
 		//highlight completed task
-		else if (UserInterface.completeIndex != INVALID && index+1 == UserInterface.completeIndex || task.hasFinished()) {
+		else if ( (UserInterface.completeIndex != INVALID && index+1 == UserInterface.completeIndex) || task.hasFinished()) {
 			printHighlightRow(labelText,COMPLETE_MODE);
 		}
 		//strike off deleted task
