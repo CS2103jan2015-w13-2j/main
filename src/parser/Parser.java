@@ -80,10 +80,7 @@ public class Parser {
 		if (operation == null) {
 			logNullPointer(EXCEPTION_NULLPOINTER);
 		}
-		if (operation.indexOf(' ') != -1) {
-			operation = operation.substring(0, operation.indexOf(' '));
-		}
-		operation = operation.trim();
+		operation = getOperationString(operation);
 		Operation operationIndex = getOperationIndex(operation);
 		if (operationIndex == null) {
 			return Operation.UNKNOW;
@@ -211,13 +208,27 @@ public class Parser {
 	
 	public String provideTips(String operation) throws NullPointerException {
 		String result = null;
+		String operationName = null;
 		try {
+			operationName = getOperationString(operation);
 			Operation operationType = getOperation(operation);
 			result = feedback.findTips(operationType);
 		} catch (NullPointerException e) {
 			logNullPointer(e.getMessage());
 		}
-		return result;
+		if (result == null) {
+			return null;
+		} else {
+			return "Tips: " + operationName + result;
+		}
+	}
+	
+	private String getOperationString(String operation) {
+		if (operation.indexOf(' ') != -1) {
+			operation = operation.substring(0, operation.indexOf(' '));
+		}
+		operation = operation.trim();
+		return operation;
 	}
 	
 	private String eliminateSpace(String str) {

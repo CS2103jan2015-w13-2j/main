@@ -24,7 +24,9 @@ public class DisplayFormat {
 	private static final String BY_STRING = "  BY: ";
 	private static final String DATE_STRING = "Date: ";
 	private static final String VENUE_STRING = "Venue: ";
+	private static final String TIME_STRING = "Time: ";
 	private static final String EMPTY_STRING = "---";
+	private static final String EMPTY_TIME = "00:00:00";
 	
 	private static StringBuilder data = new StringBuilder();
 	private static final String HTML_OPEN = "<html>";
@@ -43,6 +45,9 @@ public class DisplayFormat {
 	private static String date;
 	private static String venue;
 	private static String endDate;
+	private static String time;
+	private static String deadlineTime;
+
 	
 	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
 		clearData();
@@ -51,18 +56,53 @@ public class DisplayFormat {
 		taskName = task.getContent();
 		date = task.getDateString();
 		venue = task.getVenue();
-		endDate = task.getDeadlineString();
+		endDate = task.getDeadlineString();		
+		time = getTime(date);
+		date = trimDate(date);
+		deadlineTime = getTime(endDate);
+		endDate = trimDate(endDate);
 		
 		setVenueDate();
 		data.append(HTML_OPEN);
 		data.append(String.format(HTML_FONT_TASK_HEADER,index+". ", taskName));
 		setDate(task, date);
+		setTime(task,time);
 		setEndDate(task, endDate);
+		setTime(task, deadlineTime);
 		data.append(HTML_BREAK);	
 		setTaskVenue(HTML_FONT_TASK_DETAILS, venue);
 		data.append(HTML_BREAK+HTML_CLOSE);
 		
 		return getData();
+	}
+	
+	private static boolean isEmptyTime(String time) {
+		if (time.trim().equals(EMPTY_TIME)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private static String trimDate(String date) {
+
+		String trimDate = EMPTY_STRING;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			trimDate = date.substring(0, date.indexOf(":")-2);
+			System.out.println("Date Trimmed: " + trimDate);
+		}
+		
+		return trimDate;
+	}
+
+	private static String getTime(String date) {
+		String time = EMPTY_TIME;
+
+		if (date!= null && !date.equals(EMPTY_STRING)) {
+			time = date.substring(date.indexOf(":")-2, date.length());	
+		}
+
+		return time;
 	}
 	
 	private static void setTaskVenue(String format, String venue) {
@@ -83,8 +123,18 @@ public class DisplayFormat {
 		}
 	}
 	
+	private static void setTime(Task task, String time) throws NullPointerException, IOException {
+		if (!isEmptyTime(time) && task.isOutOfDate()) {
+			data.append(String.format(HTML_FONT_OVERDUE,TIME_STRING + time ));
+		}
+		
+		else if (!isEmptyTime(time)) {
+			data.append(String.format(HTML_FONT_TASK_DETAILS,TIME_STRING + time ));
+		}
+	}
+	
 	private static void setEndDate (Task task, String endDate) throws NullPointerException, IOException {
-		if (endDate != null) {
+		if (endDate != null && !endDate.equals(EMPTY_STRING)) {
 			if (task.isOutOfDate()) {
 				data.append(String.format(HTML_FONT_OVERDUE, BY_STRING + endDate));
 			}		
@@ -101,15 +151,27 @@ public class DisplayFormat {
 		taskName = task.getContent();
 		date = task.getDateString();
 		venue = task.getVenue();
-		endDate = task.getDeadlineString();
+		endDate = task.getDeadlineString();		
+		time = getTime(date);
+		date = trimDate(date);
+		deadlineTime = getTime(endDate);
+		endDate = trimDate(endDate);
 
 		setVenueDate();
 		data.append(HTML_OPEN);
 		data.append(String.format(HTML_FONT_FINISHED_TASK_HEADING, index + ". ", taskName));
 		data.append(String.format(HTML_FONT_FINISHED_DETAILS, DATE_STRING + date));
+		
+		if (!isEmptyTime(time)) {
+			data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + time));
+		}
 
-		if (endDate != null) {
+		if (endDate != null && !endDate.equals(EMPTY_STRING)) {
 			data.append(String.format(HTML_FONT_FINISHED_DETAILS, BY_STRING + endDate));	
+			
+			if (!isEmptyTime(deadlineTime)) {
+				data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + deadlineTime));	
+			}
 		}
 
 		data.append(HTML_BREAK);		
