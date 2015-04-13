@@ -94,10 +94,12 @@ public class DisplayFormat {
 		date = DateTimeSetting.dateFormat(date);
 		endDate = DateTimeSetting.dateFormat(endDate);
 			
+			//no dates input, display: date: ---
 			if (date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING)) {
 				data.append(String.format(format, DATE_STRING + date));
 			}
 			
+			//no end date, display: Start: date Time: time (if any)
 			else if (!date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING))  {
 				data.append(String.format(format, START_STRING + date));
 					
@@ -105,7 +107,7 @@ public class DisplayFormat {
 						data.append(String.format(format, TIME_STRING + time));
 					}
 			}
-			
+			//no date, display: End: date Time: time (if any)
 			else if (date.equals(EMPTY_STRING) && !endDate.equals(EMPTY_STRING)) {
 				data.append((String.format(format, END_STRING + endDate)));
 				
@@ -114,6 +116,7 @@ public class DisplayFormat {
 
 			}
 			
+			//both date and time
 			else {
 				data.append(String.format(format, START_STRING + date));	
 				
@@ -121,7 +124,7 @@ public class DisplayFormat {
 					data.append(String.format(format, TIME_STRING + time));
 				}
 				
-				data.append((String.format(format, END_STRING + endDate)));
+				data.append((String.format(format, "<br>" + END_STRING + endDate)));
 				
 				if (!DateTimeSetting.isEmptyTime(endTime))
 					data.append((String.format(format, TIME_STRING + endTime)));

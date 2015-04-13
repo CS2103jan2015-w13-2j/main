@@ -2,21 +2,16 @@ package ui.list.swing;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.Timer;
-
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
@@ -44,21 +39,11 @@ public class LayoutSetting {
 	}
 	
 	public static void setFrame() {
-		UserInterface.frame.setBounds(100, 100, 653, 582);
+		UserInterface.frame.setBounds(100, 100, 723, 652);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface.frame.setResizable(false);
 		UserInterface.frame.getContentPane().setLayout(null);
 		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
-		setFrameBottomRight();
-	}
-	
-	private static void setFrameBottomRight() {
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
-        Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
-        int x = (int) rect.getMaxX() - UserInterface.frame.getWidth();
-        int y = (int) rect.getMaxY() - UserInterface.frame.getHeight();
-        UserInterface.frame.setLocation(x,y);
 	}
 	
 	public static void setPanels() {	
@@ -68,31 +53,31 @@ public class LayoutSetting {
 	public static void setBackgroundLabel() {	
 		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
 		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_BG.png")));
-		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+		UserInterface.lblBackground.setBounds(0, 0, 723, 632);
 	}
 	
 	public static void setDateLabel() {
 		UserInterface.lblDate.setFont(new Font("Century Gothic", Font.ITALIC, 16));
-		UserInterface.lblDate.setBounds(350, 540, 270, 16);
+		UserInterface.lblDate.setBounds(350, 605, 270, 16);
 	}
 	
 	public static void setHelpInfoLabel() {
 		UserInterface.frame.requestFocus();
 		UserInterface.lblBackground.setForeground(new Color(0, 0, 0));
 		UserInterface.lblBackground.setIcon(new ImageIcon(UserInterface.class.getResource("/ui/images/TaskBuddy_Help.png")));
-		UserInterface.lblBackground.setBounds(0, 0, 653, 562);
+		UserInterface.lblBackground.setBounds(0, 0, 723, 632);
 		UserInterface.frame.getContentPane().add(UserInterface.lblBackground);
 	}
 	
 	public static void setFilePathLabel() {
 		UserInterface.lblFile.setFont(new Font("Century Gothic", Font.ITALIC, 16));
-		UserInterface.lblFile.setBounds(20,540,500,16);
+		UserInterface.lblFile.setBounds(48,605,500,16);
 		UserInterface.lblFile.setText("Current File: " + UserInterface.BTM.getCurrentPath());
 	}
 	
 	public static void setHelpLabel() {
 		UserInterface.lblHelp.setFont(new Font("Century Gothic", Font.ITALIC, 16));
-		UserInterface.lblHelp.setBounds(537, 30, 72, 20);
+		UserInterface.lblHelp.setBounds(610, 30, 72, 20);
 	}
 	
 	public static void setStatusMessageLabel() {
@@ -102,12 +87,12 @@ public class LayoutSetting {
 	
 	public static void setPageLabel() {
 		UserInterface.lblPageNumber.setForeground(Color.GRAY);
-		UserInterface.lblPageNumber.setBounds(581, 504, 28, 23);
+		UserInterface.lblPageNumber.setBounds(665, 563, 28, 23);
 	}
 	
 	public static void setCommandGuideLabel() {
 		UserInterface.lblCommandGuide.setFont(new Font("Century Gothic", Font.ITALIC, 14));
-		UserInterface.lblCommandGuide.setBounds(59, 498, 520, 29);
+		UserInterface.lblCommandGuide.setBounds(79, 566, 540, 29);
 	}
 	
 	public static void setLabels() {
@@ -122,7 +107,7 @@ public class LayoutSetting {
 	
 	public static void setScrollPane() {
 		UserInterface.scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		UserInterface.scrollPane.setBounds(76, 62, 525, 381);
+		UserInterface.scrollPane.setBounds(85, 75, 555, 451);
 		UserInterface.frame.getContentPane().add(UserInterface.scrollPane);
 		UserInterface.scrollPane.setViewportView(UserInterface.panel);		
 	}
@@ -130,7 +115,7 @@ public class LayoutSetting {
 	public static void setTextField() {
 		UserInterface.textField.getDocument().addDocumentListener(new TextFieldListener());
 		UserInterface.textField.requestFocusInWindow();		
-		UserInterface.textField.setBounds(59, 466, 520, 36);
+		UserInterface.textField.setBounds(79, 536, 540, 36);
 		UserInterface.textField.setColumns(10);
 		UserInterface.textField.setFocusTraversalKeysEnabled(false);
 	}
