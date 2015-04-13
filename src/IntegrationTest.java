@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import taskList.TaskManager;
 
-
+//@author A0119403N
 public class IntegrationTest {
-	//String used to test CE1
+
 	private static final String TEST_FILENAME = "TestFileName.txt";
 	private static final String CLEAR_COMMAND = "clear";
 	private static final String DISPLAY_COMMAND = "display";
@@ -22,7 +22,6 @@ public class IntegrationTest {
 	private static final String SEARCH_COMMAND_2 = "search word2";
 	private static final String SEARCH_COMMAND_NOT_EXIST = "search word22222";
 	
-	//Excepted Answer to CE1
 	private static final String EXCEPTED_ANSWER_CLEAR = "";
 	private static final String EXCEPTED_ANSWER_ADD_1 = "1. little brown fox\n";
 	private static final String EXCEPTED_ANSWER_ADD_2 = "1. little brown fox\n2. jumped over the moon\n";

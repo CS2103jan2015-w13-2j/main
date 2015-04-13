@@ -1,3 +1,4 @@
+
 package taskList;
 
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.util.Date;
 import parser.DateParser;
 import parser.Parser;
 
+//@author A0119403N
 public class Task implements Comparable<Task>{
 	private String content;
 	private String venue;
