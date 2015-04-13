@@ -25,6 +25,135 @@
  * Basic class for this package.
  * Providing basic functions of file operation.
  * 
+ * @version 2015 April 11
+ */
+public class FileOperation {
+	private static final String LOGGER_NAME = "TaskBuddy.log";
+	
+	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null\n";
+	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid\n";
+	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
+	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
+	private static final String MESSAGE_CANNOT_WRITE = "cannot write the file.\n";
+	
+	private static final char[] invalidChar = {'\\', '?', '%'};
+	
+	private static final Logger logger = Logger.getLogger(LOGGER_NAME);
+	
+	private static final String EMPTY_STRING = "";
+	private String fileName;
+
+	/**
+	 * @param fileName
+	 * @throws IOException, if filename is not valid, 
+	 */
+	public FileOperation(String fileName) throws IOException {
+		if(isValidFileName(fileName)){
+			this.fileName = fileName;
+		}
+	}
+	
+	/**
+	 * get file name string
+	 * @return filename
+	 */
+	public String getFileName(){
+		return this.fileName;
+	}
+	
+	/**
+	 * Reading file to string.
+	 * @return file content in string without new line char.
+	 * @throws IOException, if there are some errors while reading file, throw IOException.
+	 */
+	public String readFile() throws IOException{
+		if (!(new File(fileName).exists())) {
+			return EMPTY_STRING;
+		}
+		try {
+			FileInputStream fileInput = new FileInputStream(fileName);
+			@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
+			String readTemp;
+			StringBuffer fileContent = new StringBuffer();
+			while ((readTemp = br.readLine()) != null) {
+				fileContent.append(readTemp);
+			}
+			return fileContent.toString();
+		}catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_READ);
+		}
+	}
+	
+	/**
+	 * Saving the content to the this file.
+	 * @param filecontent, the conntent will be written to file.
+	 * @throws IOException, if file cannot be written, throw IOException.
+	 */
+	public void saveToFile(String filecontent) throws IOException{
+		try {
+			FileOutputStream fileOutput = new FileOutputStream(fileName, false);
+			fileOutput.write(filecontent.getBytes());
+			fileOutput.write('\n');
+			fileOutput.close();
+		}catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_WRITE);
+		}
+	}
+	
+	/**
+	 * rename the file to another name
+	 * remove the file with new filename and move the old one to new file name
+	 * @param newfile
+	 */
+	public void renameTo(FileOperation newfile){
+		File file = new File(fileName);
+		String newFileName = newfile.getFileName();
+		if (!file.exists()) {
+			this.fileName = newFileName;
+		}else{
+			file.renameTo(new File(newFileName));
+			this.fileName = newFileName;
+		}
+	}
+	
+	/**
+	 * If the file with fileName exists, delete it.
+	 * Otherwise do nothing. 
+	 */
+	public void delete(){
+		File file = new File(fileName);
+		if (file.exists()){
+			file.delete();
+		}
+	}
+	
+	/**
+	 * check whether the filename is valid
+	 * 
+	 * @param fileName
+	 * @return true if filename is valid
+	 * @throws IOException is the file name is null or filename is a dictionary name, will throw IOException.
+	 */
+	private boolean isValidFileName(String fileName) throws IOException{
+		if(fileName == null)
+			throw new IOException(MESSAGE_NULL_FILENAME);
+		char lastChar = fileName.charAt(fileName.length()-1);
+		for(char invalid: invalidChar){
+			if(lastChar == invalid)
+				throw new IOException(MESSAGE_INVALID_FILENAME);
+		}
+		if (new File(fileName).isDirectory()) {
+			throw new IOException(MESSAGE_FOLDER_FILENAME);
+		}
+		if (!(new File(fileName).exists())) {
+			logger.info(MESSAGE_NEW_FILE);
+		}
+		return true;
+	}
+}
+
 	// End of segment: E:\cs2103final\src\storage\FileOperation.java
 
 
@@ -38,6 +167,141 @@
 /**
  * Reading and loading task list in file with JSON format.
  * 
+ * @version 2015 April 11
+ */
+public class JsonStringFileOperation{
+	private static final String LOGGER_NAME = "TaskBuddy.log";
+	
+	private static final String MESSAGE_READ_FILE = "Read file successfully.";
+	private static final String MESSAGE_SAVE_FILE = "Save to file successfully.";
+	private static final String MESSAGE_SAVE_TEMP_FILE = "Save to temp file successfully.";
+	private static final String MESSAGE_CANNOT_PARSE = "Cannot parse the file with JSON format, return empty task list.\n";
+	
+	private static final String TEMP_FILE_EXTENTION = ".tmp";
+	
+	private static final Logger logger = Logger.getLogger(LOGGER_NAME);
+	
+	private ObjectConverter converter;
+	
+	private static final ArrayList<Task> EMPTY_UNFINISHED_TASKLIST = new ArrayList<Task>();
+	private static final ArrayList<Task> EMPTY_FINISHED_TASKLIST = new ArrayList<Task>();
+	
+	private FileOperation savedFile;
+	private FileOperation tempSavedFile;
+	
+	/**
+	 * @param fileName
+	 * @throws IOException, If the file name is invalid or null or dictionary name, throw IOException
+	 */
+	public JsonStringFileOperation(String fileName) throws IOException{
+		String tempFileName = generateTempFileName(fileName);
+		savedFile = new FileOperation(fileName);
+		tempSavedFile = new FileOperation(tempFileName);
+		this.converter = new ObjectConverter();
+	}
+	
+	/**
+	 * Return unfinished task list which is read from file.
+	 * If there is any parsing error, return the empty task list.
+	 * @return unfinished task list which is read from file.
+	 * @throws IOException, If the file cannot be read, throw IOException.
+	 */
+	public ArrayList<Task> getUnfinishedTaskListFromFile() throws IOException {
+		String jsonString = savedFile.readFile();
+		logger.info(MESSAGE_READ_FILE);
+		try{
+			ArrayList<Task> unfinishedTaskList = converter.getUnfinishedTaskListFromJsonString(jsonString);
+			return unfinishedTaskList;
+		}catch(Exception e){
+			logger.info(MESSAGE_CANNOT_PARSE);
+			return EMPTY_UNFINISHED_TASKLIST;
+		}
+		
+	}
+	
+	/**
+	 * Return finished task list which is read from file.
+	 * If there is any parsing error, return the empty task list.
+	 * @return finished task list which is read from file.
+	 * @throws IOException, If the file cannot be read, throw IOException.
+	 */
+	public ArrayList<Task> getFinishedTaskListFromFile() throws IOException {
+		String jsonString = savedFile.readFile();
+		logger.info(MESSAGE_READ_FILE);
+		try{
+			ArrayList<Task> finishedTaskList = converter.getFinishedTaskListFromJsonString(jsonString);
+			return finishedTaskList;
+		}catch(Exception e){
+			logger.info(MESSAGE_CANNOT_PARSE);
+			return EMPTY_FINISHED_TASKLIST;
+		}
+	}
+	
+	/**
+	 * Write the unfinished task list into original file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
+	public void saveToFile(ArrayList<Task> unfinishedTaskList) throws IOException{
+		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
+		logger.info(MESSAGE_SAVE_FILE);
+	}
+	
+	/**
+	 * Write the unfinished and finished task list into original file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
+	public void saveToFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{		
+		savedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
+		logger.info(MESSAGE_SAVE_FILE);
+	}
+	
+	/**
+	 * Write the unfinished and finished task list into temporary file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
+	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList) throws IOException{
+		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList));
+		logger.info(MESSAGE_SAVE_TEMP_FILE);
+	}
+	
+	/**
+	 * Write the unfinished and finished task list into temporary file.
+	 * If the file existed, just override it.
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @throws IOException, If the file cannot be written, throw IOException.
+	 */
+	public void saveToTmpFile(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList) throws IOException{
+		tempSavedFile.saveToFile(converter.getJsonStringFromTaskList(unfinishedTaskList, finishedTaskList));
+		logger.info(MESSAGE_SAVE_TEMP_FILE);
+	}
+	
+	/**
+	 * replace the original file with the temporary file
+	 * @throws IOException
+	 */
+	public void replaceFileWithTempFile() throws IOException{
+		savedFile.delete();
+		tempSavedFile.renameTo(tempSavedFile);
+		logger.info(MESSAGE_SAVE_FILE);
+	}
+	
+	/**
+	 * @param fileName
+	 * @return the fileName with temporary file extension
+	 */
+	private String generateTempFileName(String fileName){
+		return fileName + TEMP_FILE_EXTENTION;
+	}
+}
+
 	// End of segment: E:\cs2103final\src\storage\JsonStringFileOperation.java
 
 
@@ -51,6 +315,317 @@
 /**
  * Converting between JSON format string and objects
  * 
+ * @version 2015 April 11
+ */
+public class ObjectConverter {
+	//private static final String LOGGER_NAME = "TaskBuddy.log";
+	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
+	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
+	private static final String KEY_FOR_FILE_PATH = "file path";
+	private static final String KEY_FOR_FILE_PATH_LIST = "file path list";
+	
+	private static final String KEY_FOR_CONTENT = "content";
+	private static final String KEY_FOR_DATE = "date";
+	private static final String KEY_FOR_DEADLINE = "deadline";
+	private static final String KEY_FOR_VENUE = "venue";
+	private static final String KEY_FOR_FINISH = "finish";
+	private static final String VALUE_FOR_FINISHED = "finished";
+	
+	//private static final Logger logger = Logger.getLogger(LOGGER_NAME);
+	
+	public ObjectConverter(){
+	}
+	
+	/**
+	 * encode unfinishedTaskList with JSON format to a string
+	 * @param unfinishedTaskList
+	 * @return result JSON string
+	 */
+	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList){
+		JSONObject jsonObject = new JSONObject();
+		JSONArray taskArray = new JSONArray();
+		
+		for (int i = 0; i < unfinishedTaskList.size(); i++) {
+			Task tempTask = unfinishedTaskList.get(i);
+			
+			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
+			
+			taskArray.put(i,tempJsonTask);
+		}
+		jsonObject.put(KEY_FOR_UNFINISHED_TASKLIST, taskArray);
+		return jsonObject.toString();
+	}
+	
+	/**
+	 * encode unfinishedTaskList and finishedTaskList with JSON format to a string
+	 * @param unfinishedTaskList
+	 * @param finishedTaskList
+	 * @return result JSON string
+	 */
+	public String getJsonStringFromTaskList(ArrayList<Task> unfinishedTaskList, ArrayList<Task> finishedTaskList){
+		JSONObject jsonObject = new JSONObject();
+		JSONArray taskArray = new JSONArray();
+		
+		for (int i = 0; i < unfinishedTaskList.size(); i++) {
+			Task tempTask = unfinishedTaskList.get(i);
+			
+			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
+			
+			taskArray.put(i,tempJsonTask);
+		}
+		jsonObject.put(KEY_FOR_UNFINISHED_TASKLIST, taskArray);
+		taskArray = new JSONArray();
+		
+		for (int i = 0; i < finishedTaskList.size(); i++) {
+			Task tempTask = finishedTaskList.get(i);
+			
+			JSONObject tempJsonTask = getTaskFromJsonObject(tempTask);
+			
+			taskArray.put(i,tempJsonTask);
+		}
+		jsonObject.put(KEY_FOR_FINISHED_TASKLIST, taskArray);
+		return jsonObject.toString();
+	}
+
+	/**
+	 * Converting task object to JSON object
+	 * @param task
+	 * @return the result JSON object
+	 */
+	private JSONObject getTaskFromJsonObject(Task task) {
+		JSONObject tempJsonTask = new JSONObject();
+		
+		tempJsonTask.put(KEY_FOR_CONTENT, task.getContent());
+		
+		Date date = task.getDate();
+		
+		String dateString;
+		if(date == null){
+			dateString = null;
+		}else{
+			dateString = DateParser.formatDefault(date);
+		}
+		tempJsonTask.put(KEY_FOR_DATE, dateString);
+		
+		Date deadline = task.getDeadline();
+		String deadlineString;
+		if(deadline == null){
+			deadlineString = null;
+		}else{
+			deadlineString = DateParser.formatDefault(deadline);
+		}
+		tempJsonTask.put(KEY_FOR_DEADLINE, deadlineString);
+		
+		tempJsonTask.put(KEY_FOR_VENUE, task.getVenue());
+		
+		if(task.hasFinished()){
+			tempJsonTask.put(KEY_FOR_FINISH, VALUE_FOR_FINISHED);
+		}
+		
+		return tempJsonTask;
+	}
+	
+	/**
+	 * encode fileName and filePathList with JSON format to a string
+	 * @param fileName
+	 * @param filePathList
+	 * @return result JSON string
+	 */
+	public String getJsonStringFromConfiguration(String fileName, ArrayList<String> filePathList){
+		JSONObject jsonObject = new JSONObject();
+		
+		jsonObject.put(KEY_FOR_FILE_PATH, fileName);
+		
+		JSONArray filePathArray = new JSONArray();
+		
+		for (int i = 0; i < filePathList.size(); i++) {
+			filePathArray.put(i,filePathList.get(i));
+		}
+		jsonObject.put(KEY_FOR_FILE_PATH_LIST, filePathArray);
+		return jsonObject.toString();
+	}
+	
+	/**
+	 * converting JSON string to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
+	public String getFilePathFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getFilePathFromJsonObject(jsonObject);
+	}
+	
+	/**
+	 * converting JSON string to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
+	public ArrayList<String> getFilePathListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getFilePathListFromJsonObject(jsonObject);
+	}
+	
+	/**
+	 * converting JSON object to file path list object
+	 * @param jsonObject
+	 * @return history opened file path
+	 */
+	private ArrayList<String> getFilePathListFromJsonObject(JSONObject jsonObject){
+		ArrayList<String> filePathList = new ArrayList<String>();
+		JSONArray jsonStringArray = jsonObject.getJSONArray(KEY_FOR_FILE_PATH_LIST);
+		if(jsonStringArray == null){
+			//showMessageNotFound(KEY_FOR_FILE_PATH_LIST);
+			return filePathList;
+		}
+		
+		for(int i = 0; i < jsonStringArray.length(); i++){
+			String filePath = (String) jsonStringArray.get(i);
+			filePathList.add(filePath);
+		}
+		return filePathList;
+	}
+	
+	/**
+	 * converting JSON object to file path object
+	 * @param jsonObject
+	 * @return last opened file path
+	 */
+	private String getFilePathFromJsonObject(JSONObject jsonObject){
+		String filePath = jsonObject.getString(KEY_FOR_FILE_PATH);
+		return filePath;
+	}
+	
+	/**
+	 * converting JSON string to unfinished task list object
+	 * @param jsonString
+	 * @return unfinished task list object
+	 */
+	public ArrayList<Task> getUnfinishedTaskListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getTaskListFromJsonObject(jsonObject, KEY_FOR_UNFINISHED_TASKLIST);
+	}
+	
+	/**
+	 * converting JSON string to finished task list object
+	 * @param jsonString
+	 * @return finished task list object
+	 */
+	public ArrayList<Task> getFinishedTaskListFromJsonString(String jsonString){
+		JSONObject jsonObject = new JSONObject(jsonString);
+		return getTaskListFromJsonObject(jsonObject, KEY_FOR_FINISHED_TASKLIST);
+	}
+	
+	/**
+	 * Converting JSON object to task list object
+	 * @param jsonObject
+	 * @param keyForTaskList
+	 * @return required task list with the key keyForTaskList
+	 */
+	private ArrayList<Task> getTaskListFromJsonObject(JSONObject jsonObject, String keyForTaskList){
+		Task tempTask;
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		
+		JSONArray jsonTaskArray = jsonObject.getJSONArray(keyForTaskList);
+		if(jsonTaskArray == null){
+			//showMessageNotFound(keyForTaskList);
+			return taskList;
+		}
+		
+		for(int i = 0; i < jsonTaskArray.length(); i++){
+			tempTask = getTask((JSONObject) jsonTaskArray.get(i));
+			
+			taskList.add(tempTask);
+		}
+		
+		return taskList;
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return return the task object
+	 */
+	private Task getTask(JSONObject jsonTask) {
+		String content = getContent(jsonTask);
+		String date = getDateString(jsonTask);
+		String deadline = getDeadlineString(jsonTask);
+		String venue = getVenue(jsonTask);
+		Boolean finish = getFinished(jsonTask);
+		
+		assert content != null;
+		return new Task(content, date, deadline, venue, finish);
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for content, if not existed, return null
+	 */
+	private String getContent(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_CONTENT);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_CONTENT);
+			return null;
+		}
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for date, if not existed, return null
+	 */
+	private String getDateString(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_DATE);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_DATE);
+			return null;
+		}
+	}
+
+	/**
+	 * @param jsonTask
+	 * @return the string for deadline, if not existed, return null
+	 */
+	private String getDeadlineString(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_DEADLINE);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_DEADLINE);
+			return null;
+		}
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for venue, if not existed, return null
+	 */
+	private String getVenue(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_VENUE);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_VENUE);
+			return null;
+		}
+	}
+	
+	/**
+	 * @param jsonTask
+	 * @return the string for finish status, if not existed, return null
+	 */
+	private boolean getFinished(JSONObject jsonTask) {
+		try{
+			return jsonTask.getString(KEY_FOR_FINISH).equals(VALUE_FOR_FINISHED);
+		}catch(JSONException notFound){
+			//showMessageNotFound(KEY_FOR_VENUE);
+			return false;
+		}
+	}
+	
+//	private void showMessageNotFound(String key){
+//		//logger.info(String.format(MESSAGE_NOT_FOUND, key));
+//	}
+
+}
+
 	// End of segment: E:\cs2103final\src\storage\ObjectConverter.java
 
 
@@ -63,6 +638,117 @@
 
 /**
  * 
+ * @version 2015 April 11
+ */
+public class testConfigurationFileOperation {
+	private static final int TEST_SIZE = 200;
+	private static final int BIG_PRIME_NUMBER1 = 107;
+	private static final String NAME_TEST_STRING = "%05d";
+	private static final String TEST_FILENAME = "fileStorageTest.json";
+	
+	private static final String EMPTY_STRING = "";
+	
+	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
+	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
+	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	
+	ObjectConverter converter;
+	ConfigurationFileOperation fileOperation;
+	
+	
+
+	@Before
+	public void init(){
+	    converter = new ObjectConverter();
+	}
+
+	private String getFileContent(String fileName) throws IOException{
+		if (new File(fileName).isDirectory()) {
+			throw new IOException(MESSAGE_FOLDER_FILENAME);
+		}
+		if (!(new File(fileName).exists())) {
+			System.err.println(MESSAGE_NEW_FILE);
+			return EMPTY_STRING;
+		}
+		try {
+			FileInputStream fileInput = new FileInputStream(fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
+			String readContent = br.readLine();
+			if(readContent == null){
+				readContent = EMPTY_STRING;
+			}
+			br.close();
+			return readContent;
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_READ);
+		}
+	}
+	
+	@Test
+	public void testSaving() {
+		String fileName = TEST_FILENAME+TEST_FILENAME+TEST_FILENAME;
+		ArrayList<String> fileList = new ArrayList<String>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			fileList.add(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER1%TEST_SIZE));
+		}
+		
+		try {
+			fileOperation = new ConfigurationFileOperation(TEST_FILENAME);
+			fileOperation.saveConfiguration(fileName,fileList);
+			Assert.assertEquals("Testing for saving configuration", getFileContent(TEST_FILENAME), converter.getJsonStringFromConfiguration(fileName, fileList));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetFilePath() {
+		String fileName = TEST_FILENAME+TEST_FILENAME+TEST_FILENAME;
+		ArrayList<String> fileList = new ArrayList<String>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			fileList.add(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER1%TEST_SIZE));
+		}
+		
+		try {
+			fileOperation = new ConfigurationFileOperation(TEST_FILENAME);
+			fileOperation.saveConfiguration(fileName,fileList);
+			Assert.assertEquals("Testing for saving configuration", fileName, fileOperation.getLastOpenFilePath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetFilePathList() {
+		String fileName = TEST_FILENAME+TEST_FILENAME+TEST_FILENAME;
+		ArrayList<String> fileList = new ArrayList<String>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			fileList.add(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER1%TEST_SIZE));
+		}
+		
+		try {
+			fileOperation = new ConfigurationFileOperation(TEST_FILENAME);
+			fileOperation.saveConfiguration(fileName,fileList);
+			ArrayList<String> history = fileOperation.getHistoryFilePath();
+			for(int i = 0; i < TEST_SIZE; i++){
+				Assert.assertEquals("Testing for saving configuration", fileList.get(i), history.get(i));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@After
+	public void cleanUp(){
+		converter = null;
+		new File(TEST_FILENAME).delete();
+	}
+	
+}
+
 	// End of segment: E:\cs2103final\src\storage\testConfigurationFileOperation.java
 
 
@@ -75,6 +761,81 @@
 
 /**
  * 
+ * @version 2015 April 11
+ */
+public class testFileOperation {
+	private static final String TEST_STRING = "123456890-=QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm,./[];'!@#$%^&*()_+";
+	private static final String TEST_FILENAME = "fileStorageTest";
+	
+	private static final String EMPTY_STRING = "";
+	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
+	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
+	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	
+	ObjectConverter converter;
+	FileOperation fileOperation;
+
+	@Before
+	public void init(){
+	    converter = new ObjectConverter();
+	}
+
+	private String getFileContent(String fileName) throws IOException{
+		if (new File(fileName).isDirectory()) {
+			throw new IOException(MESSAGE_FOLDER_FILENAME);
+		}
+		if (!(new File(fileName).exists())) {
+			System.err.println(MESSAGE_NEW_FILE);
+			return EMPTY_STRING;
+		}
+		try {
+			FileInputStream fileInput = new FileInputStream(fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
+			String readContent = br.readLine();
+			if(readContent == null){
+				readContent = EMPTY_STRING;
+			}
+			br.close();
+			return readContent;
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_READ);
+		}
+	}
+	
+	@Test
+	public void testSaving() {
+		try {
+			fileOperation = new FileOperation(TEST_FILENAME);
+			fileOperation.saveToFile(TEST_STRING);
+			Assert.assertEquals("Testing for saving unfinished tasklist", getFileContent(TEST_FILENAME), TEST_STRING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testReading() {
+		try {
+			fileOperation = new FileOperation(TEST_FILENAME);
+			fileOperation.saveToFile(TEST_STRING);
+			Assert.assertEquals("Testing for saving unfinished tasklist", getFileContent(TEST_FILENAME), fileOperation.readFile());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+	@After
+	public void cleanUp(){
+		converter = null;
+		new File(TEST_FILENAME).delete();
+	}
+	
+}
+
 	// End of segment: E:\cs2103final\src\storage\testFileOperation.java
 
 
@@ -88,6 +849,115 @@
 
 /**
  * 
+ * @version 2015 April 11
+ */
+public class testJsonStringFileOperation {
+	private static final int TEST_SIZE = 200;
+	private static final int BIG_PRIME_NUMBER1 = 107;
+	private static final int BIG_PRIME_NUMBER2 = 101;
+	private static final String NAME_TEST_STRING = "%05d";
+	private static final String TEST_FILENAME = "fileStorageTest.json";
+	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
+	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
+	
+	private static final String KEY_FOR_CONTENT = "content";
+	private static final String KEY_FOR_DATE = "date";
+	private static final String KEY_FOR_DEADLINE = "deadline";
+	private static final String KEY_FOR_VENUE = "venue";
+	
+	private static final String EMPTY_STRING = "";
+	
+	private static final String MESSAGE_READ_FILE = "Read file successfully.";
+	private static final String MEAAGE_SAVE_TO_FILE = "Save to file successfully.";
+	private static final String MESSAGE_SAVE_TO_TEMP_FILE = "Save to temp file successfully.";
+	
+	private static final String MESSAGE_NULL_FILENAME = "File name cannot be null\n";
+	private static final String MESSAGE_NO_TEMPFILE = "Temp file is not found.\n";
+	private static final String MESSAGE_INVALID_FILENAME = "File name is invalid\n";
+	private static final String MESSAGE_CANNOT_READ = "cannot read the file.\n";
+	private static final String MESSAGE_CANNOT_WRITE = "cannot write the file.\n";
+	private static final String MESSAGE_FOLDER_FILENAME = "fileName is a Directory name.\n";
+	private static final String MESSAGE_CANNOT_PARSE = "Cannot parse the file with JSON format, return empty task list.\n";
+	private static final String MESSAGE_NEW_FILE = "The file is not existed, create new file.\n";
+	
+	ObjectConverter converter;
+	JsonStringFileOperation fileOperation;
+	
+	
+
+	@Before
+	public void init(){
+	    converter = new ObjectConverter();
+	}
+
+	private String getFileContent(String fileName) throws IOException{
+		if (new File(fileName).isDirectory()) {
+			throw new IOException(MESSAGE_FOLDER_FILENAME);
+		}
+		if (!(new File(fileName).exists())) {
+			System.err.println(MESSAGE_NEW_FILE);
+			return EMPTY_STRING;
+		}
+		try {
+			FileInputStream fileInput = new FileInputStream(fileName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fileInput, "UTF-8"));
+			String readContent = br.readLine();
+			if(readContent == null){
+				readContent = EMPTY_STRING;
+			}
+			br.close();
+			return readContent;
+		} catch (IOException e) {
+			throw new IOException(MESSAGE_CANNOT_READ);
+		}
+	}
+	
+	@Test
+	public void testSavingUnfinishedTasklist() {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			taskList.add(new Task(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER1%TEST_SIZE)));
+		}
+		
+		try {
+			fileOperation = new JsonStringFileOperation(TEST_FILENAME);
+			fileOperation.saveToFile(taskList);
+			Assert.assertEquals("Testing for saving unfinished tasklist", getFileContent(TEST_FILENAME), converter.getJsonStringFromTaskList(taskList));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testSavingTwoTasklist() {
+		ArrayList<Task> taskList1 = new ArrayList<Task>();
+		ArrayList<Task> taskList2 = new ArrayList<Task>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			taskList1.add(new Task(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER1%TEST_SIZE)));
+			taskList2.add(new Task(String.format(NAME_TEST_STRING, i*BIG_PRIME_NUMBER2%TEST_SIZE)));
+		}
+		
+		try {
+			fileOperation = new JsonStringFileOperation(TEST_FILENAME);
+			fileOperation.saveToFile(taskList1, taskList2);
+			Assert.assertEquals("Testing for saving two tasklist", getFileContent(TEST_FILENAME), converter.getJsonStringFromTaskList(taskList1, taskList2));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+	@After
+	public void cleanUp(){
+		converter = null;
+		new File(TEST_FILENAME).delete();
+	}
+	
+}
+
 	// End of segment: E:\cs2103final\src\storage\testJsonStringFileOperation.java
 
 
@@ -100,6 +970,89 @@
 
 /**
  * 
+ * @version 2015 April 11
+ */
+public class testObjectConverter {
+	private static final int TEST_SIZE = 200;
+	private static final int BIG_PRIME_NUMBER = 107;
+	final static String NAME_TEST_STRING = "%05d";
+	private static final String KEY_FOR_UNFINISHED_TASKLIST = "unfinished taskList";
+	private static final String KEY_FOR_FINISHED_TASKLIST = "finished taskList";
+	
+	private static final String KEY_FOR_CONTENT = "content";
+	private static final String KEY_FOR_DATE = "date";
+	private static final String KEY_FOR_DEADLINE = "deadline";
+	private static final String KEY_FOR_VENUE = "venue";
+	
+	ObjectConverter converter;
+	
+	
+	/*
+	 * init the test
+	 * if the file exist, delete the file
+	 * create the new textbuddy object
+	 */
+	@Before
+	public void initTextBuddy(){
+	    converter = new ObjectConverter();
+	    //Home folder
+	    System.getProperty("user.home");
+	}
+	
+	/*
+	 * check the whether the filename is correct
+	 */
+	@Test
+	public void testgetTaskFromJsonObject() {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			taskList.add(new Task(String.format(NAME_TEST_STRING, i)));
+		}
+		JSONObject jsObj = new JSONObject(converter.getJsonStringFromTaskList(taskList));
+		
+		for(int i = 0; i < TEST_SIZE; i++){
+			System.out.println(((JSONObject) jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).get(i)).get("content"));
+			Assert.assertEquals("Testing for tasklist to JSONObject",String.format(NAME_TEST_STRING, i),((JSONObject) jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).get(i)).get(KEY_FOR_CONTENT));
+		}
+	}
+	
+	@Test
+	public void testgetTaskFromJsonObjectWithEmptyList() {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		
+		JSONObject jsObj = new JSONObject(converter.getJsonStringFromTaskList(taskList));
+		Assert.assertEquals("Testing for empty tasklist to JSONObject","[]",jsObj.getJSONArray(KEY_FOR_UNFINISHED_TASKLIST).toString());
+	}
+
+	@Test
+	public void testJSONObjectToString() {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		for(int i = 0; i < TEST_SIZE; i++){
+			taskList.add(new Task(String.format(NAME_TEST_STRING, i)));
+		}
+		String jsonString = converter.getJsonStringFromTaskList(taskList);
+		for(int i = 0; i < TEST_SIZE; i++){
+			Assert.assertEquals("Testing for converting back",taskList.get(i).getContent(),converter.getUnfinishedTaskListFromJsonString(jsonString).get(i).getContent());
+		}
+	}
+	
+	@Test
+	public void testEmptyJSONObjectToString() {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		
+		String jsonString = converter.getJsonStringFromTaskList(taskList);
+		for(int i = 0; i < TEST_SIZE; i++){
+			Assert.assertEquals("Testing for converting back",0,converter.getUnfinishedTaskListFromJsonString(jsonString).size());
+		}
+	}
+	
+	@After
+	public void cleanUp(){
+		converter = null;
+	}
+	
+}
+
 	// End of segment: E:\cs2103final\src\storage\testObjectConverter.java
 
 
