@@ -77,7 +77,7 @@ public class Task implements Comparable<Task>{
 		this.venue = venue;
 	}
 	
-	public Task(String content, Date date, Date deadline, String venue, boolean hashFinished){
+	public Task(String content, Date date, Date deadline, String venue, boolean hasFinished){
 		this.content = content;
 		this.date = date;
 		this.deadline = deadline;
