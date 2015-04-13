@@ -16,7 +16,7 @@ public class TextFieldHistory {
 	private final static String UNABLE_TO_OBTAIN_LAST_HISTORY = "invalid";
 	
 	public static void updateHistory(String input) {
-		if (!input.isEmpty()) {
+		if (!input.trim().isEmpty() || input == null) {
 			while (!temp.isEmpty()) {
 				history.push(temp.pop());
 			}
