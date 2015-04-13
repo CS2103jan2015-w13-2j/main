@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+//@author A0119392B
 /**
  * Storage of configuration file. 
  * Read and load .configuration file from user home folder.
@@ -40,6 +41,11 @@ public class ConfigurationFileOperation{
 		this.converter = new ObjectConverter();
 	}
 	
+	public ConfigurationFileOperation(String testingFileName) throws IOException{
+		configurationFile = new FileOperation(testingFileName);
+		this.converter = new ObjectConverter();
+	}
+	
 	/**
 	 * Return last open file path.
 	 * If there is not configuration file, return the default file path.
@@ -73,12 +79,12 @@ public class ConfigurationFileOperation{
 		String fileContent = configurationFile.readFile();
 		logger.info(MESSAGE_READ_CONFIGURATION_FILE);
 		try{
-			ArrayList<String> x = converter.getFilePathListFromJsonString(fileContent);
-			return x;
+			ArrayList<String> filePathList = converter.getFilePathListFromJsonString(fileContent);
+			return filePathList;
 		}catch(Exception e){
-			ArrayList<String> x = new ArrayList<String>();
-			x.add(DEFAULT_FILE_NAME);
-			return x;
+			ArrayList<String> filePathList = new ArrayList<String>();
+			filePathList.add(DEFAULT_FILE_NAME);
+			return filePathList;
 		}
 	}
 	

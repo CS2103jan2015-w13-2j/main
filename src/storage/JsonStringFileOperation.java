@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import taskList.Task;
 
+//@author A0119392B
 /**
  * Reading and loading task list in file with JSON format.
  * 
@@ -53,8 +54,8 @@ public class JsonStringFileOperation{
 		String jsonString = savedFile.readFile();
 		logger.info(MESSAGE_READ_FILE);
 		try{
-			ArrayList<Task> x = converter.getUnfinishedTaskListFromJsonString(jsonString);
-			return x;
+			ArrayList<Task> unfinishedTaskList = converter.getUnfinishedTaskListFromJsonString(jsonString);
+			return unfinishedTaskList;
 		}catch(Exception e){
 			logger.info(MESSAGE_CANNOT_PARSE);
 			return EMPTY_UNFINISHED_TASKLIST;
@@ -72,8 +73,8 @@ public class JsonStringFileOperation{
 		String jsonString = savedFile.readFile();
 		logger.info(MESSAGE_READ_FILE);
 		try{
-			ArrayList<Task> x = converter.getFinishedTaskListFromJsonString(jsonString);
-			return x;
+			ArrayList<Task> finishedTaskList = converter.getFinishedTaskListFromJsonString(jsonString);
+			return finishedTaskList;
 		}catch(Exception e){
 			logger.info(MESSAGE_CANNOT_PARSE);
 			return EMPTY_FINISHED_TASKLIST;
