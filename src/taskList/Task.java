@@ -234,4 +234,8 @@ public class Task implements Comparable<Task>{
 		return (today.after(deadline));
 	}
 	
+	public Task getCopy(){
+		return new Task(this.content,this.date,this.deadline,this.venue,this.hasFinished);
+	}
+	
 }

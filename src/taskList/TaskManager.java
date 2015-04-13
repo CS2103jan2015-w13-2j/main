@@ -128,7 +128,6 @@ public class TaskManager {
 	 */
 	private void showMessage(String message) {
 		this.feedBack.add(message);
-		System.out.print(message);
 	}
 
 	
@@ -232,7 +231,6 @@ public class TaskManager {
 		if (mode == DISPLAY_MODE.TODO_TASKLIST) {
 			showMessage(MESSAGE_DELETE_OPERATION);
 			taskList.remove(removeIndex - 1);
-			System.out.println("here here "+removeIndex);
 			saveFile(); 
 		} else {
 			int indexinTaskList = 0;
@@ -258,7 +256,6 @@ public class TaskManager {
 		ArrayList<Integer> deleteIndex = myParser.getIndex(command);
 		Collections.sort(deleteIndex);
 		for (int i = deleteIndex.size()-1; i >= 0; i--){
-			System.out.println("index for this operation is "+deleteIndex.get(i));
 			delete(deleteIndex.get(i));
 		}
 		undo.add(taskList);
@@ -283,11 +280,10 @@ public class TaskManager {
 			}
 			showMessage(MESSAGE_COMPLETE_OPERATION);
 			Task finishedOne = taskList.remove(removeIndex - 1);
-			
 			//update hasfinished added here		
-			finishedOne.finish();
-			
-			completedTaskList.add(finishedOne);
+			Task copyOfFinishedOne = new Task(finishedOne.getContent(),finishedOne.getDate(),finishedOne.getDeadline(),finishedOne.getVenue());
+			copyOfFinishedOne.finish();
+			completedTaskList.add(copyOfFinishedOne);
 			saveFile();
 		}else{
 			if (removeIndex < 0 || removeIndex > searchResult.size()) {
@@ -301,6 +297,10 @@ public class TaskManager {
 					break;
 				}
 			}
+			Task finishedOne = taskList.get(indexinTaskList);
+			Task copyOfFinishedOne = new Task(finishedOne.getContent(),finishedOne.getDate(),finishedOne.getDeadline(),finishedOne.getVenue());
+			copyOfFinishedOne.finish();
+			completedTaskList.add(copyOfFinishedOne);
 			taskList.remove(indexinTaskList);
 			showMessage(MESSAGE_DELETE_OPERATION);
 			searchResult.remove(removeIndex - 1);
@@ -320,6 +320,7 @@ public class TaskManager {
 			complete(completeIndex.get(i));
 		}
 		undo.add(taskList);
+		undoForCompleted.add(completedTaskList);
 	}	
 	
 	
@@ -454,6 +455,7 @@ public class TaskManager {
 	 * Description: Redo operation
 	 */
 	void redo() {
+		switchToChangeableMode();
 		if (undo.canRedo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.redo();
 			if (undoForCompleted.canRedo()) completedTaskList = (ArrayList<Task>) undoForCompleted.redo();
@@ -470,6 +472,7 @@ public class TaskManager {
 	 * Description: Undo operation
 	 */
 	void undo() {
+		switchToChangeableMode();
 		if (undo.canUndo() && mode == DISPLAY_MODE.TODO_TASKLIST){
 			taskList = (ArrayList<Task>) undo.undo();
 			if (undoForCompleted.canUndo()) {
@@ -927,4 +930,5 @@ public class TaskManager {
 		return (ArrayList<String>) this.fileList.clone();
 	}
 	
+
 }
