@@ -62,7 +62,30 @@ public class Task implements Comparable<Task>{
 		
 		this.venue = venue;
 	}
-	
+	public Task(String content, String date, String deadline, String venue , boolean hasFinished){
+		this.content = content;
+		
+		DateParser dateParser = new DateParser();
+		try {
+			this.date = dateParser.getDate(date);
+		} catch (Exception e) {
+			this.date = null;
+		}
+		try {
+			this.deadline = dateParser.getDate(deadline);
+		} catch (Exception e) {
+			this.deadline = null;
+		}
+		
+		
+		if(date != null)
+			dateString = date.toString();
+		
+		if(deadline != null)
+			deadlineString = deadline.toString();
+		this.hasFinished = hasFinished;
+		this.venue = venue;
+	}
 	public Task(String content, Date date, Date deadline, String venue){
 		this.content = content;
 		this.date = date;
@@ -77,7 +100,7 @@ public class Task implements Comparable<Task>{
 		this.venue = venue;
 	}
 	
-	public Task(String content, Date date, Date deadline, String venue, boolean hashFinished){
+	public Task(String content, Date date, Date deadline, String venue, boolean hasFinished){
 		this.content = content;
 		this.date = date;
 		this.deadline = deadline;
