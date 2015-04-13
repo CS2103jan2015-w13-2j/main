@@ -36,6 +36,7 @@ public class LayoutSetting {
 	public static void setFrame() {
 		UserInterface.frame.setBounds(100, 100, 653, 582);
 		UserInterface.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		UserInterface.frame.setResizable(false);
 		UserInterface.frame.getContentPane().setLayout(null);
 		UserInterface.frame.setIconImage(Toolkit.getDefaultToolkit().getImage("ui/images/TaskBuddy_Icon.png"));
 	}
