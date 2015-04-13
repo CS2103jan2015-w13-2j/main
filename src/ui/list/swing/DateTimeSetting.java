@@ -2,6 +2,15 @@ package ui.list.swing;
 
 import taskList.Task;
 
+//@author A0117971Y
+
+/**
+ * This class formats the date and time string
+ * and returns a readable format
+ * @author A0117971Y
+ *
+ */
+
 public class DateTimeSetting {
 	
 	private static final String EMPTY_TIME = "00:00:00";
@@ -110,6 +119,7 @@ public class DateTimeSetting {
 			}
 			
 			else {
+				newHr = Integer.parseInt(hrs);
 				day = "AM";
 			}
 			

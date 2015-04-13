@@ -21,8 +21,9 @@ public class DisplayFormat {
 	private static final String TASK_INFO_COMPLETED_MSG = "Completed Tasks: ";
 	private static final String TASK_INFO_ALL_TASKS_MSG = "You are viewing all tasks";
 	private static final String TASK_INFO_FILE_PATH_MSG = "Existing files: ";
-	private static final String BY_STRING = "<b>  BY: </b>";
-	private static final String DATE_STRING = "<b>Date: </b>";
+	private static final String DATE_STRING = "<b> Date: </b>";
+	private static final String END_STRING = "<b>End: </b>";
+	private static final String START_STRING = "<b>Start: </b>";
 	private static final String VENUE_STRING = "<b>Venue: </b>";
 	private static final String TIME_STRING = "<b>Time: </b>";
 	private static final String EMPTY_STRING = "---";	
@@ -50,20 +51,20 @@ public class DisplayFormat {
 	public static String getTaskInfoFormat (Task task, int i) throws NullPointerException, IOException {
 		clearData();
 		
-		index = Integer.toString(i+1);
-		taskName = task.getContent();
-		date = DateTimeSetting.getDate(task);
-		endDate = DateTimeSetting.getEndDate(task);
-		time = DateTimeSetting.getTime(task);
-		endTime = DateTimeSetting.getEndTime(task);
-		venue = task.getVenue();
+		getAllInfo(task, i);
 
-		
 		setVenueDate();
 		data.append(HTML_OPEN);
 		data.append(String.format(HTML_FONT_TASK_HEADER,index+". ", taskName));
-		setDate(task, date, endDate);
-		setTime(task, time, endTime);
+		
+		if (isValidOutOfDate(task,date, endDate))  {
+			setDateTime(task, date, endDate, time, endTime, HTML_FONT_OVERDUE );
+		}
+		
+		else {
+			setDateTime(task, date, endDate, time, endTime, HTML_FONT_TASK_DETAILS );
+		}
+		
 		data.append(HTML_BREAK);	
 		setTaskVenue(HTML_FONT_TASK_DETAILS, venue);
 		data.append(HTML_BREAK+HTML_CLOSE);
@@ -71,59 +72,15 @@ public class DisplayFormat {
 		return getData();
 	}
 	
-//	private static boolean isEmptyTime(String time) {
-//		if (time.trim().equals(EMPTY_TIME)) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	private static String getTime(Task task) {
-//		String time = trimTime(task.getDateString());
-//		
-//		return time;
-//	}
-//	
-//	private static String getDate(Task task) {
-//		String date = trimDate(task.getDateString());
-//		
-//		return date;
-//	}
-//	
-//	private static String getEndDate(Task task) {
-//		String endDate = trimDate(task.getDeadlineString());
-//		
-//		return endDate;
-//	}
-//	
-//	private static String getEndTime(Task task) {
-//		String endTime = trimTime(task.getDeadlineString());
-//		
-//		return endTime;
-//	}
-//	
-//	private static String trimDate(String date) {
-//
-//		String trimDate = EMPTY_STRING;
-//
-//		if (date!= null && !date.equals(EMPTY_STRING)) {
-//			trimDate = date.substring(0, date.indexOf(":")-2);
-//			System.out.println("Date Trimmed: " + trimDate);
-//		}
-//		
-//		return trimDate;
-//	}
-
-//	private static String trimTime(String date) {
-//		String time = EMPTY_TIME;
-//
-//		if (date!= null && !date.equals(EMPTY_STRING)) {
-//			time = date.substring(date.indexOf(":")-2, date.length());	
-//			return timeFormat(time);
-//		}
-//
-//		return time;
-//	}
+	private static void getAllInfo(Task task, int i) {
+		index = Integer.toString(i+1);
+		taskName = task.getContent();
+		date = DateTimeSetting.getDate(task);
+		endDate = DateTimeSetting.getEndDate(task);
+		time = DateTimeSetting.getTime(task);
+		endTime = DateTimeSetting.getEndTime(task);
+		venue = task.getVenue();
+	}
 
 	private static void setTaskVenue(String format, String venue) {
 		data.append(String.format(format,VENUE_STRING + venue));
@@ -133,153 +90,52 @@ public class DisplayFormat {
 		return (!date.equals(EMPTY_STRING) || !endDate.equals(EMPTY_STRING)) && task.isOutOfDate();
 	}
 	
-	private static void setDate(Task task, String date, String endDate) throws NullPointerException, IOException {	
+	private static void setDateTime(Task task, String date, String endDate, String time, String endTime, String format) throws NullPointerException, IOException {	
 		date = DateTimeSetting.dateFormat(date);
 		endDate = DateTimeSetting.dateFormat(endDate);
-		
-		if (isValidOutOfDate(task,date, endDate)) {
 			
 			if (date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING)) {
-				data.append(String.format(HTML_FONT_OVERDUE, DATE_STRING + date));
+				data.append(String.format(format, DATE_STRING + date));
 			}
 			
 			else if (!date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING))  {
-				data.append(String.format(HTML_FONT_OVERDUE, DATE_STRING + date));
+				data.append(String.format(format, START_STRING + date));
+					
+				if (!DateTimeSetting.isEmptyTime(time)) {
+						data.append(String.format(format, TIME_STRING + time));
+					}
 			}
 			
 			else if (date.equals(EMPTY_STRING) && !endDate.equals(EMPTY_STRING)) {
-				data.append((String.format(HTML_FONT_OVERDUE, BY_STRING + endDate)));
+				data.append((String.format(format, END_STRING + endDate)));
+				
+				if (!DateTimeSetting.isEmptyTime(endTime))
+					data.append((String.format(format, TIME_STRING + endTime)));
+
 			}
 			
 			else {
-				data.append(String.format(HTML_FONT_OVERDUE, DATE_STRING + date) + " - " + endDate);
+				data.append(String.format(format, START_STRING + date));	
+				
+				if (!DateTimeSetting.isEmptyTime(time)) {
+					data.append(String.format(format, TIME_STRING + time));
+				}
+				
+				data.append((String.format(format, END_STRING + endDate)));
+				
+				if (!DateTimeSetting.isEmptyTime(endTime))
+					data.append((String.format(format, TIME_STRING + endTime)));
 			}
 		}	
-		
-		else {
-			
-			if (date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING)) {
-				data.append(String.format(HTML_FONT_TASK_DETAILS, DATE_STRING + date));
-			}
-			
-			else if (!date.equals(EMPTY_STRING) && endDate.equals(EMPTY_STRING))  {
-				data.append(String.format(HTML_FONT_TASK_DETAILS, DATE_STRING + date));
-			}
-			
-			else if (date.equals(EMPTY_STRING) && !endDate.equals(EMPTY_STRING)) {
-				data.append((String.format(HTML_FONT_TASK_DETAILS, BY_STRING + endDate)));
-			}
-			
-			else {
-				data.append(String.format(HTML_FONT_TASK_DETAILS, DATE_STRING + date) + " - " + endDate);
-			}			
-		}
-	}
-	
-	private static void setTime(Task task, String time, String endTime) throws NullPointerException, IOException {
-		if (!DateTimeSetting.isEmptyTime(time) && task.isOutOfDate()) {
-			data.append(String.format(HTML_FONT_OVERDUE,TIME_STRING + time ));
-			
-			if (!DateTimeSetting.isEmptyTime(endTime)) {
-				data.append(String.format(HTML_FONT_OVERDUE, " - " + endTime));
-			}
-		}
-		
-		else if (!DateTimeSetting.isEmptyTime(time)) {
-			data.append(String.format(HTML_FONT_TASK_DETAILS,TIME_STRING + time ));
-			
-			if (!DateTimeSetting.isEmptyTime(endTime)) {
-				data.append(String.format(HTML_FONT_TASK_DETAILS, " - " + endTime));
-			}
-		}
-	}
-	
-//	private static String dateFormat (String date) {
-//		String formattedDay = EMPTY_STRING;
-//		
-//		if (!date.equals(EMPTY_STRING)) {
-//			String tokens[] = date.split("-");
-//			String year = tokens[0];
-//			String mth = tokens[1];
-//			String day = tokens[2];
-//			
-//			switch (mth) {
-//			case "01": mth = "Jan"; break;
-//			case "02": mth = "Feb"; break;
-//			case "03": mth = "Mar"; break;
-//			case "04": mth = "April"; break;
-//			case "05": mth = "May"; break;
-//			case "06": mth = "Jun"; break;
-//			case "07": mth = "July"; break;
-//			case "08": mth = "Aug"; break;
-//			case "09": mth = "Sept"; break;
-//			case "10": mth = "Oct"; break;
-//			case "11": mth = "Nov"; break;
-//			case "12": mth = "Dec"; break;				
-//			}
-//			
-//			formattedDay = day+ " " + mth + " " + year;
-//		}
-//		
-//		return formattedDay;
-//	}
-	
-	
-//	private static String timeFormat(String time) {
-//		if (!isEmptyTime(time)) {
-//			String tokens[] = time.split(":");
-//			String hrs = tokens[0];
-//			String min = tokens[1];
-//			String day;
-//			int newHr = 0;
-//			
-//			if (Integer.parseInt(hrs) >= 12) {
-//				newHr = Integer.parseInt(hrs);
-//				day = "PM";
-//
-//				if (newHr > 12) {
-//					newHr = newHr - 12;
-//				}
-//			}
-//			
-//			else {
-//				day = "AM";
-//			}
-//			
-//			return newHr + ":" + min + day;
-//		}
-//		return time;
-//	}
-	
+
+
 	public static String getDeletedRowFormat(Task task, int i) throws NullPointerException, IOException {
 		clearData();
-
-		index = Integer.toString(i+1);
-		taskName = task.getContent();
-		date = DateTimeSetting.getDate(task);
-		endDate = DateTimeSetting.getEndDate(task);
-		time = DateTimeSetting.getTime(task);
-		endTime = DateTimeSetting.getEndTime(task);
-		venue = task.getVenue();
-
-		
+		getAllInfo(task, i);
 		setVenueDate();
 		data.append(HTML_OPEN);
 		data.append(String.format(HTML_FONT_FINISHED_TASK_HEADING, index + ". ", taskName));
-		data.append(String.format(HTML_FONT_FINISHED_DETAILS, DATE_STRING + date));
-		
-		if (!DateTimeSetting.isEmptyTime(time)) {
-			data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + time));
-		}
-
-		if (endDate != null && !endDate.equals(EMPTY_STRING)) {
-			data.append(String.format(HTML_FONT_FINISHED_DETAILS, BY_STRING + endDate));	
-			
-			if (!DateTimeSetting.isEmptyTime(endTime)) {
-				data.append(String.format(HTML_FONT_FINISHED_DETAILS, TIME_STRING + endTime));	
-			}
-		}
-
+		setDateTime(task, date, endDate, time, endTime, HTML_FONT_FINISHED_DETAILS );
 		data.append(HTML_BREAK);		
 		setTaskVenue(HTML_FONT_FINISHED_DETAILS,venue);
 		data.append(HTML_BREAK+HTML_CLOSE);
