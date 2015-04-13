@@ -17,15 +17,15 @@ public class UIFeedback {
 	private static final String EXCEPTION_NULLPOINTER = "The command is null";
 	
 	private static final String FEEDBACK_ADD = 
-			"Tip: add<task> -d<time> -v<venue> to add task with date & venue";
+			" <task> -d<time> -v<venue> to add task with date & venue";
 	private static final String FEEDBACK_DELETE = "Tip: delete<index> to delete a task";
 	private static final String FEEDBACK_MODIFY = 
-			"Tip: modify<index> <new title> -d<new time> -v<new venue> to modify task";
-	private static final String FEEDBACK_SORT = "Tip: sort<time/venue/title> to sort tasks";
-	private static final String FEEDBACK_SEARCH = "Tip: search<title/time/venue> to search tasks";
-	private static final String FEEDBACK_COMPLETE = "Tip: complete<index> to mark a task completed";
-	private static final String FEEDBACK_IMPORT = "Tip: import<index/path> to import a schedule file";
-	private static final String FEEDBACK_EXPORT = "Tip: export<index/path> to save schedul to a file";
+			" <index> <new title> -d<new time> -v<new venue> to modify task";
+	private static final String FEEDBACK_SORT = " <time/venue/title> to sort tasks";
+	private static final String FEEDBACK_SEARCH = " <title/time/venue> to search tasks";
+	private static final String FEEDBACK_COMPLETE = " <index> to mark a task completed";
+	private static final String FEEDBACK_IMPORT = " <index/path> to import a schedule file";
+	private static final String FEEDBACK_EXPORT = " <index/path> to save schedul to a file";
 	
 	private static final String[] KEYWORD_ADD = {"add", "insert"};
 	private static final String[] KEYWORD_DELETE = {"delete", "remove", "rm"};
