@@ -1,3 +1,4 @@
+
 package taskList;
 
 
@@ -15,6 +16,7 @@ import ui.list.swing.LayoutSetting;
 import ui.list.swing.UserInterface;
 import parser.DateParser;
 import parser.Parser;
+//@author A0119403N
 public class TaskManager {
 	private static final String MESSAGE_EMPTY_FILE = "No related file found";
 	private static final String MESSAGE_ADD_OPERATION = "Add new task successfully";
