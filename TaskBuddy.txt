@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"unfinished taskList":[{"content":"2"},{"content":"2"},{"content":"2"},{"content":"2"},{"content":"new"},{"content":"哈哈哈"}],"finished taskList":[{"date":"2015-04-12 15:55:00","content":"today"},{"date":"2015-04-12 15:50:00","content":"today"},{"date":"2015-04-12 14:55:00","content":"today"},{"date":"2015-04-12 13:55:00","content":"today"},{"content":"complete"}]}
-=======
-{"unfinished taskList":[{"content":"This is taskbuddy.txt"},{"content":"2"},{"content":"2"},{"content":"2"},{"content":"new"},{"content":"hello"}],"finished taskList":[{"date":"2015-04-12 15:55:00","content":"today"},{"date":"2015-04-12 15:50:00","content":"today"},{"date":"2015-04-12 14:55:00","content":"today"},{"date":"2015-04-12 13:55:00","content":"today"},{"content":"complete"}]}
->>>>>>> e19109c6983b097fc9e4b0f00e6be75872ba7ca1
+{"unfinished taskList":[],"finished taskList":[]}
