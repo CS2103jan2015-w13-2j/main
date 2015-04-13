@@ -28,7 +28,7 @@ import taskList.TaskManager;
 public class UserInterface {
 	
 	public static final String COMMAND_GUIDE_DEFAULT_MESSAGE = "type add | delete | modify | search | sort | undo | redo | finish ";
-	public static final String VIEW_TASK_INFO_MESSAGE = DisplayFormat.getTaskInfoDetails();
+	public static String VIEW_TASK_INFO_MESSAGE = "Things to do: ";
 	public static boolean isAdd = false;
 	public static boolean isModify = false;
 	public static boolean atHelpMenu = false;
