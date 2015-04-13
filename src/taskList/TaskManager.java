@@ -87,7 +87,6 @@ public class TaskManager {
 		try{
 			configurationFileOperation = new ConfigurationFileOperation();
 			fileName = configurationFileOperation.getLastOpenFilePath();
-			System.out.println("debug "+fileName);
 			fileList = configurationFileOperation.getHistoryFilePath();
 			fileOperation = new JsonStringFileOperation(fileName);
 		}catch (Exception e){
@@ -204,12 +203,11 @@ public class TaskManager {
 		String content = myParser.getTitle(command);
 		try{
 			Date date = myParser.getDate(command);
-			System.out.println(date);
 			Date deadLine = myParser.getDeadline(command);
 			String venue = myParser.getVenue(command);
 			showMessage(MESSAGE_ADD_OPERATION);
 			taskList.add(new Task(content,date,deadLine,venue));
-			System.out.println(taskList.get(0).isOutOfDate());
+
 			saveFile();
 			saveConfiguration();
 			undo.add(taskList);
@@ -523,7 +521,6 @@ public class TaskManager {
 	 * If file exist already, just modify the old one
 	 */
 	private void exportFile(String command) throws IOException{
-		System.out.println("export command");
 		String newFileName = myParser.getTitle(command);
 		fileName = newFileName;
 		fileOperation = new JsonStringFileOperation(newFileName);
@@ -579,14 +576,12 @@ public class TaskManager {
 		taskList.toArray(taskArray);
 		switch (type){
 		case BY_TIME:
-			System.out.println("begin time");
 			for (int i = 0; i < taskList.size(); i++){
 				for (int j = 0; j< i; j++){
 				if (compareDate(taskArray[i].getDate(),taskArray[j].getDate())){
 						Task tmp = taskArray[i];
 						taskArray[i] = taskArray[j];
 						taskArray[j] = tmp;
-						System.out.println("change happens");
 					}
 				}
 			}
@@ -726,7 +721,6 @@ public class TaskManager {
 	 * Description: load file
 	 */
 	private void loadFile() throws IOException{
-		System.out.println("load file");
 		taskList = fileOperation.getUnfinishedTaskListFromFile();
 		completedTaskList = fileOperation.getFinishedTaskListFromFile();
 		fileList = configurationFileOperation.getHistoryFilePath();
@@ -871,7 +865,6 @@ public class TaskManager {
 		Collections.sort(taskListCopy2);
 		for (int i = 0; i< taskListCopy1.size(); i++){
 			if (!taskListCopy1.get(i).isEqual(taskListCopy2.get(i))){
-				System.out.println("failure at i "+ i);
 				return false;
 			}
 		}
