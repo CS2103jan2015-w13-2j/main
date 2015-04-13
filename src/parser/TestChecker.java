@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+//@author A0119503M
 public class TestChecker {
 	private static final String EXCEPTION_NOTITLE = "no title inputed";
 	private static final String EXCEPTION_INDEXILLEGAL = "the index you entered is illegal";
